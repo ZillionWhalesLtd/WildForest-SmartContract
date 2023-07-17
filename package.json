@@ -2,28 +2,32 @@
   "name": "zillion-whales-smart-contracts",
   "version": "0.0.1",
   "scripts": {
-    "hardhat": "node --require esm node_modules/.bin/hardhat",
-    "compile": "npm run hardhat compile",
-    "deploy": "npm run hardhat deploy",
-    "deploy:test": "npm run hardhat deploy --network saigon",
-    "deploy:prod": "npm run hardhat deploy --network ronin",
-    "verify:test": "npm run hardhat --network saigon sourcify --endpoint https://sourcify.roninchain.com/server",
-    "verify:prod": "npm run hardhat --network ronin sourcify --endpoint https://sourcify.roninchain.com/server",
-    "gasreport": "npm run hardhat test",
-    "test": "npm run hardhat coverage",
+    "compile": "npx hardhat compile",
+    "deploy": "npx hardhat deploy",
+    "deploy:test": "npx hardhat deploy --network saigon",
+    "deploy:prod": "npx hardhat deploy --network ronin",
+    "verify:test": "npx hardhat --network saigon sourcify --endpoint https://sourcify.roninchain.com/server",
+    "verify:prod": "npx hardhat --network ronin sourcify --endpoint https://sourcify.roninchain.com/server",
+    "gasreport": "npx hardhat test",
+    "test": "npx hardhat coverage --show-stack-traces",
     "lint": "eslint . && prettier . --check && solhint 'contracts/**/*.sol'",
     "format": "prettier . --write && eslint . --fix"
   },
   "devDependencies": {
-    "@babel/core": "^7.18.2",
-    "@babel/eslint-parser": "7.18.2",
-    "@nomicfoundation/hardhat-network-helpers": "^1.0.4",
-    "@nomicfoundation/hardhat-toolbox": "^1.0.2",
-    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers@^0.3.0-beta.13",
-    "@nomiclabs/hardhat-etherscan": "^3.1.0",
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@nomicfoundation/hardhat-chai-matchers": "^1.0.5",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.7",
+    "@nomicfoundation/hardhat-toolbox": "^2.0.0",
+    "@nomiclabs/hardhat-ethers": "^2.2.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.4",
+    "chai": "^4.3.7",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.5",
+    "hardhat-gas-reporter": "^1.0.9",
+    "solidity-coverage": "^0.8.4",
     "@openzeppelin/contracts": "^4.7.3",
     "base64-sol": "^1.1.0",
-    "chai": "^4.3.6",
     "deep-equal-in-any-order": "^2.0.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.16.0",
@@ -32,9 +36,6 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
-    "esm": "^3.2.25",
-    "ethers": "^5.6.9",
-    "hardhat": "^2.10.2",
     "hardhat-deploy": "^0.11.12",
     "prettier": "^2.7.1",
     "solhint": "^3.3.7"
@@ -42,22 +43,5 @@
   "engines" : {
     "npm" : ">=9.6.4",
     "node" : ">=20.0.0"
-  },
-  "overrides": {
-    "@nomicfoundation/hardhat-toolbox": {
-      "@nomiclabs/hardhat-ethers": "$@nomiclabs/hardhat-ethers"
-    },
-    "@nomicfoundation/hardhat-chai-matchers": {
-      "@nomiclabs/hardhat-ethers": "$@nomiclabs/hardhat-ethers"
-    },
-    "async": "^3.2.2",
-    "simple-get": "^4.0.1",
-    "http-cache-semantics": "^4.1.1",
-    "json5": "^2.2.2",
-    "cookiejar": "^2.1.4",
-    "undici": "^5.19.1",
-    "qs": "^6.10.3",
-    "decode-uri-component": "^0.2.1",
-    "minimatch": "9.0.0"
   }
 }

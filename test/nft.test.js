@@ -1,35 +1,44 @@
-import chai, { expect } from 'chai'
-import { deployments, ethers } from 'hardhat'
-import deep_equal from 'deep-equal-in-any-order'
+const chai = require('chai')
+const { deployments, ethers } = require('hardhat')
+const deep_equal = require('deep-equal-in-any-order')
 
 chai.use(deep_equal)
 
-const IMAGE_URI = '<image>'
-const BADGE_TYPE = '<badge_type>'
-const METADATA = JSON.stringify({ hello: 'world' })
+const { expect } = chai
+
+const cardsContractName = 'ZillionWhalesCards'
+const cardsContractSymbol = `WHC`
+const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const deploy = async () => {
   await deployments.fixture()
-  const [alice, bob, steve] = await ethers.getSigners()
+  const [owner, alice, bob, steve] = await ethers.getSigners()
+
+  const ZillionWhalesNft = await ethers.getContractFactory("ZillionWhalesNft")
+  const nftContract = await ZillionWhalesNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI)
+
   return {
     owner: {
-      contract: await ethers.getContract('ZillionWhalesNft', owner),
+      contract: nftContract,
       address: await owner.getAddress(),
     },
     alice: {
-      contract: await ethers.getContract('ZillionWhalesNft', alice),
+      contract: await nftContract.connect(alice),
       address: await alice.getAddress(),
     },
     bob: {
-      contract: await ethers.getContract('ZillionWhalesNft', bob),
+      contract: await nftContract.connect(bob),
       address: await bob.getAddress(),
     },
     steve: {
-      contract: await ethers.getContract('ZillionWhalesNft', steve),
+      contract: await nftContract.connect(steve),
       address: await steve.getAddress(),
     },
   }
 }
+
+// keccak256('MINTER_ROLE')
+const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
 
 const transfer_event = transaction =>
   transaction
@@ -42,39 +51,40 @@ describe('ZillionWhalesNft', function () {
     const { alice, bob, steve } = await deploy()
     const recipients = [bob.address, steve.address]
     await expect(alice.contract.bulkMint(recipients)).to.be.revertedWith(
-      'transfer_not_allowed'
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
   })
 
-  // revertedWith
   // revertedWithCustomError
 
   it('Minting should be available only for owner (success on owner)', async () => {
     const { owner, bob, steve } = await deploy()
     const recipients = [bob.address, steve.address]
     const mint_transaction = await owner.contract.bulkMint(recipients)
-    const { tokenId } = await transfer_event(mint_transaction)
-    await expect(tokenId).to.equal(2)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
   })
 
 
+  // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)
   it('The _burn function should be a simple override', async () => {
-    const { tony, bruce } = await deploy()
+    const { owner, bob } = await deploy()
 
-    await bruce.contract.issue(tony.address, IMAGE_URI, BADGE_TYPE, METADATA)
-    await expect(tony.contract['burn(uint256)'](0)).not.to.be.reverted
+    const mint_transaction = await owner.contract.mint(bob.address)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
   })
 
   it('The supportsInterface function should be a simple override', async () => {
-    const { tony } = await deploy()
+    const { steve } = await deploy()
 
-    await expect(tony.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
+    await expect(steve.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
   })
 
   it('Anyone can retrieve tokens of an user', async () => {
     const { owner, bob, alice } = await deploy()
 
-    await owner.contract.issue([bob.address])
+    await owner.contract.bulkMint([bob.address])
 
     for (
       let token_index = 0;
@@ -85,19 +95,18 @@ describe('ZillionWhalesNft', function () {
         'tokenOfOwnerByIndex(address,uint256)'
       ](bob.address, token_index)
       expect(await alice.contract['tokenURI(uint256)'](tokenId)).to.equal(
-        '/1'
+        `${baseTokenURI}1`
       )
     }
   })
 
-  it('Only the owner can burn a token', async () => {
+  it('Only the owner of token can burn a token', async () => {
     const { owner, bob, alice } = await deploy()
-    await owner.contract.bulkMint([bob.address, alice.address])
+    await owner.contract.bulkMint([bob.address])
 
-    await expect(bob.contract.burn(0)).to.be.revertedWith(
-      'Must be the owner to burn a token'
+    await expect(alice.contract.burn(1)).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
     )
-    await expect(owner.contract.burn(0)).to.not.be.reverted
-    await expect(owner.contract.burn(1)).to.not.be.reverted
+    await expect(bob.contract.burn(1)).to.not.be.reverted
   })
 })

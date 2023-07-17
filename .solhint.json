@@ -4,7 +4,7 @@
   "rules": {
     "var-name-mixedcase": "off",
     "func-visibility": ["warn", { "ignoreConstructors": true }],
-    "compiler-version": ["error", "^0.8.0"],
+    "compiler-version": ["error", "^0.8.16"],
     "quotes": "off"
   }
 }

@@ -1,9 +1,5 @@
 # zillion-whales-smart-contracts
 
-> The current repo depends on the `esm` package because Hardhat doesn't support it.
-> They seems [to have it planned](https://github.com/NomicFoundation/hardhat/issues/957) but it's not there yet.
-> This means you can't run `npx hardhat` to interract with this repo
-
 TODO: provide contracts addresses
 - Saigon [ronin:aaaaaa](https://saigon-app.roninchain.com/address/ronin:aaaaaa?t=contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)

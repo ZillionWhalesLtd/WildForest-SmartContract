@@ -1,10 +1,10 @@
-import '@nomicfoundation/hardhat-toolbox'
-import 'hardhat-deploy'
-import '@nomiclabs/hardhat-ethers'
-import '@nomiclabs/hardhat-etherscan'
-import dotenv from 'dotenv'
+require('@nomicfoundation/hardhat-toolbox')
+require('hardhat-deploy')
+require('@nomiclabs/hardhat-ethers')
+require('@nomiclabs/hardhat-etherscan')
+require('solidity-coverage')
 
-dotenv.config()
+require('dotenv').config()
 
 const {
   GOERLI_ALCHEMY_KEY,
@@ -17,6 +17,10 @@ const {
   MNEMONIC,
 } = process.env
 
+// const ethers = require('ethers')
+// const mnemonicWallet = ethers.Wallet.fromMnemonic(MNEMONIC) // fromPhrase method from ethers@6.2.3
+// const PRIVATE_KEY = mnemonicWallet.privateKey
+
 const accounts = {
   mnemonic: MNEMONIC,
   path: "m/44'/60'/0'/0",
@@ -25,8 +29,8 @@ const accounts = {
   passphrase: "",
 }
 
-export default {
-  solidity: '0.8.0',
+module.exports = {
+  solidity: '0.8.16',
   gasReporter: {
     enabled: true,
   },
