@@ -81,6 +81,26 @@ describe('ZillionWhalesNft', function () {
     await expect(steve.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
   })
 
+  it('The stateOf function should be just called', async () => {
+    const { owner, steve } = await deploy()
+
+    await owner.contract.mint(steve.address)
+    const response = await steve.contract.stateOf(1)
+
+    expect(response).not.to.be.undefined // eslint-disable-line
+  })
+
+  it('Admin can setBaseURI', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
+  })
+
+  it('Admin can paus and unpause transfers', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.pause()).not.to.be.reverted
+    await expect(owner.contract.unpause()).not.to.be.reverted
+  })
+
   it('Anyone can retrieve tokens of an user', async () => {
     const { owner, bob, alice } = await deploy()
 
