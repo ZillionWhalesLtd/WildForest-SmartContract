@@ -1,7 +1,7 @@
 # zillion-whales-smart-contracts
 
 TODO: provide contracts addresses
-- Saigon [ronin:aaaaaa](https://saigon-app.roninchain.com/address/ronin:aaaaaa?t=contract)
+- Saigon [tx: 0x37e23bddf7b12fd8dd736bd1782aee16f3a47d3708a96e2355dc5df9c0b0fff5, deployed at 0xB7918c6715FAc25F0863447cff3DdEB1e879C338](https://saigon-app.roninchain.com/address/ronin:B7918c6715FAc25F0863447cff3DdEB1e879C338?t=contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
 ## Install
