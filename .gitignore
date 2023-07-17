@@ -1,0 +1,9 @@
+.DS_Store
+cache
+artifacts
+node_modules
+.env
+coverage
+coverage.json
+.nyc_output
+deployments
