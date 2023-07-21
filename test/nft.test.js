@@ -129,4 +129,17 @@ describe('ZillionWhalesNft', function () {
     )
     await expect(bob.contract.burn(1)).to.not.be.reverted
   })
+
+  it('Approved addresses also can burn a token', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address])
+
+    await expect(alice.contract.burn(1)).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+
+    await expect(bob.contract.approve(alice.address, 1)).to.not.be.reverted
+
+    await expect(alice.contract.burn(1)).to.not.be.reverted
+  })
 })
