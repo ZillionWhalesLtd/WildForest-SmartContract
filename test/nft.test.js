@@ -39,6 +39,7 @@ const deploy = async () => {
 
 // keccak256('MINTER_ROLE')
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
+const keccak256DefaultAdminRole = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const transfer_event = transaction =>
   transaction
@@ -132,8 +133,12 @@ describe('ZillionWhalesNft', function () {
   })
 
   it('Admin can setBaseURI', async () => {
-    const { owner } = await deploy()
+    const { owner, bob } = await deploy()
     await expect(owner.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
+
+    await expect(bob.contract.setBaseURI('http:localhost:5000')).to.be.revertedWith(
+      `AccessControl: account ${bob.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
+    )
   })
 
   it('Only admin can paus and unpause transfers', async () => {
@@ -241,5 +246,16 @@ describe('ZillionWhalesNft', function () {
     await expect(bob.contract.bulkApprove(bob.address, [5])).to.be.revertedWith(
       'ERC721: invalid token ID'
     )
+  })
+
+  it('setApprovalForAll user can set some member as approved for all tokens', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    await expect(bob.contract.setApprovalForAll(owner.address, true)).to.not.be.reverted
+    await expect(owner.contract.burn(1)).to.not.be.reverted
+
+    await expect(owner.contract.bulkApprove(alice.address, [2])).to.not.be.reverted
+    await expect(alice.contract.burn(2)).to.not.be.reverted
   })
 })
