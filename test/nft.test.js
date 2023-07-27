@@ -179,6 +179,27 @@ describe('ZillionWhalesNft', function () {
     await expect(bob.contract.burn(1)).to.not.be.reverted
   })
 
+  it('owner can mint several tokens to the same address', async () => {
+    const { owner, bob } = await deploy()
+    const addresses = [bob.address, bob.address, bob.address, bob.address]
+    const mint_transaction = await owner.contract.bulkMint(addresses)
+
+    const events = await transfer_events(mint_transaction)
+    expect(events.length).to.equal(addresses.length)
+
+    expect(Number(events[0].args.tokenId)).to.equal(1)
+    expect(events[0].args.to).to.equal(addresses[0])
+
+    expect(Number(events[1].args.tokenId)).to.equal(2)
+    expect(events[1].args.to).to.equal(addresses[1])
+
+    expect(Number(events[2].args.tokenId)).to.equal(3)
+    expect(events[2].args.to).to.equal(addresses[2])
+
+    expect(Number(events[3].args.tokenId)).to.equal(4)
+    expect(events[3].args.to).to.equal(addresses[3])
+  })
+
   it('Approved addresses also can burn a token', async () => {
     const { owner, bob, alice } = await deploy()
     await owner.contract.bulkMint([bob.address])
