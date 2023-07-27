@@ -46,6 +46,14 @@ const transfer_event = transaction =>
     .then(({ events }) => events)
     .then(([{ args }]) => args)
 
+const transfer_events = transaction =>
+  transaction
+    .wait()
+    .then(({ events }) => events)
+    .then((events) => {
+      return events.filter(e => e.event === 'Transfer')
+    })
+
 describe('ZillionWhalesNft', function () {
   it('Minting should be available only for owner (error when other trying)', async () => {
     const { alice, bob, steve } = await deploy()
@@ -54,7 +62,6 @@ describe('ZillionWhalesNft', function () {
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
   })
-
   // revertedWithCustomError
 
   it('Minting should be available only for owner (success on owner)', async () => {
@@ -63,8 +70,34 @@ describe('ZillionWhalesNft', function () {
     const mint_transaction = await owner.contract.bulkMint(recipients)
     const { _tokenId } = await transfer_event(mint_transaction)
     await expect(Number(_tokenId)).to.equal(1)
+
+    const events = await transfer_events(mint_transaction)
+    await expect(events.length).to.equal(recipients.length)
   })
 
+  it('bulkPersonalMint should be available only for owner (error when other trying)', async () => {
+    const { alice, bob } = await deploy()
+    await expect(alice.contract.bulkPersonalMint(bob.address, 3)).to.be.revertedWith(
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+  })
+
+  it('bulkPersonalMint revert on invalid token numbers', async () => {
+    const { owner, bob } = await deploy()
+    await expect(owner.contract.bulkPersonalMint(bob.address, 0)).to.be.revertedWith(
+      'ZillionWhalesNft: invalid tokens amount'
+    )
+  })
+
+  it('bulkPersonalMint should be available only for owner (success on owner)', async () => {
+    const { owner, bob } = await deploy()
+
+    const amountOfTokens = 3
+    const mint_transaction = await owner.contract.bulkPersonalMint(bob.address, amountOfTokens)
+    const events = await transfer_events(mint_transaction)
+    expect(events.length).to.equal(amountOfTokens)
+    expect(Number(events[2].args.tokenId)).to.equal(3)
+  })
 
   // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)
   it('The _burn function should be a simple override', async () => {
@@ -81,6 +114,14 @@ describe('ZillionWhalesNft', function () {
     await expect(steve.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
   })
 
+  it('Only Admin can call admin', async () => {
+    const { owner, steve } = await deploy()
+
+    await expect(steve.contract.mint(owner.address)).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have minter role to mint'
+    )
+  })
+
   it('The stateOf function should be just called', async () => {
     const { owner, steve } = await deploy()
 
@@ -95,9 +136,17 @@ describe('ZillionWhalesNft', function () {
     await expect(owner.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
   })
 
-  it('Admin can paus and unpause transfers', async () => {
-    const { owner } = await deploy()
+  it('Only admin can paus and unpause transfers', async () => {
+    const { owner, alice } = await deploy()
+
+    await expect(alice.contract.pause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to pause'
+    )
     await expect(owner.contract.pause()).not.to.be.reverted
+
+    await expect(alice.contract.unpause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to unpause'
+    )
     await expect(owner.contract.unpause()).not.to.be.reverted
   })
 
@@ -141,5 +190,35 @@ describe('ZillionWhalesNft', function () {
     await expect(bob.contract.approve(alice.address, 1)).to.not.be.reverted
 
     await expect(alice.contract.burn(1)).to.not.be.reverted
+  })
+
+  it('owner can do bulkApprove only for tokens which he owns', async () => {
+    const { owner, bob, alice, steve } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address, alice.address])
+
+    await expect(bob.contract.bulkApprove(steve.address, [1,2,3])).to.be.revertedWith(
+      'ERC721: approve caller is not token owner or approved for all'
+    )
+
+    await expect(bob.contract.bulkApprove(bob.address, [1,2])).to.be.revertedWith(
+      'ERC721: approval to current owner'
+    )
+
+    await expect(bob.contract.bulkApprove(alice.address, [1,2])).to.not.be.reverted
+
+    await expect(alice.contract.burn(1)).to.not.be.reverted
+    await expect(alice.contract.burn(2)).to.not.be.reverted
+  })
+
+  it('bulkApprove with empty array and with invalid token ids', async () => {
+    const { bob, alice } = await deploy()
+
+    await expect(bob.contract.bulkApprove(alice.address, [])).to.be.revertedWith(
+      'ZillionWhalesNft: invalid array lengths'
+    )
+
+    await expect(bob.contract.bulkApprove(bob.address, [5])).to.be.revertedWith(
+      'ERC721: invalid token ID'
+    )
   })
 })
