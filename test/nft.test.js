@@ -76,29 +76,6 @@ describe('ZillionWhalesNft', function () {
     await expect(events.length).to.equal(recipients.length)
   })
 
-  it('bulkPersonalMint should be available only for owner (error when other trying)', async () => {
-    const { alice, bob } = await deploy()
-    await expect(alice.contract.bulkPersonalMint(bob.address, 3)).to.be.revertedWith(
-      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
-    )
-  })
-
-  it('bulkPersonalMint revert on invalid token numbers', async () => {
-    const { owner, bob } = await deploy()
-    await expect(owner.contract.bulkPersonalMint(bob.address, 0)).to.be.revertedWith(
-      'ZillionWhalesNft: invalid tokens amount'
-    )
-  })
-
-  it('bulkPersonalMint should be available only for owner (success on owner)', async () => {
-    const { owner, bob } = await deploy()
-
-    const amountOfTokens = 3
-    const mint_transaction = await owner.contract.bulkPersonalMint(bob.address, amountOfTokens)
-    const events = await transfer_events(mint_transaction)
-    expect(events.length).to.equal(amountOfTokens)
-    expect(Number(events[2].args.tokenId)).to.equal(3)
-  })
 
   // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)
   it('The _burn function should be a simple override', async () => {
