@@ -1,8 +1,14 @@
 # zillion-whales-smart-contracts
 
-TODO: provide contracts addresses
+## NFTs:
+
 - Saigon [tx: 0xf8f8f63ed2f9e32a5c1e3dbebf328d04dc2a2a70d2c5b505dd81ce676b6c4098, deployed at 0xa3A15bCbAfA0cB32216d00c1acda7982b148E4a4](https://saigon-app.roninchain.com/address/0xa3a15bcbafa0cb32216d00c1acda7982b148e4a4?t=contract&st=write-contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+
+## Tokens (ERC20):
+- Saigon [tx: 0x28dcec48ca375805fd2ca4aef09e9caa44d35086f8301081249e7cd6a2418e14, deployed at 0x529B9982a746aA80941B0F2B22A60B2a47CC381b](https://saigon-app.roninchain.com/address/0x529B9982a746aA80941B0F2B22A60B2a47CC381b?t=contract&st=read-contract)
+- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+
 
 ## Install
 
