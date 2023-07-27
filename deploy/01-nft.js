@@ -1,11 +1,3 @@
-// export default async ({ getNamedAccounts, deployments: { deploy } }) => {
-//   const { owner } = await getNamedAccounts()
-//   await deploy('ZillionWhalesNft', {
-//     from: owner,
-//     log: true,
-//     args: [],
-//   })
-// }
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const cardsContractName = 'ZillionWhalesCards'
   const cardsContractSymbol = `WHC`
