@@ -7,7 +7,7 @@ chai.use(deep_equal)
 const { expect } = chai
 
 const cardsContractName = 'ZillionWhalesCards'
-const cardsContractSymbol = `WHC`
+const cardsContractSymbol = 'WHC'
 const baseTokenURI = 'https://localhost:3000/nfts/'
 const initialPrice = 20
 const initialSupply = 3

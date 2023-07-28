@@ -13,6 +13,10 @@
 - Saigon [tx: 0x746b4f7aa05b2d3ad5db78340130dd3b6a2c013f44945785e3e7f1841261200c, deployed at 0xfdAf8650076C4DfDc2e9E8D971e76C325f63Dd54](https://saigon-app.roninchain.com/address/0xfdaf8650076c4dfdc2e9e8d971e76c325f63dd54)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
+## EXAMPLE OF SALE:
+- Saigon [tx: 0xce9eb55d9a7b17d5d9ac567f44bd43a7ad218dff6e1529dc373a96f84e475220, deployed at 0x04E2e4508d5A05EFe8A87e7f2510886b8Da5F268](https://saigon-app.roninchain.com/address/0x04E2e4508d5A05EFe8A87e7f2510886b8Da5F268)
+- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+
 
 ## Install
 
