@@ -17,10 +17,6 @@ contract ERC721Minimized is
   ERC721Pausable
 {
   using Counters for Counters.Counter;
-
-  bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-  bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
-
   Counters.Counter internal _tokenIdTracker;
 
   string internal _baseTokenURI;
@@ -29,8 +25,6 @@ contract ERC721Minimized is
     _baseTokenURI = baseTokenURI;
 
     _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-    _setupRole(MINTER_ROLE, _msgSender());
-    _setupRole(PAUSER_ROLE, _msgSender());
 
     _tokenIdTracker.increment();
   }
@@ -44,12 +38,12 @@ contract ERC721Minimized is
   }
 
   function pause() public virtual {
-    require(hasRole(PAUSER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have pauser role to pause");
+    require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have pauser role to pause");
     _pause();
   }
 
   function unpause() public virtual {
-    require(hasRole(PAUSER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have pauser role to unpause");
+    require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have pauser role to unpause");
     _unpause();
   }
 
