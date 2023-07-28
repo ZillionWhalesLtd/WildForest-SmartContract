@@ -4,7 +4,7 @@ pragma solidity ^0.8.16;
 import "./ZillionWhalesSale.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
-contract ZillionWhalesSaleFactory is AccessControl {
+contract ZillionWhalesSalesFactory is AccessControl {
   ZillionWhalesSale[] public ZillionWhalesSaleArray;
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
 

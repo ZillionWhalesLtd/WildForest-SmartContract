@@ -15,4 +15,4 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
 }
 
 module.exports = func
-func.tags = ['token']
+func.tags = ['sale']
