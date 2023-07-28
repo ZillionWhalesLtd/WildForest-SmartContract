@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "./sky-mavis-nft/ERC721Common.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "./sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol";
 
-contract ZillionWhalesSale is ERC721Common {
+contract ZillionWhalesSale is ERC721PresetMinterPauserAutoIdCustomized {
   using Counters for Counters.Counter;
 
   address payable private _beneficiar;
@@ -12,7 +12,7 @@ contract ZillionWhalesSale is ERC721Common {
   uint256 public totalSaleSupply;
 
   constructor(string memory name, string memory symbol, string memory baseTokenURI, address _beneficiarAddr, uint256 initialPrice, uint256 initialSupply)
-    ERC721Common(name, symbol, baseTokenURI)
+    ERC721PresetMinterPauserAutoIdCustomized(name, symbol, baseTokenURI)
   {
     mintPrice = initialPrice;
     totalSaleSupply = initialSupply;
@@ -33,4 +33,3 @@ contract ZillionWhalesSale is ERC721Common {
     _mintFor(_msgSender());
   }
 }
-

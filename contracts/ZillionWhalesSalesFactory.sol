@@ -24,12 +24,10 @@ contract ZillionWhalesSalesFactory {
     ZillionWhalesSaleArray.push(sale);
   }
 
-  // TODO: add map for paused indicator and update it
   function salePause(uint256 _saleIndex) public onlyOwner {
     return ZillionWhalesSale(address(ZillionWhalesSaleArray[_saleIndex])).pause();
   }
 
-  // TODO: add map for paused indicator and update it
   function saleUnpause(uint256 _saleIndex) public onlyOwner {
     ZillionWhalesSale(address(ZillionWhalesSaleArray[_saleIndex])).unpause();
   }
@@ -37,5 +35,4 @@ contract ZillionWhalesSalesFactory {
   function saleSetMintPrice(uint256 _saleIndex, uint256 actualPrice) public onlyOwner {
     ZillionWhalesSale(address(ZillionWhalesSaleArray[_saleIndex])).setMintPrice(actualPrice);
   }
-
 }
