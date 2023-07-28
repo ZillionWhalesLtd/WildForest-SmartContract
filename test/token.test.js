@@ -13,23 +13,23 @@ const deploy = async () => {
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
   const ZillionWhalesToken = await ethers.getContractFactory("ZillionWhalesToken")
-  const nftContract = await ZillionWhalesToken.deploy(initialSupply)
+  const tokenContract = await ZillionWhalesToken.deploy(initialSupply)
 
   return {
     owner: {
-      contract: nftContract,
+      contract: tokenContract,
       address: await owner.getAddress(),
     },
     alice: {
-      contract: await nftContract.connect(alice),
+      contract: await tokenContract.connect(alice),
       address: await alice.getAddress(),
     },
     bob: {
-      contract: await nftContract.connect(bob),
+      contract: await tokenContract.connect(bob),
       address: await bob.getAddress(),
     },
     steve: {
-      contract: await nftContract.connect(steve),
+      contract: await tokenContract.connect(steve),
       address: await steve.getAddress(),
     },
   }
