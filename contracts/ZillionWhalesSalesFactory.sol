@@ -7,13 +7,13 @@ contract ZillionWhalesSalesFactory {
   ZillionWhalesSale[] public ZillionWhalesSaleArray;
   address private _owner;
 
+  constructor() {
+    _owner = msg.sender;
+  }
+
   modifier onlyOwner {
     require(msg.sender == _owner, "AccessControl: account is missing admin role");
     _;
-  }
-
-  constructor() {
-    _owner = msg.sender;
   }
 
   function CreateNewZillionWhalesSale(string memory name, string memory symbol, string memory baseTokenURI, uint256 initialPrice, uint256 initialSupply)

@@ -82,6 +82,19 @@ describe('ZillionWhalesSale', function () {
     await expect(alice.contract.publicMint({ value: amountToPay })).not.to.be.reverted
   })
 
+  it('No mint function', async () => {
+    const { owner } = await deploy()
+
+    let notFunctionError
+    try {
+      await owner.contract.mint()
+    } catch(error) {
+      notFunctionError = error
+    }
+
+    expect(notFunctionError).to.be.not.undefined // eslint-disable-line
+  })
+
   it('publicMint', async () => {
     const { owner, alice, steve } = await deploy()
     const notEnoughAmount = 10
