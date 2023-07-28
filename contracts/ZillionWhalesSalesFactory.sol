@@ -12,11 +12,11 @@ contract ZillionWhalesSaleFactory is AccessControl {
     _setupRole(ADMIN_ROLE, _msgSender());
   }
 
-  function CreateNewZillionWhalesSale(string memory name, string memory symbol, string memory baseTokenURI, uint256 initialPrice)
+  function CreateNewZillionWhalesSale(string memory name, string memory symbol, string memory baseTokenURI, uint256 initialPrice, uint256 initialSupply)
     public
     onlyRole(ADMIN_ROLE)
   {
-    ZillionWhalesSale sale = new ZillionWhalesSale(name, symbol, baseTokenURI, initialPrice);
+    ZillionWhalesSale sale = new ZillionWhalesSale(name, symbol, baseTokenURI, initialPrice, initialSupply);
     ZillionWhalesSaleArray.push(sale);
   }
 

@@ -2,15 +2,20 @@
 pragma solidity ^0.8.16;
 
 import "./sky-mavis-nft/ERC721Common.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract ZillionWhalesSale is ERC721Common {
+  using Counters for Counters.Counter;
+
   address payable private _beneficiar;
   uint256 public mintPrice;
+  uint256 public totalSaleSupply;
 
-  constructor(string memory name, string memory symbol, string memory baseTokenURI, uint256 initialPrice)
+  constructor(string memory name, string memory symbol, string memory baseTokenURI, uint256 initialPrice, uint256 initialSupply)
     ERC721Common(name, symbol, baseTokenURI)
   {
     mintPrice = initialPrice;
+    totalSaleSupply = initialSupply;
     _beneficiar = payable(_msgSender());
   }
 
@@ -19,6 +24,8 @@ contract ZillionWhalesSale is ERC721Common {
   }
 
   function publicMint() public payable {
+    require(_tokenIdTracker.current() < totalSaleSupply, 'Out of tokens');
+
     require(msg.value >= mintPrice, "Provide more Ronin");
     (bool sent, bytes memory data) = _beneficiar.call{value: msg.value}("");
     require(sent, "Failed to send Ronin");

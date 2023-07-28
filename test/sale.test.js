@@ -10,13 +10,14 @@ const cardsContractName = 'ZillionWhalesCards'
 const cardsContractSymbol = `WHC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 const initialPrice = 20
+const initialSupply = 3
 
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
   const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
-  const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice)
+  const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
 
   return {
     owner: {
@@ -75,7 +76,7 @@ describe('ZillionWhalesSale', function () {
   })
 
   it('publicMint', async () => {
-    const { owner, alice } = await deploy()
+    const { owner, alice, steve } = await deploy()
     const notEnoughAmount = 10
 
     const initialBalance = await ethers.provider.getBalance(owner.address)
@@ -94,5 +95,10 @@ describe('ZillionWhalesSale', function () {
     const balanceAfter = await ethers.provider.getBalance(owner.address)
 
     expect(Number(initialBalance) + initialPrice).to.equal(Number(balanceAfter))
+
+    await steve.contract.publicMint({ value: initialPrice })
+    await expect(steve.contract.publicMint({ value: initialPrice })).to.be.revertedWith(
+      'Out of tokens'
+    )
   })
 })
