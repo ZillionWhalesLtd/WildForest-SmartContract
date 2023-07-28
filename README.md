@@ -9,6 +9,10 @@
 - Saigon [tx: 0x28dcec48ca375805fd2ca4aef09e9caa44d35086f8301081249e7cd6a2418e14, deployed at 0x529B9982a746aA80941B0F2B22A60B2a47CC381b](https://saigon-app.roninchain.com/address/0x529B9982a746aA80941B0F2B22A60B2a47CC381b?t=contract&st=read-contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
+## Sales Factory:
+- Saigon [tx: 0x3153a290a34ce2a15b53a7cca8c86973fdbf6ac50c0003b7c5b1d758eab5adbc, deployed at 0x770EDc0F92E064157681c1aDc3511f9Ad4051e5b](https://saigon-app.roninchain.com/address/0x770edc0f92e064157681c1adc3511f9ad4051e5b?t=contract)
+- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+
 
 ## Install
 
