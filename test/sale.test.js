@@ -95,6 +95,32 @@ describe('ZillionWhalesSale', function () {
     expect(notFunctionError).to.be.not.undefined // eslint-disable-line
   })
 
+  it('No _mintFor function', async () => {
+    const { owner } = await deploy()
+
+    let notFunctionError
+    try {
+      await owner.contract._mintFor()
+    } catch(error) {
+      notFunctionError = error
+    }
+
+    expect(notFunctionError).to.be.not.undefined // eslint-disable-line
+  })
+
+  it('No _mint function', async () => {
+    const { owner } = await deploy()
+
+    let notFunctionError
+    try {
+      await owner.contract._mint()
+    } catch(error) {
+      notFunctionError = error
+    }
+
+    expect(notFunctionError).to.be.not.undefined // eslint-disable-line
+  })
+
   it('publicMint', async () => {
     const { owner, alice, steve } = await deploy()
     const notEnoughAmount = 10

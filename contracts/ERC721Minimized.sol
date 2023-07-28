@@ -65,7 +65,7 @@ contract ERC721Minimized is
     return super.supportsInterface(interfaceId);
   }
 
-  function _mintFor(address to) public virtual returns (uint256 _tokenId) {
+  function _mintFor(address to) internal virtual returns (uint256 _tokenId) {
     _tokenId = _tokenIdTracker.current();
     _mint(to, _tokenId);
     _tokenIdTracker.increment();

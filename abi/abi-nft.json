@@ -277,27 +277,6 @@
                 "internalType": "address",
                 "name": "to",
                 "type": "address"
-            }
-        ],
-        "name": "_mintFor",
-        "outputs":
-        [
-            {
-                "internalType": "uint256",
-                "name": "_tokenId",
-                "type": "uint256"
-            }
-        ],
-        "stateMutability": "nonpayable",
-        "type": "function"
-    },
-    {
-        "inputs":
-        [
-            {
-                "internalType": "address",
-                "name": "to",
-                "type": "address"
             },
             {
                 "internalType": "uint256",

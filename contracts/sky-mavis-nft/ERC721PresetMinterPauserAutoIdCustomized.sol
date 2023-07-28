@@ -127,7 +127,7 @@ contract ERC721PresetMinterPauserAutoIdCustomized is
    * See {ERC721-_mint}.
    *
    */
-  function _mintFor(address to) public virtual returns (uint256 _tokenId) {
+  function _mintFor(address to) internal virtual returns (uint256 _tokenId) {
     // We cannot just use balanceOf to create the new tokenId because tokens
     // can be burned (destroyed), so we need a separate counter.
     _tokenId = _tokenIdTracker.current();

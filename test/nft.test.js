@@ -76,6 +76,31 @@ describe('ZillionWhalesNft', function () {
     await expect(events.length).to.equal(recipients.length)
   })
 
+  it('_mintFor should be NOT available', async () => {
+    const { bob } = await deploy()
+
+    let notExistsMethodError
+    try {
+      await bob.contract._mintFor(bob.address)
+    } catch(error) {
+      notExistsMethodError = error
+    }
+
+    expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
+  })
+
+  it('_mint should be NOT available', async () => {
+    const { bob } = await deploy()
+
+    let notExistsMethodError
+    try {
+      await bob.contract._mint(bob.address)
+    } catch(error) {
+      notExistsMethodError = error
+    }
+
+    expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
+  })
 
   // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)
   it('The _burn function should be a simple override', async () => {
