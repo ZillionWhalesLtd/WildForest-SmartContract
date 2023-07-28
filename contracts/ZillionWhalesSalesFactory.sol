@@ -16,7 +16,7 @@ contract ZillionWhalesSalesFactory is AccessControl {
     public
     onlyRole(ADMIN_ROLE)
   {
-    ZillionWhalesSale sale = new ZillionWhalesSale(name, symbol, baseTokenURI, initialPrice, initialSupply);
+    ZillionWhalesSale sale = new ZillionWhalesSale(name, symbol, baseTokenURI, _msgSender(), initialPrice, initialSupply);
     ZillionWhalesSaleArray.push(sale);
   }
 

@@ -18,47 +18,45 @@ const deploy = async () => {
 
   const ZillionWhalesSalesFactory = await ethers.getContractFactory("ZillionWhalesSalesFactory")
   const saleFactoryContract = await ZillionWhalesSalesFactory.deploy()
+  const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
 
   return {
     owner: {
       contract: saleFactoryContract,
       address: await owner.getAddress(),
+      saleContract: async (contractAddress) => {
+        const sale = await ZillionWhalesSale.attach(contractAddress)
+        return await sale.connect(owner)
+      },
     },
     alice: {
       contract: await saleFactoryContract.connect(alice),
       address: await alice.getAddress(),
+      saleContract: async (contractAddress) => {
+        const sale = await ZillionWhalesSale.attach(contractAddress)
+        return await sale.connect(alice)
+      },
     },
     bob: {
       contract: await saleFactoryContract.connect(bob),
       address: await bob.getAddress(),
+      saleContract: async (contractAddress) => {
+        const sale = await ZillionWhalesSale.attach(contractAddress)
+        return await sale.connect(bob)
+      },
     },
     steve: {
       contract: await saleFactoryContract.connect(steve),
       address: await steve.getAddress(),
+      saleContract: async (contractAddress) => {
+        const sale = await ZillionWhalesSale.attach(contractAddress)
+        return await sale.connect(steve)
+      },
     },
   }
 }
 
 const ADMIN_ROLE = '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775'
-
-// const transfer_details = (transaction) => {
-//   return transfer_events(transaction)
-//     .then((events) => {
-//       const [event] = events
-//       const { address, args } = event
-//       const { from, to, tokenId } = args
-
-//       return { address, from, to, tokenId: Number(tokenId) }
-//     })
-// }
-
-// const transfer_events = transaction =>
-//   transaction
-//     .wait()
-//     .then(({ events }) => events)
-//     .then((events) => {
-//       return events.filter(e => e.event === 'Transfer')
-//     })
 
 describe('ZillionWhalesSalesFactory', function () {
   it('Only owner can CreateNewZillionWhalesSale', async () => {
@@ -71,40 +69,76 @@ describe('ZillionWhalesSalesFactory', function () {
     await expect(owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).not.to.be.reverted
   })
 
-  it('Only owner can salePause', async () => {
+  it('Only owner can salePause and its effect sale contract', async () => {
     const { owner, alice } = await deploy()
 
     await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    const ownerSaleContract = await owner.saleContract(contractAddress)
 
     await expect(alice.contract.salePause(0)).to.be.revertedWith(
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
     )
 
+    await expect(ownerSaleContract.pause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to pause'
+    )
+
+    await expect(ownerSaleContract.publicMint({ value: initialPrice })).not.to.be.reverted
+
     await expect(owner.contract.salePause(0)).not.to.be.reverted
+
+    await expect(ownerSaleContract.publicMint({ value: initialPrice })).to.be.revertedWith(
+      'ERC721Pausable: token transfer while paused'
+    )
   })
 
-  it('Only owner can saleUnpause', async () => {
+  it('Only owner can saleUnpause and its effect sale contract', async () => {
     const { owner, alice } = await deploy()
 
     await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    const ownerSaleContract = await owner.saleContract(contractAddress)
+
     await owner.contract.salePause(0)
 
     await expect(alice.contract.saleUnpause(0)).to.be.revertedWith(
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
     )
 
+    await expect(ownerSaleContract.unpause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to unpause'
+    )
+
+    await expect(ownerSaleContract.publicMint({ value: initialPrice })).to.be.revertedWith(
+      'ERC721Pausable: token transfer while paused'
+    )
+
     await expect(owner.contract.saleUnpause(0)).not.to.be.reverted
+    await expect(ownerSaleContract.publicMint({ value: initialPrice })).not.to.be.reverted
   })
 
-  it('Only owner can saleSetMintPrice', async () => {
+  it('Only owner can saleSetMintPrice and its effected sale contract', async () => {
     const { owner, alice } = await deploy()
+    const newPrice = 17
 
     await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    const ownerSaleContract = await owner.saleContract(contractAddress)
 
-    await expect(alice.contract.saleSetMintPrice(0, 17)).to.be.revertedWith(
+    const initlMintPrice = await ownerSaleContract.mintPrice()
+    expect(Number(initlMintPrice)).to.equal(initialPrice)
+
+    await expect(alice.contract.saleSetMintPrice(0, newPrice)).to.be.revertedWith(
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
     )
 
-    await expect(owner.contract.saleSetMintPrice(0, 17)).not.to.be.reverted
+    await expect(owner.contract.saleSetMintPrice(0, newPrice)).not.to.be.reverted
+
+    const aliceSaleContract = await alice.saleContract(contractAddress)
+    await expect(aliceSaleContract.mintPrice()).not.to.be.reverted
+
+    const actualMintPrice = await ownerSaleContract.mintPrice()
+    expect(Number(actualMintPrice)).to.equal(newPrice)
   })
 })

@@ -15,14 +15,15 @@ const initialSupply = 3
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
+  const ownerAddress = await owner.getAddress()
 
   const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
-  const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+  const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress, initialPrice, initialSupply)
 
   return {
     owner: {
       contract: saleContract,
-      address: await owner.getAddress(),
+      address: ownerAddress,
     },
     alice: {
       contract: await saleContract.connect(alice),
@@ -63,16 +64,22 @@ const transfer_events = transaction =>
 describe('ZillionWhalesSale', function () {
   it('Only owner can setMintPrice', async () => {
     const { owner, alice } = await deploy()
-    const newPrice = 25
+    const amountToPay = 7
+    const newPrice = 5
 
     await expect(alice.contract.setMintPrice(10)).to.be.revertedWith(
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
+    )
+
+    await expect(alice.contract.publicMint({ value: amountToPay })).to.be.revertedWith(
+      'Provide more Ronin'
     )
 
     await expect(owner.contract.setMintPrice(newPrice)).not.to.be.reverted
     const actualMintPrice = await owner.contract.mintPrice()
 
     expect(actualMintPrice).to.equal(newPrice)
+    await expect(alice.contract.publicMint({ value: amountToPay })).not.to.be.reverted
   })
 
   it('publicMint', async () => {
@@ -99,6 +106,20 @@ describe('ZillionWhalesSale', function () {
     await steve.contract.publicMint({ value: initialPrice })
     await expect(steve.contract.publicMint({ value: initialPrice })).to.be.revertedWith(
       'Out of tokens'
+    )
+  })
+
+  it('publicMint with transaction error', async () => {
+    const { owner } = await deploy()
+
+    const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
+    const initContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, owner.address, initialPrice, initialSupply)
+
+    const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initContract.address, initialPrice, initialSupply)
+
+    // FAILURE: since money could not be transfered to the contract without receive() external payable {} AND fallback() external payable
+    await expect(saleContract.publicMint({ value: initialPrice })).to.be.revertedWith(
+      'Failed to send Ronin'
     )
   })
 })

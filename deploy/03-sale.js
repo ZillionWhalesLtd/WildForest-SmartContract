@@ -10,7 +10,7 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   await deploy('ZillionWhalesSale', {
     from: owner,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply],
+    args: [cardsContractName, cardsContractSymbol, baseTokenURI, owner, initialPrice, initialSupply],
   })
 }
 

@@ -7,6 +7,7 @@
     "deploy:test": "npx hardhat deploy --network saigon",
     "deploy:test:nft": "npx hardhat deploy --network saigon --tags nft",
     "deploy:test:token": "npx hardhat deploy --network saigon --tags token",
+    "deploy:test:salesFactory": "npx hardhat deploy --network saigon --tags salesFactory",
     "deploy:prod": "npx hardhat deploy --network ronin",
     "verify:test": "npx hardhat --network saigon sourcify --endpoint https://sourcify.roninchain.com/server",
     "verify:prod": "npx hardhat --network ronin sourcify --endpoint https://sourcify.roninchain.com/server",
