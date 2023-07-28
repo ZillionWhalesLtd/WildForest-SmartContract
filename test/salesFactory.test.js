@@ -56,14 +56,12 @@ const deploy = async () => {
   }
 }
 
-const ADMIN_ROLE = '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775'
-
 describe('ZillionWhalesSalesFactory', function () {
   it('Only owner can CreateNewZillionWhalesSale', async () => {
     const { owner, alice } = await deploy()
 
     await expect(alice.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).to.be.revertedWith(
-      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
+      'AccessControl: account is missing admin role'
     )
 
     await expect(owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).not.to.be.reverted
@@ -77,7 +75,7 @@ describe('ZillionWhalesSalesFactory', function () {
     const ownerSaleContract = await owner.saleContract(contractAddress)
 
     await expect(alice.contract.salePause(0)).to.be.revertedWith(
-      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
+      'AccessControl: account is missing admin role'
     )
 
     await expect(ownerSaleContract.pause()).to.be.revertedWith(
@@ -103,7 +101,7 @@ describe('ZillionWhalesSalesFactory', function () {
     await owner.contract.salePause(0)
 
     await expect(alice.contract.saleUnpause(0)).to.be.revertedWith(
-      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
+      'AccessControl: account is missing admin role'
     )
 
     await expect(ownerSaleContract.unpause()).to.be.revertedWith(
@@ -130,7 +128,7 @@ describe('ZillionWhalesSalesFactory', function () {
     expect(Number(initlMintPrice)).to.equal(initialPrice)
 
     await expect(alice.contract.saleSetMintPrice(0, newPrice)).to.be.revertedWith(
-      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${ADMIN_ROLE}`
+      'AccessControl: account is missing admin role'
     )
 
     await expect(owner.contract.saleSetMintPrice(0, newPrice)).not.to.be.reverted
