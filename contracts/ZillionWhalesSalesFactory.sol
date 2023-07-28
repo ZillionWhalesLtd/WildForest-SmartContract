@@ -2,20 +2,11 @@
 pragma solidity ^0.8.16;
 
 import "./ZillionWhalesSale.sol";
-// import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract ZillionWhalesSaleFactory is AccessControl {
   ZillionWhalesSale[] public ZillionWhalesSaleArray;
   bytes32 public constant ADMIN_ROLE = keccak256("ADMIN_ROLE");
-
-  // address payable owner;
-  // modifier onlyOwner {
-  //   require(msg.sender == owner, "only owner");
-  //   _;
-  // }
-
-  // owner = payable(msg.sender);
 
   constructor() {
     _setupRole(ADMIN_ROLE, _msgSender());
@@ -43,7 +34,4 @@ contract ZillionWhalesSaleFactory is AccessControl {
     ZillionWhalesSale(address(ZillionWhalesSaleArray[_saleIndex])).setMintPrice(actualPrice);
   }
 
-  // function saleWithdraw(uint256 _saleIndex) public onlyRole(ADMIN_ROLE) {
-  //   ZillionWhalesSale(address(ZillionWhalesSaleArray[_saleIndex])).withdraw();
-  // }
 }
