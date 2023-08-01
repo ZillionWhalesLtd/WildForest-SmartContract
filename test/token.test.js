@@ -7,13 +7,15 @@ chai.use(deep_equal)
 const { expect } = chai
 
 const initialSupply = 9000000000000000
+const name = 'Wild Forest'
+const symbol = 'WF'
 
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
   const ZillionWhalesToken = await ethers.getContractFactory("ZillionWhalesToken")
-  const tokenContract = await ZillionWhalesToken.deploy(initialSupply)
+  const tokenContract = await ZillionWhalesToken.deploy(initialSupply, name, symbol)
 
   return {
     owner: {
