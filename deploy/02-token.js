@@ -4,7 +4,7 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const symbol = 'WF'
   const { owner } = await getNamedAccounts()
 
-  await deploy('ZillionWhalesToken', {
+  await deploy('WildForestToken', {
     from: owner,
     log: true,
     args: [initialSupply, name, symbol],

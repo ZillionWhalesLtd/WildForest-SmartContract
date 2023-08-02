@@ -3,13 +3,13 @@ pragma solidity ^0.8.16;
 
 import "./sky-mavis-nft/ERC721Common.sol";
 
-contract ZillionWhalesNft is ERC721Common {
+contract WildForestNft is ERC721Common {
   constructor(string memory name, string memory symbol, string memory baseTokenURI)
     ERC721Common(name, symbol, baseTokenURI)
   {}
 
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
-    require(tokenIds.length > 0, "ZillionWhalesNft: invalid array lengths");
+    require(tokenIds.length > 0, "WildForestNft: invalid array lengths");
 
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       address owner = ERC721.ownerOf(tokenIds[_i]);
@@ -24,5 +24,14 @@ contract ZillionWhalesNft is ERC721Common {
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       _approve(to, tokenIds[_i]);
     }
+  }
+
+  function bulkBurn(uint256[] calldata tokenIds) public virtual {
+    //solhint-disable-next-line max-line-length
+    for (uint256 _i = 0; _i < tokenIds.length; _i++) {
+      require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
+      _burn(tokenIds[_i]);
+    }
+
   }
 }

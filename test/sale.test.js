@@ -6,7 +6,7 @@ chai.use(deep_equal)
 
 const { expect } = chai
 
-const cardsContractName = 'ZillionWhalesCards'
+const cardsContractName = 'WildForestCards'
 const cardsContractSymbol = `WHC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 const initialPrice = 20
@@ -17,8 +17,8 @@ const deploy = async () => {
   const [owner, alice, bob, steve] = await ethers.getSigners()
   const ownerAddress = await owner.getAddress()
 
-  const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
-  const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress, initialPrice, initialSupply)
+  const WildForestSale = await ethers.getContractFactory("WildForestSale")
+  const saleContract = await WildForestSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress, initialPrice, initialSupply)
 
   return {
     owner: {
@@ -61,7 +61,7 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
-describe('ZillionWhalesSale', function () {
+describe('WildForestSale', function () {
   it('Only owner can setMintPrice', async () => {
     const { owner, alice } = await deploy()
     const amountToPay = 7
@@ -151,10 +151,10 @@ describe('ZillionWhalesSale', function () {
   it('publicMint with transaction error', async () => {
     const { owner } = await deploy()
 
-    const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
-    const initContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, owner.address, initialPrice, initialSupply)
+    const WildForestSale = await ethers.getContractFactory("WildForestSale")
+    const initContract = await WildForestSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, owner.address, initialPrice, initialSupply)
 
-    const saleContract = await ZillionWhalesSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initContract.address, initialPrice, initialSupply)
+    const saleContract = await WildForestSale.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, initContract.address, initialPrice, initialSupply)
 
     // FAILURE: since money could not be transfered to the contract without receive() external payable {} AND fallback() external payable
     await expect(saleContract.publicMint({ value: initialPrice })).to.be.revertedWith(

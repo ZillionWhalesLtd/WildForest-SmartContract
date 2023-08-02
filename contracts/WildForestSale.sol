@@ -4,7 +4,7 @@ pragma solidity ^0.8.16;
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./ERC721Minimized.sol";
 
-contract ZillionWhalesSale is ERC721Minimized {
+contract WildForestSale is ERC721Minimized {
   using Counters for Counters.Counter;
 
   address payable private _beneficiar;

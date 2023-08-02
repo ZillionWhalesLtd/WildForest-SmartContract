@@ -6,7 +6,7 @@ chai.use(deep_equal)
 
 const { expect } = chai
 
-const cardsContractName = 'ZillionWhalesCards'
+const cardsContractName = 'WildForestCards'
 const cardsContractSymbol = `WHC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 
@@ -14,8 +14,8 @@ const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
-  const ZillionWhalesNft = await ethers.getContractFactory("ZillionWhalesNft")
-  const nftContract = await ZillionWhalesNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI)
+  const WildForestNft = await ethers.getContractFactory("WildForestNft")
+  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI)
 
   return {
     owner: {
@@ -55,7 +55,7 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
-describe('ZillionWhalesNft', function () {
+describe('WildForestNft', function () {
   it('Minting should be available only for owner (error when other trying)', async () => {
     const { alice, bob, steve } = await deploy()
     const recipients = [bob.address, steve.address]
@@ -186,6 +186,16 @@ describe('ZillionWhalesNft', function () {
     await expect(bob.contract.burn(1)).to.not.be.reverted
   })
 
+  it('Only the owner of token can bulkBurn a token', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    await expect(alice.contract.bulkBurn([1,2])).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+    await expect(bob.contract.bulkBurn([1,2])).to.not.be.reverted
+  })
+
   it('owner can mint several tokens to the same address', async () => {
     const { owner, bob } = await deploy()
     const addresses = [bob.address, bob.address, bob.address, bob.address]
@@ -242,7 +252,7 @@ describe('ZillionWhalesNft', function () {
     const { bob, alice } = await deploy()
 
     await expect(bob.contract.bulkApprove(alice.address, [])).to.be.revertedWith(
-      'ZillionWhalesNft: invalid array lengths'
+      'WildForestNft: invalid array lengths'
     )
 
     await expect(bob.contract.bulkApprove(bob.address, [5])).to.be.revertedWith(

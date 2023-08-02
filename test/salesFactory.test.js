@@ -6,7 +6,7 @@ chai.use(deep_equal)
 
 const { expect } = chai
 
-const cardsContractName = 'ZillionWhalesCards'
+const cardsContractName = 'WildForestCards'
 const cardsContractSymbol = 'WHC'
 const baseTokenURI = 'https://localhost:3000/nfts/'
 const initialPrice = 20
@@ -16,16 +16,16 @@ const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
-  const ZillionWhalesSalesFactory = await ethers.getContractFactory("ZillionWhalesSalesFactory")
-  const saleFactoryContract = await ZillionWhalesSalesFactory.deploy()
-  const ZillionWhalesSale = await ethers.getContractFactory("ZillionWhalesSale")
+  const WildForestSalesFactory = await ethers.getContractFactory("WildForestSalesFactory")
+  const saleFactoryContract = await WildForestSalesFactory.deploy()
+  const WildForestSale = await ethers.getContractFactory("WildForestSale")
 
   return {
     owner: {
       contract: saleFactoryContract,
       address: await owner.getAddress(),
       saleContract: async (contractAddress) => {
-        const sale = await ZillionWhalesSale.attach(contractAddress)
+        const sale = await WildForestSale.attach(contractAddress)
         return await sale.connect(owner)
       },
     },
@@ -33,7 +33,7 @@ const deploy = async () => {
       contract: await saleFactoryContract.connect(alice),
       address: await alice.getAddress(),
       saleContract: async (contractAddress) => {
-        const sale = await ZillionWhalesSale.attach(contractAddress)
+        const sale = await WildForestSale.attach(contractAddress)
         return await sale.connect(alice)
       },
     },
@@ -41,7 +41,7 @@ const deploy = async () => {
       contract: await saleFactoryContract.connect(bob),
       address: await bob.getAddress(),
       saleContract: async (contractAddress) => {
-        const sale = await ZillionWhalesSale.attach(contractAddress)
+        const sale = await WildForestSale.attach(contractAddress)
         return await sale.connect(bob)
       },
     },
@@ -49,29 +49,29 @@ const deploy = async () => {
       contract: await saleFactoryContract.connect(steve),
       address: await steve.getAddress(),
       saleContract: async (contractAddress) => {
-        const sale = await ZillionWhalesSale.attach(contractAddress)
+        const sale = await WildForestSale.attach(contractAddress)
         return await sale.connect(steve)
       },
     },
   }
 }
 
-describe('ZillionWhalesSalesFactory', function () {
-  it('Only owner can CreateNewZillionWhalesSale', async () => {
+describe('WildForestSalesFactory', function () {
+  it('Only owner can CreateNewWildForestSale', async () => {
     const { owner, alice } = await deploy()
 
-    await expect(alice.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).to.be.revertedWith(
+    await expect(alice.contract.CreateNewWildForestSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).to.be.revertedWith(
       'AccessControl: account is missing admin role'
     )
 
-    await expect(owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).not.to.be.reverted
+    await expect(owner.contract.CreateNewWildForestSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)).not.to.be.reverted
   })
 
   it('Only owner can salePause and its effect sale contract', async () => {
     const { owner, alice } = await deploy()
 
-    await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
-    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    await owner.contract.CreateNewWildForestSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.WildForestSaleArray(0)
     const ownerSaleContract = await owner.saleContract(contractAddress)
 
     await expect(alice.contract.salePause(0)).to.be.revertedWith(
@@ -94,8 +94,8 @@ describe('ZillionWhalesSalesFactory', function () {
   it('Only owner can saleUnpause and its effect sale contract', async () => {
     const { owner, alice } = await deploy()
 
-    await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
-    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    await owner.contract.CreateNewWildForestSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.WildForestSaleArray(0)
     const ownerSaleContract = await owner.saleContract(contractAddress)
 
     await owner.contract.salePause(0)
@@ -120,8 +120,8 @@ describe('ZillionWhalesSalesFactory', function () {
     const { owner, alice } = await deploy()
     const newPrice = 17
 
-    await owner.contract.CreateNewZillionWhalesSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
-    const contractAddress = await owner.contract.ZillionWhalesSaleArray(0)
+    await owner.contract.CreateNewWildForestSale(cardsContractName, cardsContractSymbol, baseTokenURI, initialPrice, initialSupply)
+    const contractAddress = await owner.contract.WildForestSaleArray(0)
     const ownerSaleContract = await owner.saleContract(contractAddress)
 
     const initlMintPrice = await ownerSaleContract.mintPrice()

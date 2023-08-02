@@ -1,11 +1,11 @@
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
-  const cardsContractName = 'ZillionWhalesCards'
+  const cardsContractName = 'WildForestCards'
   const cardsContractSymbol = `WHC`
   const baseTokenURI = 'https://localhost:3000/nfts/'
 
   const { owner } = await getNamedAccounts()
 
-  await deploy('ZillionWhalesNft', {
+  await deploy('WildForestNft', {
     from: owner,
     log: true,
     args: [cardsContractName, cardsContractSymbol, baseTokenURI],

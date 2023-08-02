@@ -14,8 +14,8 @@ const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
 
-  const ZillionWhalesToken = await ethers.getContractFactory("ZillionWhalesToken")
-  const tokenContract = await ZillionWhalesToken.deploy(initialSupply, name, symbol)
+  const WildForestToken = await ethers.getContractFactory("WildForestToken")
+  const tokenContract = await WildForestToken.deploy(initialSupply, name, symbol)
 
   return {
     owner: {
@@ -56,7 +56,7 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
-describe('ZillionWhalesToken', function () {
+describe('WildForestToken', function () {
   it('transfer', async () => {
     const { owner, alice, bob, steve } = await deploy()
     const amount1 = 100

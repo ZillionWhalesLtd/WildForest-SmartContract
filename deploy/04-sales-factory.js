@@ -1,7 +1,7 @@
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const { owner } = await getNamedAccounts()
 
-  await deploy('ZillionWhalesSalesFactory', {
+  await deploy('WildForestSalesFactory', {
     from: owner,
     log: true,
     args: [],
