@@ -7,6 +7,7 @@
     "deploy:test": "npx hardhat deploy --network saigon",
     "deploy:test:nft": "npx hardhat deploy --network saigon --tags nft",
     "deploy:test:nftUri": "npx hardhat deploy --network saigon --tags definedUriNft",
+    "deploy:test:nftTimeLock": "npx hardhat deploy --network saigon --tags timeLockNft",
     "deploy:test:token": "npx hardhat deploy --network saigon --tags token",
     "deploy:test:salesFactory": "npx hardhat deploy --network saigon --tags salesFactory",
     "deploy:prod": "npx hardhat deploy --network ronin",
