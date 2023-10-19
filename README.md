@@ -13,7 +13,7 @@
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
 ## Tokens (ERC20):
-- Saigon [tx: 0x2360f7488ece512b2d3f13a50d29321a60e0c20c2245586bbdc014bb96c8906c, deployed at 0x738B1B1A3d120e88fF535815789F965E23D07932](https://saigon-app.roninchain.com/address/0x738B1B1A3d120e88fF535815789F965E23D07932?t=contract&st=read-contract)
+- Saigon [tx: 0x9e9e5c8855bf1dc6937cc99b5b2efba48beeb54005fc668f4a380555260e1faa, deployed at 0x61b832F8Fe4fF691f605b3c6862C76B6793B962d](https://saigon-app.roninchain.com/address/0x61b832F8Fe4fF691f605b3c6862C76B6793B962d?t=contract&st=read-contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
 ## Sales Factory:

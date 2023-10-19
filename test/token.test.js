@@ -6,7 +6,7 @@ chai.use(deep_equal)
 
 const { expect } = chai
 
-const initialSupply = 9000000000000000
+const initialSupply = ethers.utils.parseUnits('99900000000000', 18)
 const name = 'Wild Forest'
 const symbol = 'WF'
 

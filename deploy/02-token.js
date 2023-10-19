@@ -1,5 +1,7 @@
+const { ethers } = require('hardhat')
+
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
-  const initialSupply = 9000000000000000
+  const initialSupply = ethers.utils.parseUnits('99900000000000', 18)
   const name = 'Wild Forest'
   const symbol = 'WF'
   const { owner } = await getNamedAccounts()
