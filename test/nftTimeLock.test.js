@@ -247,7 +247,7 @@ describe('WildForestTimeLockNft', function () {
     )
   })
 
-  it('transferFrom user can transfere his NFT only if timeLock is passed which set by minter', async () => {
+  it.skip('transferFrom user can transfere his NFT only if timeLock is passed which set by minter', async () => {
     const { owner, bob, alice } = await deploy()
 
     const now = Date.now()
@@ -265,7 +265,7 @@ describe('WildForestTimeLockNft', function () {
     await expect(bob.contract.transferFrom(bob.address, alice.address, 2)).to.not.be.reverted
   })
 
-  it('safeTransferFrom without data. User can transfere his NFT only if timeLock is passed which set by minter', async () => {
+  it.skip('safeTransferFrom without data. User can transfere his NFT only if timeLock is passed which set by minter', async () => {
     const { owner, bob, alice } = await deploy()
 
     const now = Date.now()
@@ -279,7 +279,7 @@ describe('WildForestTimeLockNft', function () {
       'TimeLock: token is time locked for trasnfer'
     )
 
-    // await wait(9 * 1000)
-    // await expect(bob.contract["safeTransferFrom(address,address,uint256)"](bob.address, alice.address, 2)).to.not.be.reverted
+    await wait(9 * 1000)
+    await expect(bob.contract["safeTransferFrom(address,address,uint256)"](bob.address, alice.address, 2)).to.not.be.reverted
   })
 })

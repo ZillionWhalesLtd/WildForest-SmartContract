@@ -9,6 +9,7 @@
     "deploy:test:nftUri": "npx hardhat deploy --network saigon --tags definedUriNft",
     "deploy:test:nftTimeLock": "npx hardhat deploy --network saigon --tags timeLockNft",
     "deploy:test:token": "npx hardhat deploy --network saigon --tags token",
+    "deploy:test:medal": "npx hardhat deploy --network saigon --tags medal",
     "deploy:test:salesFactory": "npx hardhat deploy --network saigon --tags salesFactory",
     "deploy:prod": "npx hardhat deploy --network ronin",
     "verify:test": "npx hardhat --network saigon sourcify --endpoint https://sourcify.roninchain.com/server",
