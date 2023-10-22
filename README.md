@@ -12,6 +12,10 @@
 - Saigon [tx: 0x8b3a89cf4c13706429e1a6fe3df0305379b023ff648bd6e8259a2d4257ec2e00, deployed at 0x14E5Bd1FdE726e94471C898ba2f8aEAB31310dD7](https://saigon-app.roninchain.com/address/0x14E5Bd1FdE726e94471C898ba2f8aEAB31310dD7)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
+## Medals (ERC1155):
+- Saigon [tx: 0x4d28a5740be450318968625b24de2b4c72555d59921753fed587814fc4d35f17, deployed at 0x1417f1F43e09A726966aE0F5Da8cC55eC2da9A81](https://saigon-app.roninchain.com/address/0x1417f1F43e09A726966aE0F5Da8cC55eC2da9A81)
+- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+
 ## Tokens (ERC20):
 - Saigon [tx: 0x9e9e5c8855bf1dc6937cc99b5b2efba48beeb54005fc668f4a380555260e1faa, deployed at 0x61b832F8Fe4fF691f605b3c6862C76B6793B962d](https://saigon-app.roninchain.com/address/0x61b832F8Fe4fF691f605b3c6862C76B6793B962d?t=contract&st=read-contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)

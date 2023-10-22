@@ -7,7 +7,7 @@ chai.use(deep_equal)
 const { expect } = chai
 
 const cardsContractName = 'WildForestCards'
-const cardsContractSymbol = `WHC`
+const cardsContractSymbol = `WFC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const deploy = async () => {

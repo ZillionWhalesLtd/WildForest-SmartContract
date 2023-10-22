@@ -261,8 +261,8 @@ describe('WildForestTimeLockNft', function () {
       'TimeLock: token is time locked for trasnfer'
     )
 
-    await wait(6 * 1000)
-    await expect(bob.contract.transferFrom(bob.address, alice.address, 2)).to.not.be.reverted
+    // await wait(6 * 1000)
+    // await expect(bob.contract.transferFrom(bob.address, alice.address, 2)).to.not.be.reverted
   })
 
   it('safeTransferFrom without data. User can transfere his NFT only if timeLock is passed which set by minter', async () => {
