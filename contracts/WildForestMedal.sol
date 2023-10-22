@@ -8,6 +8,7 @@ contract WildForestMedal is ERC1155 {
   mapping (uint256 => uint256) public tokenSupply;
 
   address private _governance;
+  string private _uri;
 
   uint256 public seasonsCount;
   string public name;
@@ -24,6 +25,7 @@ contract WildForestMedal is ERC1155 {
     symbol = _symbol;
     _governance = msg.sender;
     seasonsCount = 0;
+    _uri = uri_;
   }
 
   function _exists(
@@ -33,7 +35,7 @@ contract WildForestMedal is ERC1155 {
   }
 
   function setURI(string memory uri_) public onlyGovernance {
-    _setURI(uri_);
+    _uri = uri_;
   }
 
   // function updateGovernance(address _newGovernance) public onlyGovernance {
@@ -46,7 +48,7 @@ contract WildForestMedal is ERC1155 {
     return tokenSupply[_id];
   }
 
-  function uri(uint256 _seasonId) override public pure returns (string memory) {
+  function uri(uint256 _seasonId) override public view returns (string memory) {
     require(_exists(_seasonId), "season does not exists");
     return string(
       abi.encodePacked(
@@ -72,13 +74,13 @@ contract WildForestMedal is ERC1155 {
   ) public onlyGovernance {
     require(_exists(_seasonId), "season does not exists");
     _mint(_to, _seasonId, _amount, "");
-    tokenSupply[_seasonId] = tokenSupply[_seasonId].add(_amount);
+    tokenSupply[_seasonId] = tokenSupply[_seasonId] + _amount;
   }
 
   function mintBatch(
     address _to,
     uint256[] memory _seasonIds,
-    uint256[] memory _amounts,
+    uint256[] memory _amounts
   ) public onlyGovernance {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");
@@ -86,7 +88,7 @@ contract WildForestMedal is ERC1155 {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       uint256 _id = _seasonIds[i];
       uint256 _amount = _amounts[i];
-      tokenSupply[_id] = tokenSupply[_id].add(_amount);
+      tokenSupply[_id] = tokenSupply[_id] + _amount;
     }
     _mintBatch(_to, _seasonIds, _amounts, "");
   }
@@ -97,15 +99,14 @@ contract WildForestMedal is ERC1155 {
     uint256 _amount
   ) public onlyGovernance {
     require(_exists(_seasonId), "season does not exists");
-    _burn(_from, _seasonId, _amount, "");
-    tokenSupply[_seasonId] = tokenSupply[_seasonId].remove(_amount);
+    _burn(_from, _seasonId, _amount);
+    tokenSupply[_seasonId] = tokenSupply[_seasonId] - _amount;
   }
-
 
   function burnBatch(
     address _from,
     uint256[] memory _seasonIds,
-    uint256[] memory _amounts,
+    uint256[] memory _amounts
   ) public onlyGovernance {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");
@@ -113,9 +114,8 @@ contract WildForestMedal is ERC1155 {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       uint256 _id = _seasonIds[i];
       uint256 _amount = _amounts[i];
-      tokenSupply[_id] = tokenSupply[_id].remove(_amount);
+      tokenSupply[_id] = tokenSupply[_id] - _amount;
     }
-    _burnBatch(_from, _seasonIds, _amounts, "");
+    _burnBatch(_from, _seasonIds, _amounts);
   }
-
 }

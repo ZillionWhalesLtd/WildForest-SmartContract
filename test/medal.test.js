@@ -123,7 +123,7 @@ describe('WildForestMedal', function () {
   it('Burning should be available only for owner (error when other trying)', async () => {
     const { owner, alice, bob } = await deploy()
     await owner.contract.addNewSeason(50)
-    await owner.contract.mintBatch(bob.address, [1], [3]).not.to.be.reverted
+    await owner.contract.mintBatch(bob.address, [1], [3])
 
     await expect(owner.contract.burnBatch(bob.address, [2], [1])).to.be.revertedWith(
       'season does not exists'
