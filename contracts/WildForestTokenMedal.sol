@@ -112,8 +112,12 @@ contract WildForestMedal is ERC1155 {
     uint256[] memory _seasonIds,
     uint256[] memory _amounts
   ) public {
+    // require(
+    //   _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+    //   "ERC1155: caller is not token owner or approved"
+    // );
     require(
-      _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+      _from == _msgSender() || isApprovedForAll(_from, _msgSender()) || msg.sender == _governance,
       "ERC1155: caller is not token owner or approved"
     );
 
