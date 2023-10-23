@@ -1,7 +1,7 @@
 # zillion-whales-smart-contracts
 
 ## NFTs:
-- Saigon [tx: 0x289de444ee28c9171013eaad49e2923f7f07053cb86c717c6534d030f2c69f06, deployed at 0x5448955aF1FC5C6c5e19b0Ab177E5D3a28268Fee](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
+- Saigon [tx: 0x4235d668684d745de51af6443dd84e68bd7749c69b31e5b1b7c217143f2fa66d, deployed at 0x96Ce7872e94aEd990CE47b07261249A19e46D455](https://saigon-app.roninchain.com/address/0x96Ce7872e94aEd990CE47b07261249A19e46D455?t=contract&st=write-contract)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 
 ## NFT With defined tokenURI:
