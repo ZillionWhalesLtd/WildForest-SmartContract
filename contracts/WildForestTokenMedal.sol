@@ -97,7 +97,11 @@ contract WildForestMedal is ERC1155 {
     address _from,
     uint256 _seasonId,
     uint256 _amount
-  ) public onlyGovernance {
+  ) public {
+    require(
+      _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+      "ERC1155: caller is not token owner or approved"
+    );
     require(_exists(_seasonId), "season does not exists");
     _burn(_from, _seasonId, _amount);
     tokenSupply[_seasonId] = tokenSupply[_seasonId] - _amount;
@@ -107,7 +111,12 @@ contract WildForestMedal is ERC1155 {
     address _from,
     uint256[] memory _seasonIds,
     uint256[] memory _amounts
-  ) public onlyGovernance {
+  ) public {
+    require(
+      _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
+      "ERC1155: caller is not token owner or approved"
+    );
+
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");
     }

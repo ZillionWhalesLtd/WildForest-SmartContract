@@ -120,27 +120,30 @@ describe('WildForestMedal', function () {
     await expect(owner.contract.mint(bob.address, 1, 1)).not.to.be.reverted
   })
 
-  it('Burning should be available only for owner (error when other trying)', async () => {
+  it('Burning should be available only for approved or token owners (error when other trying)', async () => {
     const { owner, alice, bob } = await deploy()
     await owner.contract.addNewSeason(50)
     await owner.contract.mintBatch(bob.address, [1], [3])
 
-    await expect(owner.contract.burnBatch(bob.address, [2], [1])).to.be.revertedWith(
+    await expect(bob.contract.burnBatch(bob.address, [2], [1])).to.be.revertedWith(
       'season does not exists'
     )
-    await expect(owner.contract.burn(bob.address, 2, 1)).to.be.revertedWith(
+    await expect(bob.contract.burn(bob.address, 2, 1)).to.be.revertedWith(
       'season does not exists'
     )
 
     await expect(alice.contract.burnBatch(bob.address, [1], [1])).to.be.revertedWith(
-      'only governance can call this'
+      'ERC1155: caller is not token owner or approved'
     )
     await expect(alice.contract.burn(bob.address, 1, 1)).to.be.revertedWith(
-      'only governance can call this'
+      'ERC1155: caller is not token owner or approved'
     )
 
-    await expect(owner.contract.burnBatch(bob.address, [1], [1])).not.to.be.reverted
-    await expect(owner.contract.burn(bob.address, 1, 1)).not.to.be.reverted
+    await bob.contract.setApprovalForAll(alice.address, true)
+    await expect(alice.contract.burnBatch(bob.address, [1], [1])).not.to.be.reverted
+    await expect(alice.contract.burn(bob.address, 1, 1)).not.to.be.reverted
+    // await expect(owner.contract.burnBatch(bob.address, [1], [1])).not.to.be.reverted
+    // await expect(owner.contract.burn(bob.address, 1, 1)).not.to.be.reverted
   })
 
 
