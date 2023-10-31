@@ -8,7 +8,6 @@ contract WildForestMedal is ERC1155 {
   mapping (uint256 => uint256) public tokenSupply;
 
   address private _governance;
-  string private _uri;
 
   uint256 public seasonsCount;
   string public name;
@@ -25,7 +24,6 @@ contract WildForestMedal is ERC1155 {
     symbol = _symbol;
     _governance = msg.sender;
     seasonsCount = 0;
-    _uri = uri_;
   }
 
   function _exists(
@@ -35,7 +33,7 @@ contract WildForestMedal is ERC1155 {
   }
 
   function setURI(string memory uri_) public onlyGovernance {
-    _uri = uri_;
+    _setURI(uri_);
   }
 
   // function updateGovernance(address _newGovernance) public onlyGovernance {
@@ -50,12 +48,7 @@ contract WildForestMedal is ERC1155 {
 
   function uri(uint256 _seasonId) override public view returns (string memory) {
     require(_exists(_seasonId), "season does not exists");
-    return string(
-      abi.encodePacked(
-        _uri,
-        Strings.toString(_seasonId),".json"
-      )
-    );
+    return string.concat(super.uri(_seasonId), Strings.toString(_seasonId), ".json");
   }
 
   function addNewSeason(uint256 initialSupply) external onlyGovernance returns (uint256) {
