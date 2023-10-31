@@ -54,6 +54,22 @@ You will need have a wallet with some balance to be able to deploy to different 
 - [Mumbai](https://mumbaifaucet.com/)
 - [Saigon](https://faucet.roninchain.com/)
 
+## Slither (the smart contract static analyzer)
+
+[Source Github](https://github.com/crytic/slither)
+
+Install: 
+
+```
+pip3 install slither-analyzer
+```
+
+Run with MD format report:
+
+```
+slither . --checklist
+```
+
 
 ## Usage
 
