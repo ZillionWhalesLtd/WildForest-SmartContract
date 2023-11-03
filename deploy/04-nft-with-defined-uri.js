@@ -2,10 +2,10 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const cardsContractName = 'WildForestLords'
   const cardsContractSymbol = 'WFL'
 
-  const { owner } = await getNamedAccounts()
+  const { lordsOwner } = await getNamedAccounts()
 
   await deploy('WildForestDefinedTokenUriNft', {
-    from: owner,
+    from: lordsOwner,
     log: true,
     args: [cardsContractName, cardsContractSymbol],
   })

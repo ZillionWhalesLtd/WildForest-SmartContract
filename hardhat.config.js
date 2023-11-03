@@ -15,11 +15,20 @@ const {
   ETHERSCAN_APIKEY,
   // PRIVATE_KEY,
   MNEMONIC,
+  UNITS_OWNER_PRIVATE_KEY,
+  SKINS_OWNER_PRIVATE_KEY,
+  WF_TOKEN_OWNER_PRIVATE_KEY,
+  MEDAL_OWNER_PRIVATE_KEY,
+  LORDS_NFT_OWNER_PRIVATE_KEY,
 } = process.env
 
-// const ethers = require('ethers')
-// const mnemonicWallet = ethers.Wallet.fromMnemonic(MNEMONIC) // fromPhrase method from ethers@6.2.3
-// const PRIVATE_KEY = mnemonicWallet.privateKey
+const mainAccounts = [
+  UNITS_OWNER_PRIVATE_KEY,
+  SKINS_OWNER_PRIVATE_KEY,
+  WF_TOKEN_OWNER_PRIVATE_KEY,
+  MEDAL_OWNER_PRIVATE_KEY,
+  LORDS_NFT_OWNER_PRIVATE_KEY,
+]
 
 const accounts = {
   mnemonic: MNEMONIC,
@@ -38,41 +47,38 @@ module.exports = {
     mumbai: {
       url: `https://polygon-mumbai.g.alchemy.com/v2/${MUMBAI_ALCHEMY_KEY}`,
       accounts,
-      // accounts: [PRIVATE_KEY],
     },
     goerli: {
       url: `https://eth-goerli.g.alchemy.com/v2/${GOERLI_ALCHEMY_KEY}`,
       accounts,
-      // accounts: [PRIVATE_KEY],
     },
     polygon: {
       url: `https://polygon-mainnet.g.alchemy.com/v2/${POLIGON_ALCHEMY_KEY}`,
-      accounts,
-      // accounts: [PRIVATE_KEY],
+      accounts: mainAccounts,
     },
     ethereum: {
       url: `https://eth-mainnet.g.alchemy.com/v2/${ETHEREUM_ALCHEMY_KEY}`,
-      accounts,
-      // accounts: [PRIVATE_KEY],
+      accounts: mainAccounts,
     },
     ronin: {
       chainId: 2020,
       url: 'https://api.roninchain.com/rpc',
-      accounts,
-      // accounts: [PRIVATE_KEY],
+      accounts: mainAccounts,
     },
     saigon: {
       chainId: 2021,
       url: 'https://saigon-testnet.roninchain.com/rpc',
       accounts,
-      // accounts: [PRIVATE_KEY],
     },
   },
+
   namedAccounts: {
     // deployer: 'privatekey://<PK>',
-    owner: {
-      default: 0,
-    },
+    unitsOwner: 0,
+    skinsOwner: 1,
+    wfTokenOwner: 2,
+    medalOwner: 3,
+    lordsOwner: 4,
   },
   etherscan: {
     apiKey: {

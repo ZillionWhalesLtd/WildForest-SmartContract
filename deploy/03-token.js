@@ -4,10 +4,11 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const initialSupply = ethers.utils.parseUnits('99900000000000', 18)
   const name = 'Wild Forest'
   const symbol = 'WF'
-  const { owner } = await getNamedAccounts()
+
+  const { wfTokenOwner } = await getNamedAccounts()
 
   await deploy('WildForestToken', {
-    from: owner,
+    from: wfTokenOwner,
     log: true,
     args: [initialSupply, name, symbol],
   })
