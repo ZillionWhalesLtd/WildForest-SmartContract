@@ -1,6 +1,8 @@
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
-  const cardsContractName = 'WildForestCards'
-  const cardsContractSymbol = `WFC`
+  const cardsContractName = 'WildForestUnits'
+  // const cardsContractName = 'WildForestSkills'
+  const cardsContractSymbol = 'WFU'
+  // const cardsContractSymbol = 'WFS'
   const baseTokenURI = 'https://localhost:3000/nfts/'
 
   const { owner } = await getNamedAccounts()
