@@ -74,6 +74,7 @@ module.exports = {
 
   namedAccounts: {
     // deployer: 'privatekey://<PK>',
+    baseOwner: 0,
     unitsOwner: 0,
     skinsOwner: 1,
     wfTokenOwner: 2,

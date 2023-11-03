@@ -5,12 +5,12 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const initialPrice = 20
   const initialSupply = 500
 
-  const { owner } = await getNamedAccounts()
+  const { baseOwner } = await getNamedAccounts()
 
   await deploy('WildForestSale', {
-    from: owner,
+    from: baseOwner,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, baseTokenURI, owner, initialPrice, initialSupply],
+    args: [cardsContractName, cardsContractSymbol, baseTokenURI, baseOwner, initialPrice, initialSupply],
   })
 }
 

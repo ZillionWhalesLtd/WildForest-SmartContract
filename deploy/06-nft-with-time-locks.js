@@ -3,10 +3,10 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const cardsContractSymbol = 'WFB'
   const baseTokenURI = 'https://localhost:3000/battlePass/'
 
-  const { owner } = await getNamedAccounts()
+  const { baseOwner } = await getNamedAccounts()
 
   await deploy('WildForestTimeLockNft', {
-    from: owner,
+    from: baseOwner,
     log: true,
     args: [cardsContractName, cardsContractSymbol, baseTokenURI],
   })
