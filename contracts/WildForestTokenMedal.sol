@@ -19,10 +19,10 @@ contract WildForestMedal is ERC1155 {
     _;
   }
 
-  constructor(string memory _name, string memory _symbol, string memory uri_) public ERC1155(uri_) {
+  constructor(string memory _name, string memory _symbol, string memory uri_, address _ownerAddress) public ERC1155(uri_) {
     name = _name;
     symbol = _symbol;
-    _governance = msg.sender;
+    _governance = _ownerAddress;
     seasonsCount = 0;
   }
 

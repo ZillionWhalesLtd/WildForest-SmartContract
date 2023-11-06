@@ -25,10 +25,10 @@ contract WildForestDefinedTokenUriNft is
 
   Counters.Counter internal _tokenIdTracker;
 
-  constructor(string memory name, string memory symbol) ERC721(name, symbol) {
-    _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-    _setupRole(MINTER_ROLE, _msgSender());
-    _setupRole(PAUSER_ROLE, _msgSender());
+  constructor(string memory name, string memory symbol, address ownerAddress) ERC721(name, symbol) {
+    _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
+    _setupRole(MINTER_ROLE, ownerAddress);
+    _setupRole(PAUSER_ROLE, ownerAddress);
 
     // Token id should start from 1.
     _tokenIdTracker.increment();

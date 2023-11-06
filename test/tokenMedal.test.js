@@ -14,14 +14,15 @@ const uri = 'https://localhost:3000/api/mdeal/'
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
+  const ownerAddress = await owner.getAddress()
 
   const WildForestMedal = await ethers.getContractFactory("WildForestMedal")
-  const nftContract = await WildForestMedal.deploy(name, symbol, uri)
+  const nftContract = await WildForestMedal.deploy(name, symbol, uri, ownerAddress)
 
   return {
     owner: {
       contract: nftContract,
-      address: await owner.getAddress(),
+      address: ownerAddress,
     },
     alice: {
       contract: await nftContract.connect(alice),

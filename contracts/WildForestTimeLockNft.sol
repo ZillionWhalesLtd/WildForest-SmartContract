@@ -9,8 +9,8 @@ contract WildForestTimeLockNft is ERC721Common {
   // Mapping from token ID to lockTimestamp
   mapping(uint256 => uint256) private _timeLocks;
 
-  constructor(string memory name, string memory symbol, string memory baseTokenURI)
-    ERC721Common(name, symbol, baseTokenURI)
+  constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
+    ERC721Common(name, symbol, baseTokenURI, ownerAddress)
   {}
 
   function mint(address to) public virtual override returns (uint256 _tokenId) {

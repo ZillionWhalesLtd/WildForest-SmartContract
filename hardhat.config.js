@@ -15,19 +15,11 @@ const {
   ETHERSCAN_APIKEY,
   // PRIVATE_KEY,
   MNEMONIC,
-  UNITS_OWNER_PRIVATE_KEY,
-  SKINS_OWNER_PRIVATE_KEY,
-  WF_TOKEN_OWNER_PRIVATE_KEY,
-  MEDAL_OWNER_PRIVATE_KEY,
-  LORDS_NFT_OWNER_PRIVATE_KEY,
+  DEPLOYER_PRIVATE_KEY,
 } = process.env
 
 const mainAccounts = [
-  UNITS_OWNER_PRIVATE_KEY,
-  SKINS_OWNER_PRIVATE_KEY,
-  WF_TOKEN_OWNER_PRIVATE_KEY,
-  MEDAL_OWNER_PRIVATE_KEY,
-  LORDS_NFT_OWNER_PRIVATE_KEY,
+  DEPLOYER_PRIVATE_KEY,
 ]
 
 const accounts = {
@@ -74,12 +66,7 @@ module.exports = {
 
   namedAccounts: {
     // deployer: 'privatekey://<PK>',
-    baseOwner: 0,
-    unitsOwner: 0,
-    skinsOwner: 1,
-    wfTokenOwner: 2,
-    medalOwner: 3,
-    lordsOwner: 4,
+    deployer: 0,
   },
   etherscan: {
     apiKey: {

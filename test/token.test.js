@@ -13,14 +13,15 @@ const symbol = 'WF'
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
+  const ownerAddress = await owner.getAddress()
 
   const WildForestToken = await ethers.getContractFactory("WildForestToken")
-  const tokenContract = await WildForestToken.deploy(initialSupply, name, symbol)
+  const tokenContract = await WildForestToken.deploy(initialSupply, name, symbol, ownerAddress)
 
   return {
     owner: {
       contract: tokenContract,
-      address: await owner.getAddress(),
+      address: ownerAddress,
     },
     alice: {
       contract: await tokenContract.connect(alice),

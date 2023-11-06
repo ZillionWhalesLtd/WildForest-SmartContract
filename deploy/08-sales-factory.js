@@ -1,8 +1,8 @@
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
-  const { baseOwner } = await getNamedAccounts()
+  const { deployer } = await getNamedAccounts()
 
   await deploy('WildForestSalesFactory', {
-    from: baseOwner,
+    from: deployer,
     log: true,
     args: [],
   })

@@ -4,8 +4,8 @@ pragma solidity ^0.8.16;
 import "./sky-mavis-nft/ERC721Common.sol";
 
 contract WildForestNft is ERC721Common {
-  constructor(string memory name, string memory symbol, string memory baseTokenURI)
-    ERC721Common(name, symbol, baseTokenURI)
+  constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
+    ERC721Common(name, symbol, baseTokenURI, ownerAddress)
   {}
 
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {

@@ -13,14 +13,15 @@ const baseTokenURI = 'https://localhost:3000/nfts/'
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
+  const ownerAddress = await owner.getAddress()
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
-  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI)
+  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
 
   return {
     owner: {
       contract: nftContract,
-      address: await owner.getAddress(),
+      address: ownerAddress,
     },
     alice: {
       contract: await nftContract.connect(alice),

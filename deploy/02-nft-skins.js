@@ -1,14 +1,17 @@
+require('dotenv').config()
+const { SKINS_OWNER_ADDRESS } = process.env
+
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const cardsContractName = 'WildForestSkins'
   const cardsContractSymbol = 'WFS'
   const baseTokenURI = 'https://localhost:3000/nfts/'
 
-  const { skinsOwner } = await getNamedAccounts()
+  const { deployer } = await getNamedAccounts()
 
   await deploy('WildForestNft', {
-    from: skinsOwner,
+    from: deployer,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, baseTokenURI],
+    args: [cardsContractName, cardsContractSymbol, baseTokenURI, SKINS_OWNER_ADDRESS],
   })
 }
 

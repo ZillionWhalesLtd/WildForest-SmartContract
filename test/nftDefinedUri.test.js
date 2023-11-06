@@ -12,14 +12,15 @@ const cardsContractSymbol = 'WFL'
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
+  const ownerAddress = await owner.getAddress()
 
   const WildForestDefinedTokenUriNft = await ethers.getContractFactory("WildForestDefinedTokenUriNft")
-  const nftContract = await WildForestDefinedTokenUriNft.deploy(cardsContractName, cardsContractSymbol)
+  const nftContract = await WildForestDefinedTokenUriNft.deploy(cardsContractName, cardsContractSymbol, ownerAddress)
 
   return {
     owner: {
       contract: nftContract,
-      address: await owner.getAddress(),
+      address: ownerAddress,
     },
     alice: {
       contract: await nftContract.connect(alice),
