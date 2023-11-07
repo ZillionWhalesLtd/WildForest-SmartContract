@@ -38,6 +38,34 @@ const deploy = async () => {
   }
 }
 
+const deployWithAliceOwner = async () => {
+  await deployments.fixture()
+  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const aliceOwnerAddress = await alice.getAddress()
+
+  const WildForestToken = await ethers.getContractFactory("WildForestToken")
+  const tokenContract = await WildForestToken.deploy(initialSupply, name, symbol, aliceOwnerAddress)
+
+  return {
+    owner: {
+      contract: tokenContract,
+      address: await owner.getAddress(),
+    },
+    alice: {
+      contract: await tokenContract.connect(alice),
+      address: aliceOwnerAddress,
+    },
+    bob: {
+      contract: await tokenContract.connect(bob),
+      address: await bob.getAddress(),
+    },
+    steve: {
+      contract: await tokenContract.connect(steve),
+      address: await steve.getAddress(),
+    },
+  }
+}
+
 const transfer_details = (transaction) => {
   return transfer_events(transaction)
     .then((events) => {
@@ -81,5 +109,22 @@ describe('WildForestToken', function () {
 
     const bobBalance = await steve.contract.balanceOf(bob.address)
     expect(bobBalance).to.equal(amount1)
+  })
+
+  it('transfer with custom owner', async () => {
+    const { owner, alice, bob } = await deployWithAliceOwner()
+    const amount1 = 100
+
+    await expect(owner.contract.transfer(bob.address, amount1)).to.be.revertedWith(
+      'ERC20: transfer amount exceeds balance'
+    )
+
+    const amount = 900
+    const transfer_transaction = await alice.contract.transfer(owner.address, amount)
+    const { from, to, value } = await transfer_details(transfer_transaction)
+
+    expect(from).to.equal(alice.address)
+    expect(to).to.equal(owner.address)
+    expect(value).to.equal(amount)
   })
 })

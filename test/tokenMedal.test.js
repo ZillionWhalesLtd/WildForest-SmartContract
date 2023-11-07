@@ -39,6 +39,34 @@ const deploy = async () => {
   }
 }
 
+const deployWithAliceOwner = async () => {
+  await deployments.fixture()
+  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const aliceOwnerAddress = await alice.getAddress()
+
+  const WildForestMedal = await ethers.getContractFactory("WildForestMedal")
+  const nftContract = await WildForestMedal.deploy(name, symbol, uri, aliceOwnerAddress)
+
+  return {
+    owner: {
+      contract: nftContract,
+      address: await owner.getAddress(),
+    },
+    alice: {
+      contract: await nftContract.connect(alice),
+      address: aliceOwnerAddress,
+    },
+    bob: {
+      contract: await nftContract.connect(bob),
+      address: await bob.getAddress(),
+    },
+    steve: {
+      contract: await nftContract.connect(steve),
+      address: await steve.getAddress(),
+    },
+  }
+}
+
 const transfer_event = transaction =>
   transaction
     .wait()
@@ -54,6 +82,33 @@ const transfer_events = transaction =>
     })
 
 describe('WildForestMedal', function () {
+  it('custom owner', async () => {
+    const { owner, alice } = await deployWithAliceOwner()
+
+    await expect(owner.contract.addNewSeason(50)).to.be.revertedWith(
+      'only governance can call this'
+    )
+    await alice.contract.addNewSeason(50)
+
+    const newURI = 'http://test.com'
+    await expect(owner.contract.setURI(newURI)).to.be.revertedWith(
+      'only governance can call this'
+    )
+
+    await alice.contract.setURI(newURI)
+    expect(await alice.contract.uri(1)).to.equal(`${newURI}1.json`)
+
+    await expect(owner.contract.mintBatch(alice.address, [1], [1])).to.be.revertedWith(
+      'only governance can call this'
+    )
+    await expect(owner.contract.mint(alice.address, 1, 1)).to.be.revertedWith(
+      'only governance can call this'
+    )
+
+    await expect(alice.contract.mintBatch(owner.address, [1], [1])).not.to.be.reverted
+    await expect(alice.contract.mint(owner.address, 1, 1)).not.to.be.reverted
+  })
+
   it('Only owner could add new season', async () => {
     const { owner, alice, bob } = await deploy()
     let sesonNumber = 0

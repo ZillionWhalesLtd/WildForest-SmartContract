@@ -37,6 +37,34 @@ const deploy = async () => {
   }
 }
 
+const deployWithAliceOwner = async () => {
+  await deployments.fixture()
+  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const aliceOwnerAddress = await alice.getAddress()
+
+  const WildForestDefinedTokenUriNft = await ethers.getContractFactory("WildForestDefinedTokenUriNft")
+  const nftContract = await WildForestDefinedTokenUriNft.deploy(cardsContractName, cardsContractSymbol, aliceOwnerAddress)
+
+  return {
+    owner: {
+      contract: nftContract,
+      address: await owner.getAddress(),
+    },
+    alice: {
+      contract: await nftContract.connect(alice),
+      address: aliceOwnerAddress,
+    },
+    bob: {
+      contract: await nftContract.connect(bob),
+      address: await bob.getAddress(),
+    },
+    steve: {
+      contract: await nftContract.connect(steve),
+      address: await steve.getAddress(),
+    },
+  }
+}
+
 const getTokenUri = (metadata) => {
   const metadataBuffer = Buffer.from(JSON.stringify(metadata))
   const tokenMetadataEncoded = metadataBuffer.toString('base64')
@@ -99,6 +127,22 @@ describe('WildForestDefinedTokenUriNft', function () {
     )
 
     await expect(owner.contract.mint(steve.address ,_tokenUri)).not.to.be.reverted
+  })
+
+  it('Custom owner', async () => {
+    const { owner, alice } = await deployWithAliceOwner()
+
+    await expect(owner.contract.mint(alice.address, _tokenUri)).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have minter role to mint'
+    )
+
+    await expect(alice.contract.mint(owner.address ,_tokenUri)).not.to.be.reverted
+
+    await expect(owner.contract.pause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to pause'
+    )
+    await expect(alice.contract.pause()).not.to.be.reverted
+    await expect(alice.contract.unpause()).not.to.be.reverted
   })
 
   it('Only admin can paus and unpause transfers', async () => {

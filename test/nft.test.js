@@ -38,6 +38,34 @@ const deploy = async () => {
   }
 }
 
+const deployWithAliceOwner = async () => {
+  await deployments.fixture()
+  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const aliceOwnerAddress = await alice.getAddress()
+
+  const WildForestNft = await ethers.getContractFactory("WildForestNft")
+  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, aliceOwnerAddress)
+
+  return {
+    owner: {
+      contract: nftContract,
+      address: await owner.getAddress(),
+    },
+    alice: {
+      contract: await nftContract.connect(alice),
+      address: aliceOwnerAddress,
+    },
+    bob: {
+      contract: await nftContract.connect(bob),
+      address: await bob.getAddress(),
+    },
+    steve: {
+      contract: await nftContract.connect(steve),
+      address: await steve.getAddress(),
+    },
+  }
+}
+
 // keccak256('MINTER_ROLE')
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
 const keccak256DefaultAdminRole = '0x0000000000000000000000000000000000000000000000000000000000000000'
@@ -270,5 +298,32 @@ describe('WildForestNft', function () {
 
     await expect(owner.contract.bulkApprove(alice.address, [2])).to.not.be.reverted
     await expect(alice.contract.burn(2)).to.not.be.reverted
+  })
+
+  it('Minter and admin role available for custom owner (Alice)', async () => {
+    const { owner, bob, alice } = await deployWithAliceOwner()
+    const recipients = [bob.address, owner.address]
+    const mint_transaction = await alice.contract.bulkMint(recipients)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
+
+    const events = await transfer_events(mint_transaction)
+    await expect(events.length).to.equal(recipients.length)
+
+    await expect(owner.contract.bulkMint(recipients)).to.be.revertedWith(
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+
+    await expect(alice.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
+
+    await expect(owner.contract.setBaseURI('http:localhost:5000')).to.be.revertedWith(
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
+    )
+
+    await expect(owner.contract.pause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to pause'
+    )
+    await expect(alice.contract.pause()).not.to.be.reverted
+    await expect(alice.contract.unpause()).not.to.be.reverted
   })
 })
