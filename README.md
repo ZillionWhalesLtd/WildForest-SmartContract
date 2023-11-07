@@ -2,7 +2,7 @@
 
 ## NFTs:
 - Saigon [tx: 0x289de444ee28c9171013eaad49e2923f7f07053cb86c717c6534d030f2c69f06, deployed at 0x5448955aF1FC5C6c5e19b0Ab177E5D3a28268Fee](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
-- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+- Ronin [tx: 0xef7c573b5619d37dc788338de14d689d90d3e01f5279bdc0166ea28a53c53791, deployed at 0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 
 ## NFT With defined tokenURI:
 - Saigon [tx: 0x2828d463088941e15c2500e15524861f14510b1efa69f21467df5ec2deb7201d, deployed at 0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce](https://saigon-app.roninchain.com/address/0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce)
@@ -18,7 +18,7 @@
 
 ## Tokens (ERC20):
 - Saigon [tx: 0x9e9e5c8855bf1dc6937cc99b5b2efba48beeb54005fc668f4a380555260e1faa, deployed at 0x61b832F8Fe4fF691f605b3c6862C76B6793B962d](https://saigon-app.roninchain.com/address/0x61b832F8Fe4fF691f605b3c6862C76B6793B962d?t=contract&st=read-contract)
-- Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
+- Ronin [tx: 0xa0b10a79817682ace71a3a61aab06c5237c8b3514891d86d528727bc2897657e, deployed at 0x363C3b97152e161Cea85e0E5Dc52dfDCa01A2dB1](https://app.roninchain.com/address/0x363C3b97152e161Cea85e0E5Dc52dfDCa01A2dB1?t=contract)
 
 ## Sales Factory:
 - Saigon [tx: 0xa7c132cabba3b9c5fb5f744d9d26a4c4e206ae3eb80a9819bc10e88b96679db0, deployed at 0x0894da68349daDB094D537A94715Bc60cCbfC346](https://saigon-app.roninchain.com/address/0x0894da68349daDB094D537A94715Bc60cCbfC346)
