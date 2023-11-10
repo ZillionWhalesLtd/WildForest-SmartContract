@@ -29,8 +29,7 @@ contract WildForestNft is ERC721Common {
   function bulkBurn(uint256[] calldata tokenIds) public virtual {
     //solhint-disable-next-line max-line-length
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
-      // require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
-      require(hasRole(MINTER_ROLE, _msgSender()) || _isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
+      require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
       _burn(tokenIds[_i]);
     }
 

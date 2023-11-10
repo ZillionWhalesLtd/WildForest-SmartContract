@@ -4,7 +4,8 @@ const { SKINS_OWNER_ADDRESS } = process.env
 const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   const cardsContractName = 'WildForestSkins'
   const cardsContractSymbol = 'WFS'
-  const baseTokenURI = 'https://localhost:3000/nfts/'
+
+  const baseTokenURI = 'https://nft-info.server.playwildforest.io/v1/skin_info?nftId='
 
   const { deployer } = await getNamedAccounts()
 
