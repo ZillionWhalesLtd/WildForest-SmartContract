@@ -81,9 +81,9 @@ class RoninChainService {
   //   return readableBalance
   // }
 
-  async mintNft(addressTo) {
+  async mintPackNFT(addressTo) {
     const address = this._normilizeAddress(addressTo)
-    const contractService = new ContractService(this._logger, 'NFT_UNITS', this._chainId)
+    const contractService = new ContractService(this._logger, 'NFT_PACKS', this._chainId)
     const { contract } = contractService
 
     const transaction = await contract.mint(address)

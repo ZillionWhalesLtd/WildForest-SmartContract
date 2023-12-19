@@ -15,6 +15,7 @@ const {
 
 const hintEnvironment = 'test | prod'
 const hintPath = 'testData.json'
+const hintLordsPath = 'minted_lords-123121.json'
 
 const environmentCommandOptions = {
   description: 'Environment where command to execute.',
@@ -32,10 +33,23 @@ const pathCommandOptions = {
   default: hintPath,
 }
 
+const lordsPathCommandOptions = {
+  description: 'Path to the minted results of Lords.',
+  alias: 'l',
+  type: 'string',
+  demandOption: true,
+  default: hintLordsPath,
+}
+
 const argv = yargs
   .command('mintLords', 'Mint Lords NFTs according to the distribution data', {
     environment: environmentCommandOptions,
     path: pathCommandOptions,
+  })
+  .command('mintPacks', 'Mint Packs NFTs according to the distribution data', {
+    environment: environmentCommandOptions,
+    path: pathCommandOptions,
+    lordsPath: lordsPathCommandOptions
   })
   .help()
   .showHelpOnFail(true)
@@ -59,7 +73,28 @@ const _askToProcessLords = () => {
   })
 }
 
+const _askToProcessPacks = () => {
+  return new Promise((resolve) => {
+    inquirer
+      .prompt([
+        {
+          type: 'checkbox', // confirm
+          name: 'isOk',
+          message: 'Is the prepared metadata looks correct? Are you OK to proceed and mint Pack NFTs ?',
+          choices: ['Yes', 'No']
+        },
+      ])
+      .then((details) => {
+        resolve(details)
+      })
+  })
+}
+
 const buildLordsToMint = (dataRequirements) => {
+  return []
+}
+
+const buildPacksToMint = (dataRequirements, lordsData) => {
   return []
 }
 
@@ -113,6 +148,52 @@ const main = async() => {
       writeToFile(filePath, JSON.stringify(lordsToMint, null, 2))
 
       console.log(`Done, minted ${mintedCounter} Lord NFTs`) // eslint-disable-line
+      console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      break
+    }
+    case 'mintPacks': {
+      console.log('Preparing metadata for Pack NFTs...') // eslint-disable-line
+
+      const { environment, path, lordsPath } = argv
+      let roninChainId = 'saigon'
+      let addressTo = SAIGON_PACKS_OWNER_ADDRESS
+
+      if (environment === 'prod') {
+        roninChainId = 'ronin'
+        addressTo = RONIN_PACKS_OWNER_ADDRESS
+      }
+      const roninChainService = new RoninChainService(console, roninChainId)
+      const dataRequirements = require(`./mintRequirements/${path}`)
+      const lordsData = require(`./resultData/${lordsPath}`)
+
+      const packsToMint = buildPacksToMint(dataRequirements, lordsData)
+      console.log('Prepared Packs To Mint:', packsToMint) // eslint-disable-line
+
+      const { isOk } = await _askToProcessPacks()
+      if (isOk[0] !== 'Yes') {
+        console.log('Terminating..') // eslint-disable-line
+        return
+      }
+
+      console.log('Minting Pack NFTs...') // eslint-disable-line
+      let mintedCounter = 0
+      for (const packToMint of packsToMint) {
+        const { tokenId, hash, chainId } = await roninChainService.mintPackNFT(addressTo)
+        mintedCounter++
+        console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
+        packToMint.tokenId = tokenId
+        packToMint.chainId = chainId
+        packToMint.hash = hash
+      }
+
+      const now = Date.now()
+      const fileName = `minted_packs-${now}.json`
+      const repoPath = process.cwd()
+      const filePath = `${repoPath}/bin/resultData/${fileName}`
+
+      writeToFile(filePath, JSON.stringify(packsToMint, null, 2))
+
+      console.log(`Done, minted ${mintedCounter} Pack NFTs`) // eslint-disable-line
       console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
       break
     }

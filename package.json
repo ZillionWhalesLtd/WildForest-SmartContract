@@ -4,6 +4,8 @@
   "scripts": {
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'testLordsData.json'",
     "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'prodLordsData.json'",
+    "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'testPacksData.json' -l 'minted_lords-test.json'",
+    "mintPacks:prod": "node ./bin/cli.js mintPacks -e 'prod' -p 'prodPacksData.json' -l 'minted_lords-prod.json'",
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat deploy",
     "deploy:test": "npx hardhat deploy --network saigon",
