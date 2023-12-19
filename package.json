@@ -2,11 +2,14 @@
   "name": "zillion-whales-smart-contracts",
   "version": "0.0.1",
   "scripts": {
+    "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'testLordsData.json'",
+    "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'prodLordsData.json'",
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat deploy",
     "deploy:test": "npx hardhat deploy --network saigon",
     "deploy:test:nftUnits": "npx hardhat deploy --network saigon --tags nftUnits",
     "deploy:test:nftSkins": "npx hardhat deploy --network saigon --tags nftSkins",
+    "deploy:test:nftPacks": "npx hardhat deploy --network saigon --tags nftPacks",
     "deploy:test:nftUri": "npx hardhat deploy --network saigon --tags definedUriNft",
     "deploy:test:nftTimeLock": "npx hardhat deploy --network saigon --tags timeLockNft",
     "deploy:test:token": "npx hardhat deploy --network saigon --tags token",
@@ -15,6 +18,7 @@
     "deploy:prod": "npx hardhat deploy --network ronin",
     "deploy:prod:nftUnits": "npx hardhat deploy --network ronin --tags nftUnits",
     "deploy:prod:nftSkins": "npx hardhat deploy --network ronin --tags nftSkins",
+    "deploy:prod:nftPacks": "npx hardhat deploy --network ronin --tags nftPacks",
     "deploy:prod:nftUri": "npx hardhat deploy --network ronin --tags definedUriNft",
     "deploy:prod:nftTimeLock": "npx hardhat deploy --network ronin --tags timeLockNft",
     "deploy:prod:token": "npx hardhat deploy --network ronin --tags token",
@@ -36,6 +40,7 @@
     "@nomiclabs/hardhat-etherscan": "^3.1.4",
     "chai": "^4.3.7",
     "ethers": "^5.7.2",
+    "inquirer": "^8.0.0",
     "hardhat": "^2.12.5",
     "hardhat-gas-reporter": "^1.0.9",
     "solidity-coverage": "^0.8.4",
@@ -51,7 +56,8 @@
     "eslint-plugin-promise": "6.0.0",
     "hardhat-deploy": "^0.11.12",
     "prettier": "^2.7.1",
-    "solhint": "^3.3.7"
+    "solhint": "^3.3.7",
+    "yargs": "^17.7.1"
   },
   "engines" : {
     "npm" : ">=9.6.4",

@@ -1,10 +1,18 @@
 # zillion-whales-smart-contracts
 
-## NFTs:
+## NFTs (Units):
 - Saigon [tx: 0x289de444ee28c9171013eaad49e2923f7f07053cb86c717c6534d030f2c69f06, deployed at 0x5448955aF1FC5C6c5e19b0Ab177E5D3a28268Fee](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
 - Ronin [tx: 0xef7c573b5619d37dc788338de14d689d90d3e01f5279bdc0166ea28a53c53791, deployed at 0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 
-## NFT With defined tokenURI:
+## NFTs (Skins):
+- Saigon [](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
+- Ronin [](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
+
+## NFTs (Packs):
+- Saigon [](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
+- Ronin [](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
+
+## NFT With defined tokenURI (Lords):
 - Saigon [tx: 0x2828d463088941e15c2500e15524861f14510b1efa69f21467df5ec2deb7201d, deployed at 0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce](https://saigon-app.roninchain.com/address/0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce)
 - Ronin [ronin:aaaaaa](https://app.roninchain.com/address/ronin:aaaaaa?t=contract)
 

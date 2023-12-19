@@ -1,0 +1,114 @@
+[
+    {
+        "inputs":
+        [],
+        "stateMutability": "nonpayable",
+        "type": "constructor"
+    },
+    {
+        "inputs":
+        [
+            {
+                "internalType": "string",
+                "name": "name",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "symbol",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "baseTokenURI",
+                "type": "string"
+            },
+            {
+                "internalType": "uint256",
+                "name": "initialPrice",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "initialSupply",
+                "type": "uint256"
+            }
+        ],
+        "name": "CreateNewWildForestSale",
+        "outputs":
+        [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs":
+        [
+            {
+                "internalType": "uint256",
+                "name": "",
+                "type": "uint256"
+            }
+        ],
+        "name": "WildForestSaleArray",
+        "outputs":
+        [
+            {
+                "internalType": "contract WildForestSale",
+                "name": "",
+                "type": "address"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs":
+        [
+            {
+                "internalType": "uint256",
+                "name": "_saleIndex",
+                "type": "uint256"
+            }
+        ],
+        "name": "salePause",
+        "outputs":
+        [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs":
+        [
+            {
+                "internalType": "uint256",
+                "name": "_saleIndex",
+                "type": "uint256"
+            },
+            {
+                "internalType": "uint256",
+                "name": "actualPrice",
+                "type": "uint256"
+            }
+        ],
+        "name": "saleSetMintPrice",
+        "outputs":
+        [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs":
+        [
+            {
+                "internalType": "uint256",
+                "name": "_saleIndex",
+                "type": "uint256"
+            }
+        ],
+        "name": "saleUnpause",
+        "outputs":
+        [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]
