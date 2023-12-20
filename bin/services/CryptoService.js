@@ -15,7 +15,7 @@ class CryptoService {
     const dataBuffer = Buffer.from(dataString)
     const iv = crypto.randomBytes(IV_LENGTH)
 
-    const encryptionKeyBuffer = Buffer.from(encryptionKey)
+    const encryptionKeyBuffer = Buffer.from(encryptionKey, 'hex')
     const cipher = crypto.createCipheriv(ENCRYPTION_ALGORITHM, encryptionKeyBuffer, iv)
     const encryptedData = Buffer.concat([cipher.update(dataBuffer), cipher.final()])
 
@@ -27,7 +27,7 @@ class CryptoService {
     const iv = encryptedBuffer.slice(0, IV_LENGTH)
     const encryptedWtihoutVector = encryptedBuffer.slice(IV_LENGTH)
 
-    const encryptionKeyBuffer = Buffer.from(encryptionKey)
+    const encryptionKeyBuffer = Buffer.from(encryptionKey, 'hex')
     const decipher = crypto.createDecipheriv(ENCRYPTION_ALGORITHM, encryptionKeyBuffer, iv)
 
     const decryptedBuffer = Buffer.concat([decipher.update(encryptedWtihoutVector), decipher.final()])
@@ -41,7 +41,7 @@ class CryptoService {
     const dataString = JSON.stringify(data)
     const buffer = Buffer.from(dataString)
     const digest = await crypto.createHash('sha256').update(buffer).digest()
-    return digest
+    return digest.toString('hex')
   }
 }
 

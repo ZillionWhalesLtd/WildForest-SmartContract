@@ -30,6 +30,7 @@
     "verify:prod": "npx hardhat --network ronin sourcify --endpoint https://sourcify.roninchain.com/server",
     "gasreport": "npx hardhat test",
     "test": "npx hardhat coverage --show-stack-traces",
+    "test:scripts": "NODE_ENV=test nyc --reporter=lcov --reporter=text _mocha ./testScripts/*.js --exit --timeout 35000",
     "lint": "eslint . && prettier . --check && solhint 'contracts/**/*.sol'",
     "format": "prettier . --write && eslint . --fix"
   },
@@ -58,6 +59,8 @@
     "hardhat-deploy": "^0.11.12",
     "hardhat-gas-reporter": "^1.0.9",
     "inquirer": "^8.0.0",
+    "mocha": "^9.1.4",
+    "nyc": "^15.1.0",
     "prettier": "^2.7.1",
     "solhint": "^3.3.7",
     "solidity-coverage": "^0.8.4",
