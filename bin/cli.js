@@ -6,6 +6,7 @@ const inquirer = require('inquirer')
 const RoninChainService = require('./services/RoninChainService')
 const FileService = require('./services/FileService')
 const IPFSService = require('./services/IPFSService')
+const RequirementsService = require('./services/RequirementsService')
 
 const {
   SAIGON_LORDS_OWNER_ADDRESS,
@@ -126,7 +127,7 @@ const main = async() => {
       const dataRequirements = require(`./mintRequirements/${path}`)
       const imagesMetadata = require('./resultData/uploaded_images.json')
 
-      const lordsToMint = requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
+      const lordsToMint = await requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
       console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessLords()
@@ -139,12 +140,14 @@ const main = async() => {
       let mintedCounter = 0
       for (const lordToMint of lordsToMint) {
         const { metadata: lordToMintMetadata } = lordToMint
-        const { tokenId, hash, chainId } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
+        const { tokenId, hash, chainId, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
         mintedCounter++
         console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
         lordToMint.tokenId = tokenId
         lordToMint.chainId = chainId
         lordToMint.hash = hash
+        lordToMint.tokenUri = tokenUri
+        delete lordToMint.attributesJSON
       }
 
       const now = Date.now()

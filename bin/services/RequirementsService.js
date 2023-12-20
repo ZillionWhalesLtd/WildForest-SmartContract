@@ -16,10 +16,12 @@ class RequirementsService {
     this._csvService = new CsvService()
   }
 
-  buildLordsToMint(dataRequirements, imagesMetadata) {
+  async buildLordsToMint(dataRequirements, imagesMetadata) {
     const lordsToMint = []
     const imagesMap = keyBy(imagesMetadata, 'id')
-    const lordsConfigPath = './csvConfigs/lords.csv'
+
+    const repoPath = process.cwd()
+    const lordsConfigPath = `${repoPath}/bin/csvConfigs/lords.csv`
     const lords = await this._csvService.readFile(lordsConfigPath)
 
     const { rank } = dataRequirements
@@ -47,9 +49,9 @@ class RequirementsService {
           image: url,
           attributes,
         }
-        const lord = { metadata, rank: lordRank }
+        const lordToMint = { metadata, attributesJSON: JSON.stringify(attributes), rank: lordRank }
 
-        lordsToMint.push(lord)
+        lordsToMint.push(lordToMint)
       }
     }
 

@@ -159,7 +159,7 @@ class RoninChainService {
     const { hash, chainId, to: smartContractAddress } = transaction
     const [{ tokenId, recieverAddress }] = await contractService.getMintTransactionMetadata(transaction)
 
-    return { hash, chainId, smartContractAddress, tokenId, recieverAddress }
+    return { hash, chainId, smartContractAddress, tokenId, recieverAddress, tokenUri }
   }
 
   // async setApprovalForAll(address, isApproved) {
