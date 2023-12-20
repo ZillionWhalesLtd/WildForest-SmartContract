@@ -2,6 +2,7 @@
   "name": "zillion-whales-smart-contracts",
   "version": "0.0.1",
   "scripts": {
+    "uploadImages": "node ./bin/cli.js uploadImages -p '../LordImages'",
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'testLordsData.json'",
     "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'prodLordsData.json'",
     "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'testPacksData.json' -l 'minted_lords-test.json'",
@@ -40,14 +41,9 @@
     "@nomicfoundation/hardhat-toolbox": "^2.0.0",
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.4",
-    "chai": "^4.3.7",
-    "ethers": "^5.7.2",
-    "inquirer": "^8.0.0",
-    "hardhat": "^2.12.5",
-    "hardhat-gas-reporter": "^1.0.9",
-    "solidity-coverage": "^0.8.4",
     "@openzeppelin/contracts": "^4.7.3",
     "base64-sol": "^1.1.0",
+    "chai": "^4.3.7",
     "deep-equal-in-any-order": "^2.0.0",
     "dotenv": "^16.0.1",
     "eslint": "^8.16.0",
@@ -56,13 +52,21 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "6.0.0",
+    "ethers": "^5.7.2",
+    "hardhat": "^2.12.5",
     "hardhat-deploy": "^0.11.12",
+    "hardhat-gas-reporter": "^1.0.9",
+    "inquirer": "^8.0.0",
     "prettier": "^2.7.1",
     "solhint": "^3.3.7",
+    "solidity-coverage": "^0.8.4",
     "yargs": "^17.7.1"
   },
-  "engines" : {
-    "npm" : ">=9.6.4",
-    "node" : ">=20.0.0"
+  "engines": {
+    "npm": ">=9.6.4",
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "@thirdweb-dev/storage": "^2.0.8"
   }
 }

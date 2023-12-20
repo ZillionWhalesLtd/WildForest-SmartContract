@@ -2,9 +2,10 @@
 
 const yargs = require('yargs')
 const inquirer = require('inquirer')
-const fs = require('fs')
 
 const RoninChainService = require('./services/RoninChainService')
+const FileService = require('./services/FileService')
+const IPFSService = require('./services/IPFSService')
 
 const {
   SAIGON_LORDS_OWNER_ADDRESS,
@@ -41,6 +42,11 @@ const lordsPathCommandOptions = {
   default: hintLordsPath,
 }
 
+const getPathCommandOptions = (description, hint) => {
+  const customPathCommandOptions = { ...pathCommandOptions, description, default: hint }
+  return customPathCommandOptions
+}
+
 const argv = yargs
   .command('mintLords', 'Mint Lords NFTs according to the distribution data', {
     environment: environmentCommandOptions,
@@ -50,6 +56,9 @@ const argv = yargs
     environment: environmentCommandOptions,
     path: pathCommandOptions,
     lordsPath: lordsPathCommandOptions
+  })
+  .command('uploadImages', 'Upload images to IPFS', {
+    path: getPathCommandOptions('Path to the images folder', 'lordImages'),
   })
   .help()
   .showHelpOnFail(true)
@@ -90,36 +99,33 @@ const _askToProcessPacks = () => {
   })
 }
 
-const buildLordsToMint = (dataRequirements) => {
-  return []
-}
-
-const buildPacksToMint = (dataRequirements, lordsData) => {
-  return []
-}
-
-const writeToFile = (filePath, data) => {
-  fs.writeFileSync(filePath, data)
-}
-
 const main = async() => {
+  const repoPath = process.cwd()
+
+  const fileService = new FileService()
+  const ipfsService = new IPFSService(console)
+  const requirementsService = new RequirementsService(console)
+
+  let roninChainId = 'saigon'
+  const isMainNet = argv.environment === 'prod'
+  if (isMainNet) {
+    roninChainId = 'ronin'
+  }
+  const roninChainService = new RoninChainService(console, roninChainId)
 
   switch (argv._[0]) {
     case 'mintLords': {
       console.log('Preparing metadata for Lord NFTs...') // eslint-disable-line
 
-      const { environment, path } = argv
-      let roninChainId = 'saigon'
+      const { path } = argv
       let addressTo = SAIGON_LORDS_OWNER_ADDRESS
 
-      if (environment === 'prod') {
-        roninChainId = 'ronin'
+      if (isMainNet) {
         addressTo = RONIN_LORDS_OWNER_ADDRESS
       }
-      const roninChainService = new RoninChainService(console, roninChainId)
       const dataRequirements = require(`./mintRequirements/${path}`)
 
-      const lordsToMint = buildLordsToMint(dataRequirements)
+      const lordsToMint = requirementsService.buildLordsToMint(dataRequirements)
       console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessLords()
@@ -142,10 +148,9 @@ const main = async() => {
 
       const now = Date.now()
       const fileName = `minted_lords-${now}.json`
-      const repoPath = process.cwd()
       const filePath = `${repoPath}/bin/resultData/${fileName}`
 
-      writeToFile(filePath, JSON.stringify(lordsToMint, null, 2))
+      fileService.writeFile(filePath, JSON.stringify(lordsToMint, null, 2))
 
       console.log(`Done, minted ${mintedCounter} Lord NFTs`) // eslint-disable-line
       console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
@@ -154,19 +159,16 @@ const main = async() => {
     case 'mintPacks': {
       console.log('Preparing metadata for Pack NFTs...') // eslint-disable-line
 
-      const { environment, path, lordsPath } = argv
-      let roninChainId = 'saigon'
+      const { path, lordsPath } = argv
       let addressTo = SAIGON_PACKS_OWNER_ADDRESS
 
-      if (environment === 'prod') {
-        roninChainId = 'ronin'
+      if (isMainNet) {
         addressTo = RONIN_PACKS_OWNER_ADDRESS
       }
-      const roninChainService = new RoninChainService(console, roninChainId)
       const dataRequirements = require(`./mintRequirements/${path}`)
       const lordsData = require(`./resultData/${lordsPath}`)
 
-      const packsToMint = buildPacksToMint(dataRequirements, lordsData)
+      const packsToMint = requirementsService.buildPacksToMint(dataRequirements, lordsData)
       console.log('Prepared Packs To Mint:', packsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessPacks()
@@ -188,13 +190,46 @@ const main = async() => {
 
       const now = Date.now()
       const fileName = `minted_packs-${now}.json`
-      const repoPath = process.cwd()
       const filePath = `${repoPath}/bin/resultData/${fileName}`
 
-      writeToFile(filePath, JSON.stringify(packsToMint, null, 2))
+      fileService.writeFile(filePath, JSON.stringify(packsToMint, null, 2))
 
       console.log(`Done, minted ${mintedCounter} Pack NFTs`) // eslint-disable-line
       console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      break
+    }
+    case 'uploadImages': {
+      console.log('Uploading images to IPFS...') // eslint-disable-line
+
+      const { path } = argv
+      const dir = `${repoPath}/${path}`
+      const filePaths = fileService.readAllFilesAtDir(dir)
+
+      let uploadedCounter = 0
+      const uploadedImages = []
+      for (const filePath of filePaths) {
+        const imageContent = fileService.readFile(filePath)
+        const { url, uri } = await ipfsService.uploadImage(imageContent)
+        const fileParts = filePath.split('/')
+        const fileName = fileParts[fileParts.length - 1]
+        uploadedCounter++
+        console.log(`Uploaded ${fileName}. Counter: ${uploadedCounter}`) // eslint-disable-line
+        uploadedImages.push({
+          uri,
+          url,
+          filePath,
+          fileName,
+        })
+      }
+
+      const now = Date.now()
+      const resultFileName = `uploaded_images-${now}.json`
+      const resultFilePath = `${repoPath}/bin/resultData/${resultFileName}`
+
+      fileService.writeFile(resultFilePath, JSON.stringify(uploadedImages, null, 2))
+
+      console.log(`Done, uploaded ${uploadedCounter} Images`) // eslint-disable-line
+      console.log(`Result written into: \n ${resultFilePath}`) // eslint-disable-line
       break
     }
 
