@@ -1,9 +1,5 @@
-skin_id,type_id,set_id,rarity,@skin_name
-14101,8101,1,Epic,Royal Swordsman
-15101,8101,1,Legendary,Golden Royal Swordsman
-14102,8102,1,Epic,Royal Archer
-15102,8102,1,Legendary,Golden Royal Archer
-14201,8201,1,Epic,Royal Knight
-15201,8201,1,Legendary,Golden Royal Knight
-14202,8202,1,Epic,Royal Sniper
-15202,8202,1,Legendary,Golden Royal Sniper
+id,dna,rank,species,name
+031,001122,Rare,Fox,Golden Fox
+041,112222,Epic,Fox,Royal Fox
+051,331122,Legendary,Fox,Golden Royal Fox
+061,441211,Mystic,Fox,Mystic Fox

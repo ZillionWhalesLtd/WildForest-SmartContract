@@ -23,17 +23,15 @@ class RequirementsService {
       const lord = lords.find(l => { return l.rank === rankType })
 
       for (let counter = 0; counter < lordsTypeNumber; counter++) {
-        const { id: lordId, name } = lord
+        const { id: lordId, name, rank: lordRank, species, dna } = lord
         const { url } = imagesMap[lordId]
         // specie - enum 1 - Fox, 2 - Wolf
         // rank - enum 0 - Basic, 1 - Common, ..., 6 - Mystic
         // dna - hex XXX - emotion, clothes, flag
 
-        const dna = 'XXX'
-        const species = '1'
         const attributes = [
           { trait_type: 'species', value: species },
-          { trait_type: 'rank', value: rank },
+          { trait_type: 'rank', value: lordRank },
           { trait_type: 'dna', value: dna },
         ]
 
@@ -44,7 +42,7 @@ class RequirementsService {
           image: url,
           attributes,
         }
-        const lord = { metadata, rank }
+        const lord = { metadata, rank: lordRank }
 
         lordsToMint.push(lord)
       }
