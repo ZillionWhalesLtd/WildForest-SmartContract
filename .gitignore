@@ -7,3 +7,5 @@ coverage
 coverage.json
 .nyc_output
 deployments
+prodLordsData.json
+prodPacksData.json

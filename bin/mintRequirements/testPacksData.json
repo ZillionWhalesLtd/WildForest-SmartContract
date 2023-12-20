@@ -1,1 +1,22 @@
-{}
+{
+  "types": {
+    "Basic": {
+      "number": 5,
+      "lords": {
+
+      },
+      "units": {
+
+      },
+      "skins": {
+
+      }
+    },
+    "Premium": {
+      "number": 5
+    },
+    "Founder": {
+      "number": 5
+    }
+  }
+}

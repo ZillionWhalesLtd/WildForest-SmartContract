@@ -1,8 +1,12 @@
 'use strict'
 
+require('dotenv').config()
+
 const keyBy = require('lodash.keyby')
 const CsvService = require('./CsvService')
 const CryptoService = require('./CryptoService')
+
+const { PACKS_ENCRYPTION_KEY } = process.env
 
 const LORDS_DESCRIPTION = 'Wild Forest Lords'
 
@@ -62,12 +66,12 @@ class RequirementsService {
       // "lords": [{ image: '...', properties: {..?.} }],
       // "tokens": 125,
     }
-    const ecnryptedTreasure = cryptoService.encrypt(treasure)
+    const ecnryptedTreasure = cryptoService.encrypt(treasure, PACKS_ENCRYPTION_KEY)
     const treasureHash = await cryptoService.hash(treasureHash)
     const publickMetadata = {
-      name: 'Pack',
-      description: '........',
-      image: "https://image.com/123",
+      name: 'Treasure Pack',
+      description: 'Treasure Pack',
+      image: "https://image.com/closedTreasure",
       properties: {
          state: 'locked',
           treasure: ecnryptedTreasure
