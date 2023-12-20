@@ -3,24 +3,28 @@
     "uri": "ipfs://QmPmmGupSpyQ5NDJ1iN3mgFFkxLyLX7p2QZKL4LghK4fhY/0",
     "url": "https://ipfs.io/ipfs/QmPmmGupSpyQ5NDJ1iN3mgFFkxLyLX7p2QZKL4LghK4fhY/0",
     "filePath": ".../ProjectX-SmartContract/../LordImages/lord_031.png",
-    "fileName": "lord_031.png"
+    "fileName": "lord_031.png",
+    "id": "031"
   },
   {
     "uri": "ipfs://QmdQAktCHaveGcptPMLN3tecWnDrNjqZXiBM25BP989qDG/0",
     "url": "https://ipfs.io/ipfs/QmdQAktCHaveGcptPMLN3tecWnDrNjqZXiBM25BP989qDG/0",
     "filePath": ".../ProjectX-SmartContract/../LordImages/lord_041.png",
-    "fileName": "lord_041.png"
+    "fileName": "lord_041.png",
+    "id": "041"
   },
   {
     "uri": "ipfs://QmcTe6h1bkH6m5C5KT8mD9R7P1mxf69SSBrioywMF6hL4E/0",
     "url": "https://ipfs.io/ipfs/QmcTe6h1bkH6m5C5KT8mD9R7P1mxf69SSBrioywMF6hL4E/0",
     "filePath": ".../ProjectX-SmartContract/../LordImages/lord_051.png",
-    "fileName": "lord_051.png"
+    "fileName": "lord_051.png",
+    "id": "051"
   },
   {
     "uri": "ipfs://QmUHmWwKwERiUtCp1Lz7TnGdubtqypYqbznPvbqN1pGhrN/0",
     "url": "https://ipfs.io/ipfs/QmUHmWwKwERiUtCp1Lz7TnGdubtqypYqbznPvbqN1pGhrN/0",
     "filePath": ".../ProjectX-SmartContract/../LordImages/lord_061.png",
-    "fileName": "lord_061.png"
+    "fileName": "lord_061.png",
+    "id": "061"
   }
 ]

@@ -124,8 +124,9 @@ const main = async() => {
         addressTo = RONIN_LORDS_OWNER_ADDRESS
       }
       const dataRequirements = require(`./mintRequirements/${path}`)
+      const imagesMetadata = require('./resultData/uploaded_images.json')
 
-      const lordsToMint = requirementsService.buildLordsToMint(dataRequirements)
+      const lordsToMint = requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
       console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessLords()
@@ -214,7 +215,10 @@ const main = async() => {
         const fileName = fileParts[fileParts.length - 1]
         uploadedCounter++
         console.log(`Uploaded ${fileName}. Counter: ${uploadedCounter}`) // eslint-disable-line
+
+        const lordId = fileName.split('.')[0].replace('lord_', '')
         uploadedImages.push({
+          id: lordId,
           uri,
           url,
           filePath,
