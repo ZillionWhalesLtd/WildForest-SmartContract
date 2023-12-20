@@ -5,11 +5,11 @@
 - Ronin [tx: 0xef7c573b5619d37dc788338de14d689d90d3e01f5279bdc0166ea28a53c53791, deployed at 0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 
 ## NFTs (Skins):
-- Saigon [](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
+- Saigon [tx: 0x50acc18ac45ea092cf533e4e00d768a894f73bf42ee2f9ebad3ef6c3d90b6cbc, deployed at 0x345F9a11518117db6f42DD20aa2c9eDE2ed35DBf](https://saigon-app.roninchain.com/address/0x345F9a11518117db6f42DD20aa2c9eDE2ed35DBf?t=contract&st=write-contract)
 - Ronin [](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 
 ## NFTs (Packs):
-- Saigon [](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
+- Saigon [tx: 0x06f621c16330a43482e6d0930a9e424b0f29f53b53bec3e99f18ef99cc81dde1, deployed at 0xe67E2B9da4cCd8229Ed0e2030bBE84877522dba3](https://saigon-app.roninchain.com/address/0xe67E2B9da4cCd8229Ed0e2030bBE84877522dba3?t=contract&st=write-contract)
 - Ronin [](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 
 ## NFT With defined tokenURI (Lords):
