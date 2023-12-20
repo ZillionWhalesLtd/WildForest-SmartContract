@@ -48,7 +48,7 @@ contract WildForestMedal is ERC1155 {
 
   function uri(uint256 _seasonId) override public view returns (string memory) {
     require(_exists(_seasonId), "season does not exists");
-    return string.concat(super.uri(_seasonId), Strings.toString(_seasonId), ".json");
+    return string.concat(super.uri(_seasonId), Strings.toString(_seasonId));
   }
 
   function addNewSeason(uint256 initialSupply) external onlyGovernance returns (uint256) {

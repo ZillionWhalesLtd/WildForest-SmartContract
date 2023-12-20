@@ -8,7 +8,7 @@ const { expect } = chai
 
 const name = 'WildForestMedals'
 const symbol = `WFM`
-// const uri = 'https://localhost:3000/api/mdeal/{id}.json'
+// const uri = 'https://localhost:3000/api/mdeal/{id}'
 const uri = 'https://localhost:3000/api/mdeal/'
 
 const deploy = async () => {
@@ -96,7 +96,7 @@ describe('WildForestMedal', function () {
     )
 
     await alice.contract.setURI(newURI)
-    expect(await alice.contract.uri(1)).to.equal(`${newURI}1.json`)
+    expect(await alice.contract.uri(1)).to.equal(`${newURI}1`)
 
     await expect(owner.contract.mintBatch(alice.address, [1], [1])).to.be.revertedWith(
       'only governance can call this'
@@ -143,7 +143,7 @@ describe('WildForestMedal', function () {
     )
 
     await owner.contract.addNewSeason(50)
-    expect(await alice.contract.uri(1)).to.equal(`${uri}1.json`)
+    expect(await alice.contract.uri(1)).to.equal(`${uri}1`)
 
     const newURI = 'https://localhost:4000/api/mdeal/'
     await expect(alice.contract.setURI(newURI)).to.be.revertedWith(
@@ -151,7 +151,7 @@ describe('WildForestMedal', function () {
     )
 
     await owner.contract.setURI(newURI)
-    expect(await alice.contract.uri(1)).to.equal(`${newURI}1.json`)
+    expect(await alice.contract.uri(1)).to.equal(`${newURI}1`)
   })
 
   it('Minting should be available only for owner (error when other trying)', async () => {
