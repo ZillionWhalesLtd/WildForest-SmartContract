@@ -3,20 +3,68 @@
     "Basic": {
       "number": 5,
       "lords": {
-
+        "Rare": 2,
+        "Epic": 1,
+        "Legendary": 1,
+        "Mystic": 0
       },
       "units": {
-
+        "Common": 5,
+        "Rare": 5,
+        "Epic": 0,
+        "Legendary": 0,
+        "Mystic": 0
       },
       "skins": {
-
+        "Rare": 0,
+        "Epic": 0.85,
+        "Legendary": 0.15,
+        "Mystic": 0
       }
     },
     "Premium": {
-      "number": 5
+      "number": 5,
+      "lords": {
+        "Rare": 2,
+        "Epic": 1,
+        "Legendary": 1,
+        "Mystic": 1
+      },
+      "units": {
+        "Common": 10,
+        "Rare": 10,
+        "Epic": 0,
+        "Legendary": 0,
+        "Mystic": 0
+      },
+      "skins": {
+        "Rare": 0,
+        "Epic": 0,
+        "Legendary": 1,
+        "Mystic": 0
+      }
     },
     "Founder": {
-      "number": 5
+      "number": 5,
+      "lords": {
+        "Rare": 0,
+        "Epic": 3,
+        "Legendary": 1,
+        "Mystic": 1
+      },
+      "units": {
+        "Common": 0,
+        "Rare": 20,
+        "Epic": 0,
+        "Legendary": 0,
+        "Mystic": 0
+      },
+      "skins": {
+        "Rare": 0,
+        "Epic": 0,
+        "Legendary": 4,
+        "Mystic": 0
+      }
     }
   }
 }

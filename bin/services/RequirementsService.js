@@ -3,12 +3,17 @@
 require('dotenv').config()
 
 const keyBy = require('lodash.keyby')
+const groupBy = require('lodash.groupby')
 const CsvService = require('./CsvService')
 const CryptoService = require('./CryptoService')
 
 const { PACKS_ENCRYPTION_KEY } = process.env
 
 const LORDS_DESCRIPTION = 'Wild Forest Lords'
+
+const randomNumber = (min, max) => {
+  return Math.floor(Math.random() * (max - min) + min)
+}
 
 class RequirementsService {
   constructor(logger) {
@@ -60,40 +65,122 @@ class RequirementsService {
 
   async buildPacksToMint(dataRequirements, lordsData) {
     const cryptoService = new CryptoService(this._logger)
+    const lordsGroupedMap = groupBy(lordsData, 'rank')
+
+    const repoPath = process.cwd()
+    const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins.csv`
+    const configSkins = await this._csvService.readFile(skinsConfigPath)
+    const skinsGroupedMap = groupBy(configSkins, 'rarity')
     const packsToMint = []
 
-    const treasure = {
-      // "units": [{ image: '...', properties: { "type_id":8101,"tier":1,"rarity":"Common","level":1 } }],
-      // "skins": [{ image: '...', properties: {..?.} }],
-      // "lords": [{ image: '...', properties: {..?.} }],
-      // "tokens": 125,
-    }
-    const ecnryptedTreasure = cryptoService.encrypt(treasure, PACKS_ENCRYPTION_KEY)
-    const treasureHash = await cryptoService.hash(treasureHash)
-    const publickMetadata = {
-      name: 'Treasure Pack',
-      description: 'Treasure Pack',
-      image: "https://image.com/closedTreasure",
-      properties: {
-         state: 'locked',
-          treasure: ecnryptedTreasure
-       }
-    }
+    for (const packType in dataRequirements.types) {
+      const typeDistribution = dataRequirements.types[packType]
+      const { number, lords, units, skins } = typeDistribution
 
-    const rawMetadata = {
-      ...publickMetadata, properties: { state: 'unlocked', treasure }
-    }
+      const lordsDstributionArray = []
 
-    const hashedApproachMetdata = {
-      ...publickMetadata, properties: { state: 'locked', treasure: treasureHash }
-    }
+      for (const lordType in lords) {
+        const lordTypeNumber = lords[lordType]
 
-    const packToMint = {
-      publickMetadata,
-      rawMetadata,
-      hashedApproachMetdata
+        for (let counter = 0; counter < lordTypeNumber; counter++) {
+          lordsDstributionArray.push({ rank: lordType })
+        }
+      }
+
+      const lordsLength = lordsDstributionArray.length
+
+      if (lordsLength < number) {
+        for (let counter = 0; counter < number - lordsLength ; counter++) {
+          lordsDstributionArray.push({ isEmpty: true })
+        }
+      }
+
+      for (let counter = 0; counter < number; counter++) {
+        const randomLordPosition = randomNumber(0, lordsDstributionArray.length - 1)
+        const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
+
+        let skinsTreasury = []
+        if ( (skins.Legenday > 0 && skins.Legenday < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
+          const randomLegendary = randomNumber(1, 100) / 100
+          const legendaryIsPicked = randomLegendary < skins.Legenday
+          if (legendaryIsPicked) {
+            skins.Legenday = 1
+            skins.Epic = 0
+          } else {
+            skins.Legenday = 0
+            skins.Epic = 1
+          }
+        }
+
+        for (const skinType in skins) {
+          const skinsTypeNumber = skins[skinType]
+          if (skinsTypeNumber > 1) {
+            const skinsTypeArray = [...skinsGroupedMap[skinType]]
+            for (let counter = 0; counter < skinsTypeNumber; counter++) {
+              const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length - 1)
+              const [pickedSkin] = skinsTypeArray.splice(randomSkinTypePosition, 1)
+              const { skin_id } = pickedSkin
+              skinsTreasury.push({ skin_id })
+            }
+          }
+        }
+
+        let unitsTreasury = []
+        for (const unitType in units) {
+          const unitsTypeNumber = units[unitType]
+          if (unitsTypeNumber > 0) {
+            const unitTreasury = {}
+            unitTreasury[unitType] = unitsTypeNumber
+            unitsTreasury.push(unitTreasury)
+          }
+        }
+
+        const treasure = {
+          units: unitsTreasury,
+          skins: skinsTreasury,
+          // "tokens": 125,
+        }
+
+        if (!randomLord.isEmpty) {
+          const mintedLordsRanks = lordsGroupedMap[randomLord.rank]
+          const randomLorTypePosition = randomNumber(0, mintedLordsRanks.length - 1)
+          const { tokenId } = mintedLordsRanks[randomLorTypePosition]
+          treasure.lords = [{ tokenId }]
+        }
+
+        const ecnryptedTreasure = cryptoService.encrypt(treasure, PACKS_ENCRYPTION_KEY)
+        const treasureHash = await cryptoService.hash(treasure)
+        const publickMetadata = {
+          name: 'Treasure Pack',
+          description: 'Treasure Pack',
+          image: "https://image.com/closedTreasure",
+          properties: {
+             state: 'locked',
+              treasure: ecnryptedTreasure
+           }
+        }
+
+        const rawMetadata = {
+          ...publickMetadata, properties: { state: 'unlocked', treasure }
+        }
+
+        const hashedApproachMetdata = {
+          ...publickMetadata, properties: { state: 'locked', treasure: treasureHash }
+        }
+
+        const packToMint = {
+          publickMetadata,
+          ecnryptedTreasure,
+          rawMetadata,
+          treasure: JSON.stringify(treasure),
+          hashedApproachMetdata,
+          treasureHash
+        }
+        packsToMint.push(packToMint)
+
+      }
+
     }
-    packsToMint.push(packToMint)
 
     return packsToMint
   }

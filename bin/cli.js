@@ -190,6 +190,10 @@ const main = async() => {
         packToMint.tokenId = tokenId
         packToMint.chainId = chainId
         packToMint.hash = hash
+
+        delete packToMint.ecnryptedTreasure
+        delete packToMint.treasureHash
+        delete packToMint.treasure
       }
 
       const now = Date.now()

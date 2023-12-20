@@ -4,8 +4,8 @@
   "scripts": {
     "uploadImages": "node ./bin/cli.js uploadImages -p '../LordImages'",
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'testLordsData.json'",
-    "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'prodLordsData.json'",
     "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'testPacksData.json' -l 'minted_lords-test.json'",
+    "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'prodLordsData.json'",
     "mintPacks:prod": "node ./bin/cli.js mintPacks -e 'prod' -p 'prodPacksData.json' -l 'minted_lords-prod.json'",
     "compile": "npx hardhat compile",
     "deploy": "npx hardhat deploy",
@@ -72,6 +72,7 @@
   },
   "dependencies": {
     "@thirdweb-dev/storage": "^2.0.8",
+    "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0"
   }
 }
