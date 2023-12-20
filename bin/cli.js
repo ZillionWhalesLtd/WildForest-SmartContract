@@ -169,7 +169,7 @@ const main = async() => {
       const dataRequirements = require(`./mintRequirements/${path}`)
       const lordsData = require(`./resultData/${lordsPath}`)
 
-      const packsToMint = requirementsService.buildPacksToMint(dataRequirements, lordsData)
+      const packsToMint = await requirementsService.buildPacksToMint(dataRequirements, lordsData)
       console.log('Prepared Packs To Mint:', packsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessPacks()

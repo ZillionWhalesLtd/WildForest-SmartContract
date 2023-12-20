@@ -2,6 +2,7 @@
 
 const keyBy = require('lodash.keyby')
 const CsvService = require('./CsvService')
+const CryptoService = require('./CryptoService')
 
 const LORDS_DESCRIPTION = 'Wild Forest Lords'
 
@@ -51,8 +52,44 @@ class RequirementsService {
     return lordsToMint
   }
 
-  buildLordsToMintbuildPacksToMint(dataRequirements, lordsData) {
-    return []
+  async buildPacksToMint(dataRequirements, lordsData) {
+    const cryptoService = new CryptoService(this._logger)
+    const packsToMint = []
+
+    const treasure = {
+      // "units": [{ image: '...', properties: { "type_id":8101,"tier":1,"rarity":"Common","level":1 } }],
+      // "skins": [{ image: '...', properties: {..?.} }],
+      // "lords": [{ image: '...', properties: {..?.} }],
+      // "tokens": 125,
+    }
+    const ecnryptedTreasure = cryptoService.encrypt(treasure)
+    const treasureHash = await cryptoService.hash(treasureHash)
+    const publickMetadata = {
+      name: 'Pack',
+      description: '........',
+      image: "https://image.com/123",
+      properties: {
+         state: 'locked',
+          treasure: ecnryptedTreasure
+       }
+    }
+
+    const rawMetadata = {
+      ...publickMetadata, properties: { state: 'unlocked', treasure }
+    }
+
+    const hashedApproachMetdata = {
+      ...publickMetadata, properties: { state: 'locked', treasure: treasureHash }
+    }
+
+    const packToMint = {
+      publickMetadata,
+      rawMetadata,
+      hashedApproachMetdata
+    }
+    packsToMint.push(packToMint)
+
+    return packsToMint
   }
 
 }
