@@ -42,7 +42,7 @@ class RequirementsService {
         // dna - hex XXX - emotion, clothes, flag
 
         const attributes = [
-          { trait_type: 'species', value: species },
+          { trait_type: 'specie', value: species },
           { trait_type: 'rank', value: lordRank },
           { trait_type: 'dna', value: dna },
         ]
@@ -75,7 +75,7 @@ class RequirementsService {
 
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
-      const { number, lords, units, skins } = typeDistribution
+      const { number, lords, units, skins: originalSkins } = typeDistribution
 
       const lordsDstributionArray = []
 
@@ -96,25 +96,27 @@ class RequirementsService {
       }
 
       for (let counter = 0; counter < number; counter++) {
+        const skins = { ...originalSkins }
         const randomLordPosition = randomNumber(0, lordsDstributionArray.length - 1)
         const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
 
         let skinsTreasury = []
-        if ( (skins.Legenday > 0 && skins.Legenday < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
+        let legendaryIsPicked
+        if ( (skins.Legendary > 0 && skins.Legendary < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
           const randomLegendary = randomNumber(1, 100) / 100
-          const legendaryIsPicked = randomLegendary < skins.Legenday
+          legendaryIsPicked = randomLegendary < skins.Legendary
           if (legendaryIsPicked) {
-            skins.Legenday = 1
+            skins.Legendary = 1
             skins.Epic = 0
           } else {
-            skins.Legenday = 0
+            skins.Legendary = 0
             skins.Epic = 1
           }
         }
 
         for (const skinType in skins) {
           const skinsTypeNumber = skins[skinType]
-          if (skinsTypeNumber > 1) {
+          if (skinsTypeNumber > 0) {
             const skinsTypeArray = [...skinsGroupedMap[skinType]]
             for (let counter = 0; counter < skinsTypeNumber; counter++) {
               const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length - 1)
@@ -144,7 +146,8 @@ class RequirementsService {
         if (!randomLord.isEmpty) {
           const mintedLordsRanks = lordsGroupedMap[randomLord.rank]
           const randomLorTypePosition = randomNumber(0, mintedLordsRanks.length - 1)
-          const { tokenId } = mintedLordsRanks[randomLorTypePosition]
+          const [mintedTypeLord] = mintedLordsRanks.splice(randomLorTypePosition, 1)
+          const { tokenId } = mintedTypeLord
           treasure.lords = [{ tokenId }]
         }
 
