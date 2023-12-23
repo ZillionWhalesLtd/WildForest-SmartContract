@@ -3,7 +3,7 @@
 ## NFTs (Units):
 - Saigon [tx: 0x289de444ee28c9171013eaad49e2923f7f07053cb86c717c6534d030f2c69f06, deployed at 0x5448955aF1FC5C6c5e19b0Ab177E5D3a28268Fee](https://saigon-app.roninchain.com/address/0x5448955af1fc5c6c5e19b0ab177e5d3a28268fee?t=contract&st=write-contract)
 - Ronin [tx: 0xef7c573b5619d37dc788338de14d689d90d3e01f5279bdc0166ea28a53c53791, deployed at 0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
-- Ronin (Live) [tx: 0x4000137274bcc086299b0d113ea895e2af89abdf3e8f2466857d4f51611658b6, deployed at 0x2659681E1406EC5212A6751d9B180Ad1719E1d99](https://app.roninchain.com/address/0x2659681E1406EC5212A6751d9B180Ad1719E1d99?t=contract)
+- Ronin (Live) [tx: 0xd8505e79202110e2ecdd4240fbc72cfd8caf415ca4c04a2ea4394a37082c8d8a, deployed at 0x4B7B799C5B21623c810E6d2EF3Ad89643D02fF86](https://app.roninchain.com/address/0x4B7B799C5B21623c810E6d2EF3Ad89643D02fF86?t=contract)
 
 ## NFTs (Skins):
 - Saigon [tx: 0x94503c4f35c8db8f456b438e4d61dcc07f104331a89d33d2cd6bdb609c921a8d, deployed at 0x7B3e4c79E7e20f4a58B66dDBE74dBFd04c7E463C](https://saigon-app.roninchain.com/address/0x7B3e4c79E7e20f4a58B66dDBE74dBFd04c7E463C?t=contract&st=write-contract)
