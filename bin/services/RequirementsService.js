@@ -69,8 +69,13 @@ class RequirementsService {
 
     const repoPath = process.cwd()
     const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins.csv`
+    const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
+
     const configSkins = await this._csvService.readFile(skinsConfigPath)
+    const configUnits = await this._csvService.readFile(unitsConfigPath)
+
     const skinsGroupedMap = groupBy(configSkins, 'rarity')
+    const unitsGroupedMap = groupBy(configUnits, 'rarity')
     const packsToMint = []
 
     for (const packType in dataRequirements.types) {
@@ -122,7 +127,7 @@ class RequirementsService {
               const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length - 1)
               const [pickedSkin] = skinsTypeArray.splice(randomSkinTypePosition, 1)
               const { skin_id } = pickedSkin
-              skinsTreasury.push({ skin_id })
+              skinsTreasury.push({ id: skin_id })
             }
           }
         }
@@ -131,9 +136,14 @@ class RequirementsService {
         for (const unitType in units) {
           const unitsTypeNumber = units[unitType]
           if (unitsTypeNumber > 0) {
-            const unitTreasury = {}
-            unitTreasury[unitType] = unitsTypeNumber
-            unitsTreasury.push(unitTreasury)
+            const unitsTypeArray = [...unitsGroupedMap[unitType]]
+            for (let counter = 0; counter < unitsTypeNumber; counter++) {
+              const randomUnitTypePosition = randomNumber(0, unitsTypeArray.length - 1)
+              const [pickedUnit] = unitsTypeArray.splice(randomUnitTypePosition, 1)
+              const { id } = pickedUnit
+              unitsTreasury.push({ id })
+              // unitsTreasury.push(unitTreasury)
+            }
           }
         }
 
