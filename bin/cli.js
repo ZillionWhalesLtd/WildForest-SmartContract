@@ -100,6 +100,11 @@ const _askToProcessPacks = () => {
   })
 }
 
+const CHAINS_MAP = {
+  '2021': 'Saigon',
+  '2020': 'RONIN',
+}
+
 const main = async() => {
   const repoPath = process.cwd()
 
@@ -140,9 +145,14 @@ const main = async() => {
       let mintedCounter = 0
       for (const lordToMint of lordsToMint) {
         const { metadata: lordToMintMetadata } = lordToMint
-        const { tokenId, hash, chainId, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
+        const { tokenId, hash, chainId: chainIdentifier, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
         mintedCounter++
         console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
+        let chainId = chainIdentifier
+        if (CHAINS_MAP[chainId]) {
+          chainId = CHAINS_MAP[chainId]
+        }
+
         lordToMint.tokenId = tokenId
         lordToMint.chainId = chainId
         lordToMint.hash = hash
