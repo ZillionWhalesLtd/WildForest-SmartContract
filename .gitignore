@@ -9,3 +9,5 @@ coverage.json
 deployments
 prodLordsData.json
 prodPacksData.json
+ConfigsUnitsList.csv
+minted_packs-*

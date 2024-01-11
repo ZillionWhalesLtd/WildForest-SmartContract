@@ -191,29 +191,36 @@ const main = async() => {
         return
       }
 
-      console.log('Minting Pack NFTs...') // eslint-disable-line
-      let mintedCounter = 0
-      for (const packToMint of packsToMint) {
-        const { tokenId, hash, chainId } = await roninChainService.mintPackNFT(addressTo)
-        mintedCounter++
-        console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
-        packToMint.tokenId = tokenId
-        packToMint.chainId = chainId
-        packToMint.hash = hash
-
-        delete packToMint.ecnryptedTreasure
-        delete packToMint.treasureHash
-        delete packToMint.treasure
-      }
-
       const now = Date.now()
       const fileName = `minted_packs-${now}.json`
       const filePath = `${repoPath}/bin/resultData/${fileName}`
 
       fileService.writeFile(filePath, JSON.stringify(packsToMint, null, 2))
+      console.log(`Done, Result written into: \n ${filePath}`) // eslint-disable-line
 
-      console.log(`Done, minted ${mintedCounter} Pack NFTs`) // eslint-disable-line
-      console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      // console.log('Minting Pack NFTs...') // eslint-disable-line
+      // let mintedCounter = 0
+      // for (const packToMint of packsToMint) {
+      //   const { tokenId, hash, chainId } = await roninChainService.mintPackNFT(addressTo)
+      //   mintedCounter++
+      //   console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
+      //   packToMint.tokenId = tokenId
+      //   packToMint.chainId = chainId
+      //   packToMint.hash = hash
+
+      //   delete packToMint.ecnryptedTreasure
+      //   delete packToMint.treasureHash
+      //   delete packToMint.treasure
+      // }
+
+      // const now = Date.now()
+      // const fileName = `minted_packs-${now}.json`
+      // const filePath = `${repoPath}/bin/resultData/${fileName}`
+
+      // fileService.writeFile(filePath, JSON.stringify(packsToMint, null, 2))
+
+      // console.log(`Done, minted ${mintedCounter} Pack NFTs`) // eslint-disable-line
+      // console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
       break
     }
     case 'uploadImages': {

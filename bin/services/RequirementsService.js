@@ -78,6 +78,7 @@ class RequirementsService {
     const unitsGroupedMap = groupBy(configUnits, 'rarity')
     const packsToMint = []
 
+    let packCounter = 1
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
       const { number, lords, units, skins: originalSkins } = typeDistribution
@@ -161,34 +162,43 @@ class RequirementsService {
           treasure.lords = [{ tokenId }]
         }
 
-        const ecnryptedTreasure = cryptoService.encrypt(treasure, PACKS_ENCRYPTION_KEY)
-        const treasureHash = await cryptoService.hash(treasure)
-        const publickMetadata = {
-          name: 'Treasure Pack',
-          description: 'Treasure Pack',
-          image: "https://image.com/closedTreasure",
-          properties: {
-             state: 'locked',
-              treasure: ecnryptedTreasure
-           }
-        }
-
-        const rawMetadata = {
-          ...publickMetadata, properties: { state: 'unlocked', treasure }
-        }
-
-        const hashedApproachMetdata = {
-          ...publickMetadata, properties: { state: 'locked', treasure: treasureHash }
-        }
-
         const packToMint = {
-          publickMetadata,
-          ecnryptedTreasure,
-          rawMetadata,
-          treasure: JSON.stringify(treasure),
-          hashedApproachMetdata,
-          treasureHash
+          name: 'Treasure Pack',
+          type: packType,
+          treasure,
+          id: packCounter,
         }
+
+        packCounter++
+
+        // const ecnryptedTreasure = cryptoService.encrypt(treasure, PACKS_ENCRYPTION_KEY)
+        // const treasureHash = await cryptoService.hash(treasure)
+        // const publickMetadata = {
+        //   name: 'Treasure Pack',
+        //   description: 'Treasure Pack',
+        //   image: "https://image.com/closedTreasure",
+        //   properties: {
+        //      state: 'locked',
+        //       treasure: ecnryptedTreasure
+        //    }
+        // }
+
+        // const rawMetadata = {
+        //   ...publickMetadata, properties: { state: 'unlocked', treasure }
+        // }
+
+        // const hashedApproachMetdata = {
+        //   ...publickMetadata, properties: { state: 'locked', treasure: treasureHash }
+        // }
+
+        // const packToMint = {
+        //   publickMetadata,
+        //   ecnryptedTreasure,
+        //   rawMetadata,
+        //   treasure: JSON.stringify(treasure),
+        //   hashedApproachMetdata,
+        //   treasureHash
+        // }
         packsToMint.push(packToMint)
 
       }
