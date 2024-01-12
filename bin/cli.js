@@ -7,6 +7,7 @@ const RoninChainService = require('./services/RoninChainService')
 const FileService = require('./services/FileService')
 const IPFSService = require('./services/IPFSService')
 const RequirementsService = require('./services/RequirementsService')
+const CsvService = require('./services/CsvService')
 
 const {
   SAIGON_LORDS_OWNER_ADDRESS,
@@ -129,10 +130,17 @@ const main = async() => {
       if (isMainNet) {
         addressTo = RONIN_LORDS_OWNER_ADDRESS
       }
-      const dataRequirements = require(`./mintRequirements/${path}`)
-      const imagesMetadata = require('./resultData/uploaded_images.json')
+      // const dataRequirements = require(`./mintRequirements/${path}`)
+      // const imagesMetadata = require('./resultData/uploaded_images.json')
 
-      const lordsToMint = await requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
+      // const lordsToMint = await requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
+
+      const repoPath = process.cwd()
+      const lordsConfigPath = `${repoPath}/bin/csvConfigs/${path}`
+      const csvService = new CsvService()
+      const dataRequirements = await csvService.readFile(lordsConfigPath)
+
+      const lordsToMint = await requirementsService.buildLordsToMintFromMetadata(dataRequirements)
       console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessLords()

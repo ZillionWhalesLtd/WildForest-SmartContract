@@ -3,13 +3,14 @@
 require('dotenv').config()
 
 const keyBy = require('lodash.keyby')
-const groupBy = require('lodash.groupby')
+// const groupBy = require('lodash.groupby')
 const CsvService = require('./CsvService')
 const CryptoService = require('./CryptoService')
 
-const { PACKS_ENCRYPTION_KEY } = process.env
+// const { PACKS_ENCRYPTION_KEY } = process.env
 
-const LORDS_DESCRIPTION = 'Wild Forest Lords'
+// const LORDS_DESCRIPTION = 'Wild Forest Lords'
+const LORDS_DESCRIPTION = ''
 
 const randomNumber = (min, max) => {
   return Math.floor(Math.random() * (max - min) + min)
@@ -19,6 +20,42 @@ class RequirementsService {
   constructor(logger) {
     this._logger = logger
     this._csvService = new CsvService()
+  }
+
+  async buildLordsToMintFromMetadata(dataRequirements) {
+    const lordsToMint = []
+
+    const lordRecords = dataRequirements
+
+    for (const lordRecord of lordRecords) {
+
+      // const { nft_id, specie, lordRank, dna, name, url } = lordRecord
+      const { specie, rank: lordRank, dna, name, image: url } = lordRecord
+
+      const attributes = [
+        { trait_type: 'specie', value: specie },
+        { trait_type: 'rank', value: lordRank },
+        { trait_type: 'dna', value: dna },
+      ]
+
+      const metadata = {
+        // id
+        name,
+        description: LORDS_DESCRIPTION,
+        image: url,
+        attributes,
+      }
+
+      const lordToMint = {
+        metadata,
+        rank: lordRank,
+        attributesJSON: JSON.stringify(attributes),
+      }
+
+      lordsToMint.push(lordToMint)
+    }
+
+    return lordsToMint
   }
 
   async buildLordsToMint(dataRequirements, imagesMetadata) {
