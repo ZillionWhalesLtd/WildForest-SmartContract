@@ -17,6 +17,10 @@
 - Saigon [tx: 0x374a0d571dffecb6fc0af118caeac9f169097e67288f55016b47d12598a28b02, deployed at 0x6C235Ec577398Ac1a043C4971B11aEe3CB44d7C0](https://saigon-app.roninchain.com/address/0x6C235Ec577398Ac1a043C4971B11aEe3CB44d7C0?t=contract&st=write-contract)
 - Ronin (Live) [](https://app.roninchain.com/address/0x56bf1139e562be570ccf378fe8d37025a1d1b2a8?t=contract)
 
+## NFTs (Packs ERC1155 PROXY):
+- Saigon [tx: 0xecde996089a0a29a720f8e83fd2186d5d7a6be4cb2099b7f93a5727996cbc159, deployed at 0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251](https://saigon-app.roninchain.com/address/0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251?t=contract&st=read-contract-proxy&f=9&params=1)
+- Ronin (Live) [](https://app.roninchain.com/address/0x56bf1139e562be570ccf378fe8d37025a1d1b2a8?t=contract)
+
 ## NFT With defined tokenURI (Lords):
 - Saigon [tx: 0x2828d463088941e15c2500e15524861f14510b1efa69f21467df5ec2deb7201d, deployed at 0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce](https://saigon-app.roninchain.com/address/0xb39BFea8894aB4AcDE03f8ECEb47a6962a1e98ce)
 - Ronin (Live) [tx: 0x774cf4229f3840bf18fd3e2ddc6fa559b211c1f33fb802503c0f519fe9587c74, deployed at 0xdd645C1093bE18C9667E1e79957a89B62cc3cba6](https://app.roninchain.com/address/0xdd645C1093bE18C9667E1e79957a89B62cc3cba6?t=contract)

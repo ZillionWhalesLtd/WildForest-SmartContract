@@ -45,6 +45,8 @@
     "@nomiclabs/hardhat-ethers": "^2.2.1",
     "@nomiclabs/hardhat-etherscan": "^3.1.4",
     "@openzeppelin/contracts": "^4.7.3",
+    "@openzeppelin/contracts-upgradeable": "^4.7.3",
+    "@openzeppelin/hardhat-upgrades": "1.28.0",
     "base64-sol": "^1.1.0",
     "chai": "^4.3.7",
     "csvtojson": "^2.0.10",

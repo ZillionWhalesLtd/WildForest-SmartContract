@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract WildForestMedal is ERC1155 {
+contract WildForestMedal is ERC1155Upgradeable {
   mapping (uint256 => uint256) public tokenSupply;
 
   address private _governance;
@@ -19,7 +19,13 @@ contract WildForestMedal is ERC1155 {
     _;
   }
 
-  constructor(string memory _name, string memory _symbol, string memory uri_, address _ownerAddress) public ERC1155(uri_) {
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
+  function initialize(string memory _name, string memory _symbol, string memory uri_, address _ownerAddress) public initializer {
+    __ERC1155_init(uri_);
     name = _name;
     symbol = _symbol;
     _governance = _ownerAddress;

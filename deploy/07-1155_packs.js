@@ -1,5 +1,6 @@
 require('dotenv').config()
 
+// const { ethers, upgrades } = require('hardhat')
 const { PACKS_OWNER_ADDRESS, SAIGON_PACKS_NFT_OWNER_ADDRESS } = process.env
 
 const func = async function ({ getChainId, getNamedAccounts, deployments: { deploy } }) {
@@ -20,11 +21,34 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
   const uri = `${basePathUrl}/v1/pack_info?type=`
 
   const { deployer } = await getNamedAccounts()
+  const params = [name, symbol, uri, medalsOwnerAddress]
+
+  // // const gas = await ethers.provider.getGasPrice()
+  // const WildForestPacksContract = await ethers.getContractFactory('WildForestMedal')
+  // console.log('Deploying WildForestPacksContract...')
+  // const packsContract = await upgrades.deployProxy(WildForestPacksContract, params, {
+  //   // kind: 'transparent' | 'uups'
+  //    // gasPrice: gas,
+  //    initializer: 'initialize',
+  //    deployer,
+  //    // constructorArgs: params,
+  //    // initialOwner:
+  // })
+  // await packsContract.deployed()
+  // console.log('packsContract Contract deployed to:', packsContract.address)
 
   await deploy('WildForestMedal', {
     from: deployer,
     log: true,
-    args: [name, symbol, uri, medalsOwnerAddress],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: params,
+        },
+      },
+      proxyContract: 'OpenZeppelinTransparentProxy',
+    },
   })
 }
 

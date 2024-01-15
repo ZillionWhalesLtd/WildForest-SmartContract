@@ -1,5 +1,5 @@
 const chai = require('chai')
-const { deployments, ethers } = require('hardhat')
+const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
 chai.use(deep_equal)
@@ -16,8 +16,12 @@ const deploy = async () => {
   const [owner, alice, bob, steve] = await ethers.getSigners()
   const ownerAddress = await owner.getAddress()
 
-  const WildForestMedal = await ethers.getContractFactory("WildForestMedal")
-  const nftContract = await WildForestMedal.deploy(name, symbol, uri, ownerAddress)
+  const WildForestMedal1 = await ethers.getContractFactory('WildForestMedal', owner)
+  let nftContract = await upgrades.deployProxy(WildForestMedal1, [name, symbol, uri, ownerAddress])
+
+  const WildForestMedal2 = await ethers.getContractFactory('WildForestMedal', owner)
+  nftContract = await upgrades.upgradeProxy(nftContract.address, WildForestMedal2)
+  // const nftContract = await WildForestMedal.deploy(name, symbol, uri, ownerAddress)
 
   return {
     owner: {
@@ -45,7 +49,8 @@ const deployWithAliceOwner = async () => {
   const aliceOwnerAddress = await alice.getAddress()
 
   const WildForestMedal = await ethers.getContractFactory("WildForestMedal")
-  const nftContract = await WildForestMedal.deploy(name, symbol, uri, aliceOwnerAddress)
+  const nftContract = await upgrades.deployProxy(WildForestMedal, [name, symbol, uri, aliceOwnerAddress])
+  // const nftContract = await WildForestMedal.deploy(name, symbol, uri, aliceOwnerAddress)
 
   return {
     owner: {

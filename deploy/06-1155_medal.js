@@ -24,7 +24,15 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
   await deploy('WildForestMedal', {
     from: deployer,
     log: true,
-    args: [name, symbol, uri, medalsOwnerAddress],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [name, symbol, uri, medalsOwnerAddress],
+        },
+      },
+      proxyContract: 'OpenZeppelinTransparentProxy',
+    },
   })
 }
 
