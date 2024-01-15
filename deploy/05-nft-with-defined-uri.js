@@ -1,6 +1,6 @@
 require('dotenv').config()
 
-const { LORDS_NFT_OWNER_ADDRESS } = process.env
+const { LORDS_NFT_OWNER_ADDRESS, SAIGON_LORDS_NFT_OWNER_ADDRESS } = process.env
 
 const func = async function ({ getChainId, getNamedAccounts, deployments: { deploy } }) {
   const cardsContractName = 'WildForestLords'
@@ -19,8 +19,17 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
   await deploy('WildForestDefinedTokenUriNft', {
     from: deployer,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, lordsOwnerAddress],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [cardsContractName, cardsContractSymbol, lordsOwnerAddress],
+        },
+      },
+      proxyContract: 'OpenZeppelinTransparentProxy',
+    },
   })
+
 }
 
 module.exports = func

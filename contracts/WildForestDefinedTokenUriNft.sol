@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.16;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import '@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol';
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Burnable.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Pausable.sol";
-import "@openzeppelin/contracts/access/AccessControlEnumerable.sol";
-import "@openzeppelin/contracts/utils/Context.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import '@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721URIStorageUpgradeable.sol';
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract WildForestDefinedTokenUriNft is
-  Context,
-  AccessControlEnumerable,
-  ERC721URIStorage,
-  ERC721Enumerable,
-  ERC721Burnable,
-  ERC721Pausable
+  ContextUpgradeable,
+  AccessControlEnumerableUpgradeable,
+  ERC721URIStorageUpgradeable,
+  ERC721EnumerableUpgradeable,
+  ERC721BurnableUpgradeable,
+  ERC721PausableUpgradeable
 {
   using Counters for Counters.Counter;
 
@@ -25,7 +25,14 @@ contract WildForestDefinedTokenUriNft is
 
   Counters.Counter internal _tokenIdTracker;
 
-  constructor(string memory name, string memory symbol, address ownerAddress) ERC721(name, symbol) {
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
+  function initialize(string memory name, string memory symbol, address ownerAddress) public initializer {
+    __ERC721_init(name, symbol);
+
     _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
     _setupRole(MINTER_ROLE, ownerAddress);
     _setupRole(PAUSER_ROLE, ownerAddress);
@@ -56,7 +63,7 @@ contract WildForestDefinedTokenUriNft is
   function _beforeTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize)
     internal
     virtual
-    override(ERC721, ERC721Enumerable, ERC721Pausable)
+    override(ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721PausableUpgradeable)
   {
     super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
   }
@@ -64,7 +71,7 @@ contract WildForestDefinedTokenUriNft is
   function tokenURI(uint256 tokenId)
       public
       view
-      override(ERC721, ERC721URIStorage)
+      override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
       returns (string memory)
   {
       return super.tokenURI(tokenId);
@@ -77,7 +84,7 @@ contract WildForestDefinedTokenUriNft is
     public
     view
     virtual
-    override(AccessControlEnumerable, ERC721, ERC721Enumerable, ERC721URIStorage)
+    override(AccessControlEnumerableUpgradeable, ERC721Upgradeable, ERC721EnumerableUpgradeable, ERC721URIStorageUpgradeable)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);
@@ -85,7 +92,7 @@ contract WildForestDefinedTokenUriNft is
 
   function _burn(uint256 tokenId)
     internal
-    override(ERC721, ERC721URIStorage)
+    override(ERC721Upgradeable, ERC721URIStorageUpgradeable)
   {
     super._burn(tokenId);
   }
