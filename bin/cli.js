@@ -199,6 +199,10 @@ const main = async() => {
         return
       }
 
+      for (const packToMint of packsToMint) {
+        delete packToMint.treasureJSON
+      }
+
       const now = Date.now()
       const fileName = `minted_packs-${now}.json`
       const filePath = `${repoPath}/bin/resultData/${fileName}`

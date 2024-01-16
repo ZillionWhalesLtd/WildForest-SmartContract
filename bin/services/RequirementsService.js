@@ -239,6 +239,7 @@ class RequirementsService {
           type: packType,
           treasure,
           id: packCounter,
+          treasureJSON: JSON.stringify(treasure)
         }
 
         packCounter++
