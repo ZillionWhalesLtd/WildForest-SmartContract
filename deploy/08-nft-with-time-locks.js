@@ -12,7 +12,15 @@ const func = async function ({ getNamedAccounts, deployments: { deploy } }) {
   await deploy('WildForestTimeLockNft', {
     from: deployer,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, baseTokenURI, MEDAL_OWNER_ADDRESS],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [cardsContractName, cardsContractSymbol, baseTokenURI, MEDAL_OWNER_ADDRESS],
+        },
+      },
+      proxyContract: 'OpenZeppelinTransparentProxy',
+    },
   })
 }
 

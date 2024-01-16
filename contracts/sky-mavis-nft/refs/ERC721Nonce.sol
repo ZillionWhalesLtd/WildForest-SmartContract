@@ -1,13 +1,14 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+// import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 
 /**
  * @title ERC721Nonce
  * @dev This contract provides a nonce that will be increased whenever the token is tranferred.
  */
-abstract contract ERC721Nonce is ERC721 {
+abstract contract ERC721Nonce is ERC721Upgradeable {
   /// @dev Emitted when the token nonce is updated
   event NonceUpdated(uint256 indexed _tokenId, uint256 indexed _nonce);
 

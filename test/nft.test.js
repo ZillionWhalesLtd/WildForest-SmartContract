@@ -1,5 +1,5 @@
 const chai = require('chai')
-const { deployments, ethers } = require('hardhat')
+const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
 chai.use(deep_equal)
@@ -16,7 +16,8 @@ const deploy = async () => {
   const ownerAddress = await owner.getAddress()
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
-  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
+  const nftContract = await upgrades.deployProxy(WildForestNft, [cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress])
+  // const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
 
   return {
     owner: {
@@ -44,7 +45,8 @@ const deployWithAliceOwner = async () => {
   const aliceOwnerAddress = await alice.getAddress()
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
-  const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, aliceOwnerAddress)
+  const nftContract = await upgrades.deployProxy(WildForestNft, [cardsContractName, cardsContractSymbol, baseTokenURI, aliceOwnerAddress])
+  // const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, aliceOwnerAddress)
 
   return {
     owner: {

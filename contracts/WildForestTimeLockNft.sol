@@ -9,9 +9,18 @@ contract WildForestTimeLockNft is ERC721Common {
   // Mapping from token ID to lockTimestamp
   mapping(uint256 => uint256) private _timeLocks;
 
-  constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
-    ERC721Common(name, symbol, baseTokenURI, ownerAddress)
-  {}
+  // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
+  //   ERC721Common(name, symbol, baseTokenURI, ownerAddress)
+  // {}
+
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
+  function initialize(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) public initializer {
+    __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
+  }
 
   function mint(address to) public virtual override returns (uint256 _tokenId) {
     require(hasRole(MINTER_ROLE, _msgSender()), "ERC721PresetMinterPauserAutoId: must have minter role to mint");
@@ -59,7 +68,7 @@ contract WildForestTimeLockNft is ERC721Common {
     return (lockTimestamp / 1000 < block.timestamp);
   }
 
-  function transferFrom(address from, address to, uint256 tokenId) public virtual override(ERC721, IERC721) {
+  function transferFrom(address from, address to, uint256 tokenId) public virtual override(ERC721Upgradeable, IERC721Upgradeable) {
     require(_isTimeLockPassed(tokenId), "TimeLock: token is time locked for trasnfer");
     super.transferFrom(from, to, tokenId);
   }
@@ -68,7 +77,7 @@ contract WildForestTimeLockNft is ERC721Common {
   //   safeTransferFrom(from, to, tokenId, "");
   // }
 
-  function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override(ERC721, IERC721) {
+  function safeTransferFrom(address from, address to, uint256 tokenId, bytes memory data) public virtual override(ERC721Upgradeable, IERC721Upgradeable) {
     require(_isTimeLockPassed(tokenId), "TimeLock: token is time locked for trasnfer");
      super.safeTransferFrom(from, to, tokenId, data);
   }

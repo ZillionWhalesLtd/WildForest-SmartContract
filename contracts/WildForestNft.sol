@@ -4,15 +4,24 @@ pragma solidity ^0.8.16;
 import "./sky-mavis-nft/ERC721Common.sol";
 
 contract WildForestNft is ERC721Common {
-  constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
-    ERC721Common(name, symbol, baseTokenURI, ownerAddress)
-  {}
+  // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
+  //   ERC721Common(name, symbol, baseTokenURI, ownerAddress)
+  // {}
+
+  /// @custom:oz-upgrades-unsafe-allow constructor
+  constructor() {
+    _disableInitializers();
+  }
+
+  function initialize(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) public initializer {
+    __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
+  }
 
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
     require(tokenIds.length > 0, "WildForestNft: invalid array lengths");
 
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
-      address owner = ERC721.ownerOf(tokenIds[_i]);
+      address owner = ERC721Upgradeable.ownerOf(tokenIds[_i]);
       require(to != owner, "ERC721: approval to current owner");
 
       require(

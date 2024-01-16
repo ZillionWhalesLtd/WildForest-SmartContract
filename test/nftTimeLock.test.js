@@ -1,5 +1,5 @@
 const chai = require('chai')
-const { deployments, ethers } = require('hardhat')
+const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
 // const wait = require('./_wait')
@@ -18,7 +18,8 @@ const deploy = async () => {
   const ownerAddress = await owner.getAddress()
 
   const WildForestTimeLockNft = await ethers.getContractFactory("WildForestTimeLockNft")
-  const nftContract = await WildForestTimeLockNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
+  const nftContract = await upgrades.deployProxy(WildForestTimeLockNft, [cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress])
+  // const nftContract = await WildForestTimeLockNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
 
   return {
     owner: {

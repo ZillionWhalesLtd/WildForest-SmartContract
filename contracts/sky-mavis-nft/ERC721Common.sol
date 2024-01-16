@@ -6,9 +6,17 @@ import "./refs/ERC721Nonce.sol";
 import "./ERC721PresetMinterPauserAutoIdCustomized.sol";
 
 abstract contract ERC721Common is ERC721Nonce, ERC721PresetMinterPauserAutoIdCustomized, IERC721State {
-  constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
-    ERC721PresetMinterPauserAutoIdCustomized(name, symbol, baseTokenURI, ownerAddress)
-  {}
+  // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
+  //   ERC721PresetMinterPauserAutoIdCustomized(name, symbol, baseTokenURI, ownerAddress)
+  // {}
+
+  function __ERC721Common_init(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) internal onlyInitializing {
+    __ERC721Common_init_unchained(name, symbol, baseTokenURI, ownerAddress);
+  }
+
+  function __ERC721Common_init_unchained(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) internal onlyInitializing {
+    __ERC721PresetMinterPauserAutoIdCustomized_init(name, symbol, baseTokenURI, ownerAddress);
+  }
 
   /**
    * @inheritdoc IERC721State
@@ -25,7 +33,7 @@ abstract contract ERC721Common is ERC721Nonce, ERC721PresetMinterPauserAutoIdCus
     internal
     view
     virtual
-    override(ERC721, ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Upgradeable, ERC721PresetMinterPauserAutoIdCustomized)
     returns (string memory)
   {
     return super._baseURI();
@@ -38,7 +46,7 @@ abstract contract ERC721Common is ERC721Nonce, ERC721PresetMinterPauserAutoIdCus
     public
     view
     virtual
-    override(ERC721, ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Upgradeable, ERC721PresetMinterPauserAutoIdCustomized)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);

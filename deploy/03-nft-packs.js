@@ -23,7 +23,15 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
   await deploy('WildForestNft', {
     from: deployer,
     log: true,
-    args: [cardsContractName, cardsContractSymbol, baseTokenURI, packsOwnerAddress],
+    proxy: {
+      execute: {
+        init: {
+          methodName: 'initialize',
+          args: [cardsContractName, cardsContractSymbol, baseTokenURI, packsOwnerAddress],
+        },
+      },
+      proxyContract: 'OpenZeppelinTransparentProxy',
+    },
   })
 }
 
