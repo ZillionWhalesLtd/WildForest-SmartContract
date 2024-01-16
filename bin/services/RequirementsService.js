@@ -3,7 +3,8 @@
 require('dotenv').config()
 
 const keyBy = require('lodash.keyby')
-// const groupBy = require('lodash.groupby')
+const groupBy = require('lodash.groupby')
+
 const CsvService = require('./CsvService')
 const CryptoService = require('./CryptoService')
 
@@ -100,11 +101,38 @@ class RequirementsService {
     return lordsToMint
   }
 
+  _extendArrayByRecordNTimes(array, item, nTimes) {
+    for(let i = 0; i < nTimes; i++){
+      array.push(item)
+    }
+  }
+
+  _prepareArrayWithWeights(cleanArray, weights) {
+    const recordWeightIdMap = {}
+    for (const weight in weights) {
+      const ids = weights[weight]
+      for (const id of ids) {
+        recordWeightIdMap[id]= Number(weight)
+      }
+    }
+
+    const arrayWithWeights = []
+    for (const record of cleanArray) {
+      const recordWeight = recordWeightIdMap[record.id] || 100
+      this._extendArrayByRecordNTimes(arrayWithWeights, record, recordWeight)
+    }
+
+    return arrayWithWeights
+  }
+
   async buildPacksToMint(dataRequirements, lordsData) {
+
     const cryptoService = new CryptoService(this._logger)
     const lordsGroupedMap = groupBy(lordsData, 'rank')
 
     const repoPath = process.cwd()
+    const unitsWeights = require(`${repoPath}/bin/mintRequirements/unitsWeights.json`)
+
     const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins.csv`
     const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
 
@@ -143,7 +171,7 @@ class RequirementsService {
         const randomLordPosition = randomNumber(0, lordsDstributionArray.length - 1)
         const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
 
-        let skinsTreasury = []
+        const skinsTreasury = []
         let legendaryIsPicked
         if ( (skins.Legendary > 0 && skins.Legendary < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
           const randomLegendary = randomNumber(1, 100) / 100
@@ -170,15 +198,22 @@ class RequirementsService {
           }
         }
 
-        let unitsTreasury = []
+        const unitsTreasury = []
         for (const unitType in units) {
           const unitsTypeNumber = units[unitType]
           if (unitsTypeNumber > 0) {
             const unitsTypeArray = [...unitsGroupedMap[unitType]]
+            let unitsArrayWithWeights = this._prepareArrayWithWeights(unitsTypeArray, unitsWeights.chance)
             for (let counter = 0; counter < unitsTypeNumber; counter++) {
-              const randomUnitTypePosition = randomNumber(0, unitsTypeArray.length - 1)
-              const [pickedUnit] = unitsTypeArray.splice(randomUnitTypePosition, 1)
+
+              const randomUnitTypePosition = randomNumber(0, unitsArrayWithWeights.length - 1)
+              const pickedUnit = unitsArrayWithWeights[randomUnitTypePosition]
               const { id } = pickedUnit
+              unitsArrayWithWeights = unitsArrayWithWeights.filter((u) => { return u.id !== id })
+
+              // const randomUnitTypePosition = randomNumber(0, unitsTypeArray.length - 1)
+              // const [pickedUnit] = unitsTypeArray.splice(randomUnitTypePosition, 1)
+              // const { id } = pickedUnit
               unitsTreasury.push({ id })
               // unitsTreasury.push(unitTreasury)
             }
