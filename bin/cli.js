@@ -151,6 +151,12 @@ const main = async() => {
 
       console.log('Minting Lord NFTs...') // eslint-disable-line
       let mintedCounter = 0
+
+      // const now = Date.now()
+      const now = '1705914859097'
+      const fileName = `minted_lords-${now}.json`
+      const filePath = `${repoPath}/bin/resultData/${fileName}`
+
       for (const lordToMint of lordsToMint) {
         const { metadata: lordToMintMetadata } = lordToMint
         const { tokenId, hash, chainId: chainIdentifier, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
@@ -166,13 +172,14 @@ const main = async() => {
         lordToMint.hash = hash
         lordToMint.tokenUri = tokenUri
         delete lordToMint.attributesJSON
+
+        const previouslyMintedLordsContent = fileService.readFile(filePath)
+        const previouslyMintedLords = JSON.parse(previouslyMintedLordsContent)
+        const mintedLords = [...previouslyMintedLords, lordToMint]
+        const contentToWrite = JSON.stringify(mintedLords, null, 2)
+        fileService.writeFile(filePath, contentToWrite)
       }
 
-      const now = Date.now()
-      const fileName = `minted_lords-${now}.json`
-      const filePath = `${repoPath}/bin/resultData/${fileName}`
-
-      fileService.writeFile(filePath, JSON.stringify(lordsToMint, null, 2))
 
       console.log(`Done, minted ${mintedCounter} Lord NFTs`) // eslint-disable-line
       console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
