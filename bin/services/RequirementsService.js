@@ -107,12 +107,17 @@ class RequirementsService {
     }
   }
 
-  _prepareArrayWithWeights(cleanArray, weights) {
+  _prepareArrayWithWeights(cleanArray, weights, unitsTypesMap) {
     const recordWeightIdMap = {}
     for (const weight in weights) {
-      const ids = weights[weight]
-      for (const id of ids) {
-        recordWeightIdMap[id]= Number(weight)
+      const typeIds = weights[weight]
+      for (const typeId of typeIds) {
+        const units = unitsTypesMap[typeId]
+
+        for (const unit of units) {
+          recordWeightIdMap[unit.id]= Number(weight)
+        }
+
       }
     }
 
@@ -141,6 +146,7 @@ class RequirementsService {
 
     const skinsGroupedMap = groupBy(configSkins, 'rarity')
     const unitsGroupedMap = groupBy(configUnits, 'rarity')
+    const unitsTypesMap  = groupBy(configUnits, 'type_id')
     const packsToMint = []
 
     let packCounter = 1
@@ -203,7 +209,7 @@ class RequirementsService {
           const unitsTypeNumber = units[unitType]
           if (unitsTypeNumber > 0) {
             const unitsTypeArray = [...unitsGroupedMap[unitType]]
-            let unitsArrayWithWeights = this._prepareArrayWithWeights(unitsTypeArray, unitsWeights.chance)
+            let unitsArrayWithWeights = this._prepareArrayWithWeights(unitsTypeArray, unitsWeights.chance, unitsTypesMap)
             for (let counter = 0; counter < unitsTypeNumber; counter++) {
 
               const randomUnitTypePosition = randomNumber(0, unitsArrayWithWeights.length - 1)
