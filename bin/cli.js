@@ -212,6 +212,7 @@ const main = async() => {
         delete packToMint.treasureJSON
         const { csvBased } = packToMint
         csvRecords.push(csvBased)
+        delete packToMint.csvBased
       }
 
       const csvData = await json2Csv.json2csv(csvRecords, {})
