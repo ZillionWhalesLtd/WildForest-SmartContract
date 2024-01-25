@@ -2,6 +2,7 @@
 
 const yargs = require('yargs')
 const inquirer = require('inquirer')
+const json2Csv = require('json-2-csv')
 
 const RoninChainService = require('./services/RoninChainService')
 const FileService = require('./services/FileService')
@@ -206,16 +207,24 @@ const main = async() => {
         return
       }
 
+      const csvRecords = []
       for (const packToMint of packsToMint) {
         delete packToMint.treasureJSON
+        const { csvBased } = packToMint
+        csvRecords.push(csvBased)
       }
+
+      const csvData = await json2Csv.json2csv(csvRecords, {})
 
       const now = Date.now()
       const fileName = `minted_packs-${now}.json`
+      const csvFileName = `packs_config-${now}.csv`
       const filePath = `${repoPath}/bin/resultData/${fileName}`
+      const csvFilePath = `${repoPath}/bin/resultData/${csvFileName}`
 
       fileService.writeFile(filePath, JSON.stringify(packsToMint, null, 2))
-      console.log(`Done, Result written into: \n ${filePath}`) // eslint-disable-line
+      fileService.writeFile(csvFilePath, csvData)
+      console.log(`Done, Result written into: \n ${filePath}\n\n CSV written into: \n ${csvFilePath}`) // eslint-disable-line
 
       // console.log('Minting Pack NFTs...') // eslint-disable-line
       // let mintedCounter = 0

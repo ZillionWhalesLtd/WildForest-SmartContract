@@ -157,17 +157,27 @@ class ContractService {
 
     this._contract = contract
     this._signerWallet = signerWallet
+    this._provider = provider
   }
 
   get contract() {
     return this._contract
   }
 
-  async getSignerNonce() {
-    const nonce = await this._signerWallet.getNonce()
+  get walletAddress () {
+    return this._signerWallet.address
+  }
 
+  async getSignerNonce() {
+    const nonce = await this._provider.getTransactionCount(this._signerWallet.address)
     return nonce
   }
+
+  // async getSignerNonce() {
+  //   const nonce = await this._signerWallet.getNonce()
+
+  //   return nonce
+  // }
 
   _parseBigNumber(bigNumber) {
     return bigNumber.toNumber()

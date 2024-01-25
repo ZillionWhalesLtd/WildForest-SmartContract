@@ -234,12 +234,30 @@ class RequirementsService {
           treasure.lords = [{ tokenId }]
         }
 
+        const csvUnits = treasure.units.map(ut => ut.id)
+        const csvSkins = treasure.skins.map(ut => ut.id)
+
+        let csvLords = ''
+        if (treasure.lords) {
+          csvLords = treasure.lords.map(ut => ut.tokenId)
+        }
+        const csvBased = {
+          id: packCounter,
+          type: packType,
+          lords: csvLords,
+          units: csvUnits,
+          skins: csvSkins,
+          wfTokens: '',
+          bpSeasonId: ''
+        }
+
         const packToMint = {
           name: 'Treasure Pack',
           type: packType,
           treasure,
           id: packCounter,
-          treasureJSON: JSON.stringify(treasure)
+          treasureJSON: JSON.stringify(treasure),
+          csvBased,
         }
 
         packCounter++

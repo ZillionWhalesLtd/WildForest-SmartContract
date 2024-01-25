@@ -76,6 +76,7 @@
   },
   "dependencies": {
     "@thirdweb-dev/storage": "^2.0.8",
+    "json-2-csv": "^5.0.1",
     "lodash.groupby": "^4.6.0",
     "lodash.keyby": "^4.6.0"
   }
