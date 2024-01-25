@@ -9,9 +9,11 @@ coverage.json
 deployments
 prodLordsData.json
 prodPacksData.json
-ConfigsUnitsList.csv
+unitSkins*
+ConfigsUnitsList*
 minted_packs-*
 minted_lords-*
 uploaded_images*
 packs_config*
+betaSalePacksData*
 WF_Community_Sale_Lords*

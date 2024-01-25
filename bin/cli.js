@@ -85,6 +85,22 @@ const _askToProcessLords = () => {
   })
 }
 
+const _askPreviouslyMintedLords = () => {
+  return new Promise((resolve) => {
+    inquirer
+      .prompt([
+        {
+          type: 'number',
+          name: 'previouslyMinetdRecord',
+          message: 'If minting was interupted please pass here record if of previously minted lord',
+        },
+      ])
+      .then((details) => {
+        resolve(details)
+      })
+  })
+}
+
 const _askToProcessPacks = () => {
   return new Promise((resolve) => {
     inquirer
@@ -142,24 +158,34 @@ const main = async() => {
       const dataRequirements = await csvService.readFile(lordsConfigPath)
 
       const lordsToMint = await requirementsService.buildLordsToMintFromMetadata(dataRequirements)
-      console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
 
-      const { isOk } = await _askToProcessLords()
-      if (isOk[0] !== 'Yes') {
-        console.log('Terminating..') // eslint-disable-line
-        return
+      const { previouslyMinetdRecord } = await _askPreviouslyMintedLords()
+
+      if (!previouslyMinetdRecord) {
+        console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
+        const { isOk } = await _askToProcessLords()
+        if (isOk[0] !== 'Yes') {
+          console.log('Terminating..') // eslint-disable-line
+          return
+        }
       }
 
       console.log('Minting Lord NFTs...') // eslint-disable-line
       let mintedCounter = 0
 
       // const now = Date.now()
-      const now = '1705914859097'
+      const now = 'saigon'
       const fileName = `minted_lords-${now}.json`
       const filePath = `${repoPath}/bin/resultData/${fileName}`
 
       for (const lordToMint of lordsToMint) {
-        const { metadata: lordToMintMetadata } = lordToMint
+        const { metadata: lordToMintMetadata, recordId } = lordToMint
+
+        if (previouslyMinetdRecord && Number(recordId) <= previouslyMinetdRecord) {
+          continue
+        }
+
+        console.log(`Trying to mint recordId: ${recordId}...`) // eslint-disable-line
         const { tokenId, hash, chainId: chainIdentifier, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
         mintedCounter++
         console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line

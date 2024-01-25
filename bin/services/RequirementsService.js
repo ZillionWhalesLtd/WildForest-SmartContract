@@ -24,6 +24,7 @@ class RequirementsService {
   }
 
   async buildLordsToMintFromMetadata(dataRequirements) {
+    // const baseImagePath = 'https://ww-nft-static.sfo3.cdn.digitaloceanspaces.com/images_lord'
     const lordsToMint = []
 
     const lordRecords = dataRequirements
@@ -31,7 +32,7 @@ class RequirementsService {
     for (const lordRecord of lordRecords) {
 
       // const { nft_id, specie, lordRank, dna, name, url } = lordRecord
-      const { specie, rank: lordRank, dna, name, image: url } = lordRecord
+      const { nft_id: recordId, specie, rank: lordRank, dna, name, imageUrl: url } = lordRecord
 
       const attributes = [
         { trait_type: 'specie', value: specie },
@@ -39,6 +40,8 @@ class RequirementsService {
         { trait_type: 'dna', value: dna },
       ]
 
+
+      // const url = `${baseImagePath}/${imagePath}`
       const metadata = {
         // id
         name,
@@ -48,6 +51,7 @@ class RequirementsService {
       }
 
       const lordToMint = {
+        recordId,
         metadata,
         rank: lordRank,
         attributesJSON: JSON.stringify(attributes),
