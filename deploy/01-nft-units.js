@@ -2,8 +2,8 @@ require('dotenv').config()
 const { UNITS_OWNER_ADDRESS, SAIGON_UNITS_OWNER_ADDRESS } = process.env
 
 const func = async function ({ getChainId, getNamedAccounts, deployments: { deploy } }) {
-  const cardsContractName = 'WildForestUnits'
-  const cardsContractSymbol = 'WFU'
+  const cardsContractName = 'Wild Forest Units'
+  const cardsContractSymbol = 'WildForestUnit'
 
   const chainId = await getChainId()
   const isSaigon = chainId === '2021'

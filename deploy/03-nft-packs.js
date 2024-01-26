@@ -2,8 +2,8 @@ require('dotenv').config()
 const { PACKS_OWNER_ADDRESS, SAIGON_PACKS_NFT_OWNER_ADDRESS } = process.env
 
 const func = async function ({ getChainId, getNamedAccounts, deployments: { deploy } }) {
-  const cardsContractName = 'WildForestPacks'
-  const cardsContractSymbol = 'WFP'
+  const cardsContractName = 'Wild Forest Packs'
+  const cardsContractSymbol = 'WildForestPack'
 
   const chainId = await getChainId()
   const isSaigon = chainId === '2021'
