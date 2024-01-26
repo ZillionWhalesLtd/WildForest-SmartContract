@@ -3,7 +3,7 @@ const keyBy = require('lodash.keyby')
 // const FileService = require('./services/FileService')
 const CsvService = require('./services/CsvService')
 
-const GENERATED_PACKS_FILE_NAME = 'minted_packs-saigon.json'
+const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706231465992.json'
 const MINTED_LORDS_FILE_NAME = 'minted_lords-saigon.json'
 
 const main = async() => {
@@ -16,11 +16,11 @@ const main = async() => {
 
   const configSkins = await csvService.readFile(skinsConfigPath)
   const configUnits = await csvService.readFile(unitsConfigPath)
-  const lords = require(`./resultData/${MINTED_LORDS_FILE_NAME}`)
+  const mintedLords = require(`./resultData/${MINTED_LORDS_FILE_NAME}`)
 
   const configSkinsMap = keyBy(configSkins, 'skin_id')
   const configUnitsMap = keyBy(configUnits, 'id')
-  const lordsMap = keyBy(lords, 'tokenId')
+  const lordsMap = keyBy(mintedLords, 'tokenId')
 
   const data = require(`./resultData/${GENERATED_PACKS_FILE_NAME}`)
   const resultsMap = { All: { units: {}, skins: {}, lords: {} } }
@@ -32,7 +32,8 @@ const main = async() => {
 
     const packs = packsMap[packType]
     for (const pack of packs) {
-      const { units, skins, lords } = pack.treasure
+      const { units, skins } = pack.treasure
+      const lords = pack.treasure.lords || []
 
       for (const unit of units) {
         const unitConfig = configUnitsMap[unit.id]
@@ -57,7 +58,7 @@ const main = async() => {
       }
 
       for (const lord of lords) {
-        const mintedLord = lordsMap[lord.id]
+        const mintedLord = lordsMap[lord.tokenId]
         const { rank } = mintedLord
 
         resultsMap[packType].lords[rank] = resultsMap[packType].lords[rank] || 0

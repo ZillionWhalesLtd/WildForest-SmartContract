@@ -156,7 +156,7 @@ class RequirementsService {
     let packCounter = 1
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
-      const { number, lords, units, skins: originalSkins } = typeDistribution
+      const { pack_id, number, lords, units, skins: originalSkins } = typeDistribution
 
       const lordsDstributionArray = []
 

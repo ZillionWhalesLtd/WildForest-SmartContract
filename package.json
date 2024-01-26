@@ -5,7 +5,7 @@
     "checkPacks": "node ./bin/calculateGeneratedPacks.js",
     "uploadImages": "node ./bin/cli.js uploadImages -p '../LordImages'",
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'WF_Community_Sale_Lords.csv'",
-    "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'betaSalePacksData.json' -l 'minted_lords-test.json'",
+    "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'betaSalePacksData.json' -l 'minted_lords-saigon.json'",
     "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'WF_Community_Sale_Lords'",
     "mintPacks:prod": "node ./bin/cli.js mintPacks -e 'prod' -p 'prodPacksData.json' -l 'minted_lords-prod.json'",
     "compile": "npx hardhat compile",
