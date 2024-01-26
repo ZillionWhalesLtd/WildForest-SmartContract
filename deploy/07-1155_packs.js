@@ -18,7 +18,7 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
     medalsOwnerAddress = SAIGON_PACKS_NFT_OWNER_ADDRESS
   }
 
-  const uri = `${basePathUrl}/v1/pack_info?type=`
+  const uri = `${basePathUrl}/v1/pack_metadata?typeId=`
 
   const { deployer } = await getNamedAccounts()
   const params = [name, symbol, uri, medalsOwnerAddress]
