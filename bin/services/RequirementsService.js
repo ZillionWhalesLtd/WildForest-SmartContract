@@ -178,7 +178,7 @@ class RequirementsService {
 
       for (let counter = 0; counter < number; counter++) {
         const skins = { ...originalSkins }
-        const randomLordPosition = randomNumber(0, lordsDstributionArray.length - 1)
+        const randomLordPosition = randomNumber(0, lordsDstributionArray.length)
         const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
 
         const skinsTreasury = []
@@ -200,7 +200,7 @@ class RequirementsService {
           if (skinsTypeNumber > 0) {
             const skinsTypeArray = [...skinsGroupedMap[skinType]]
             for (let counter = 0; counter < skinsTypeNumber; counter++) {
-              const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length - 1)
+              const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length)
               const [pickedSkin] = skinsTypeArray.splice(randomSkinTypePosition, 1)
               const { skin_id } = pickedSkin
               skinsTreasury.push({ id: skin_id })
@@ -216,7 +216,7 @@ class RequirementsService {
             let unitsArrayWithWeights = this._prepareArrayWithWeights(unitsTypeArray, unitsWeights.chance, unitsTypesMap)
             for (let counter = 0; counter < unitsTypeNumber; counter++) {
 
-              const randomUnitTypePosition = randomNumber(0, unitsArrayWithWeights.length - 1)
+              const randomUnitTypePosition = randomNumber(0, unitsArrayWithWeights.length)
               const pickedUnit = unitsArrayWithWeights[randomUnitTypePosition]
               const { id } = pickedUnit
               unitsArrayWithWeights = unitsArrayWithWeights.filter((u) => { return u.id !== id })
@@ -238,7 +238,7 @@ class RequirementsService {
 
         if (!randomLord.isEmpty) {
           const mintedLordsRanks = lordsGroupedMap[randomLord.rank]
-          const randomLorTypePosition = randomNumber(0, mintedLordsRanks.length - 1)
+          const randomLorTypePosition = randomNumber(0, mintedLordsRanks.length)
           const [mintedTypeLord] = mintedLordsRanks.splice(randomLorTypePosition, 1)
           const { tokenId } = mintedTypeLord
           treasure.lords = [{ tokenId }]
