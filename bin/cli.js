@@ -147,69 +147,72 @@ const main = async() => {
       if (isMainNet) {
         addressTo = RONIN_LORDS_OWNER_ADDRESS
       }
-      // const dataRequirements = require(`./mintRequirements/${path}`)
-      // const imagesMetadata = require('./resultData/uploaded_images.json')
 
-      // const lordsToMint = await requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
+      const LORDS_TO_MINT = 1000
+      await roninChainService.mintLordsNFT(addressTo, LORDS_TO_MINT)
+      // // const dataRequirements = require(`./mintRequirements/${path}`)
+      // // const imagesMetadata = require('./resultData/uploaded_images.json')
 
-      const repoPath = process.cwd()
-      const lordsConfigPath = `${repoPath}/bin/csvConfigs/${path}`
-      const csvService = new CsvService()
-      const dataRequirements = await csvService.readFile(lordsConfigPath)
+      // // const lordsToMint = await requirementsService.buildLordsToMint(dataRequirements, imagesMetadata)
 
-      const lordsToMint = await requirementsService.buildLordsToMintFromMetadata(dataRequirements)
+      // const repoPath = process.cwd()
+      // const lordsConfigPath = `${repoPath}/bin/csvConfigs/${path}`
+      // const csvService = new CsvService()
+      // const dataRequirements = await csvService.readFile(lordsConfigPath)
 
-      const { previouslyMinetdRecord } = await _askPreviouslyMintedLords()
+      // const lordsToMint = await requirementsService.buildLordsToMintFromMetadata(dataRequirements)
 
-      if (!previouslyMinetdRecord) {
-        console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
-        const { isOk } = await _askToProcessLords()
-        if (isOk[0] !== 'Yes') {
-          console.log('Terminating..') // eslint-disable-line
-          return
-        }
-      }
+      // const { previouslyMinetdRecord } = await _askPreviouslyMintedLords()
 
-      console.log('Minting Lord NFTs...') // eslint-disable-line
-      let mintedCounter = 0
+      // if (!previouslyMinetdRecord) {
+      //   console.log('Prepared Lords To Mint:', lordsToMint) // eslint-disable-line
+      //   const { isOk } = await _askToProcessLords()
+      //   if (isOk[0] !== 'Yes') {
+      //     console.log('Terminating..') // eslint-disable-line
+      //     return
+      //   }
+      // }
 
-      // const now = Date.now()
-      const now = 'saigon'
-      const fileName = `minted_lords-${now}.json`
-      const filePath = `${repoPath}/bin/resultData/${fileName}`
+      // console.log('Minting Lord NFTs...') // eslint-disable-line
+      // let mintedCounter = 0
 
-      for (const lordToMint of lordsToMint) {
-        const { metadata: lordToMintMetadata, recordId } = lordToMint
+      // // const now = Date.now()
+      // const now = 'saigon'
+      // const fileName = `minted_lords-${now}.json`
+      // const filePath = `${repoPath}/bin/resultData/${fileName}`
 
-        if (previouslyMinetdRecord && Number(recordId) <= previouslyMinetdRecord) {
-          continue
-        }
+      // for (const lordToMint of lordsToMint) {
+      //   const { metadata: lordToMintMetadata, recordId } = lordToMint
 
-        console.log(`Trying to mint recordId: ${recordId}...`) // eslint-disable-line
-        const { tokenId, hash, chainId: chainIdentifier, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
-        mintedCounter++
-        console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
-        let chainId = chainIdentifier
-        if (CHAINS_MAP[chainId]) {
-          chainId = CHAINS_MAP[chainId]
-        }
+      //   if (previouslyMinetdRecord && Number(recordId) <= previouslyMinetdRecord) {
+      //     continue
+      //   }
 
-        lordToMint.tokenId = tokenId
-        lordToMint.chainId = chainId
-        lordToMint.hash = hash
-        lordToMint.tokenUri = tokenUri
-        delete lordToMint.attributesJSON
+      //   console.log(`Trying to mint recordId: ${recordId}...`) // eslint-disable-line
+      //   const { tokenId, hash, chainId: chainIdentifier, tokenUri } = await roninChainService.mintLordNFT(addressTo, lordToMintMetadata)
+      //   mintedCounter++
+      //   console.log(`minted ${tokenId} tokenId. Counter: ${mintedCounter}`) // eslint-disable-line
+      //   let chainId = chainIdentifier
+      //   if (CHAINS_MAP[chainId]) {
+      //     chainId = CHAINS_MAP[chainId]
+      //   }
 
-        const previouslyMintedLordsContent = fileService.readFile(filePath)
-        const previouslyMintedLords = JSON.parse(previouslyMintedLordsContent)
-        const mintedLords = [...previouslyMintedLords, lordToMint]
-        const contentToWrite = JSON.stringify(mintedLords, null, 2)
-        fileService.writeFile(filePath, contentToWrite)
-      }
+      //   lordToMint.tokenId = tokenId
+      //   lordToMint.chainId = chainId
+      //   lordToMint.hash = hash
+      //   lordToMint.tokenUri = tokenUri
+      //   delete lordToMint.attributesJSON
+
+      //   const previouslyMintedLordsContent = fileService.readFile(filePath)
+      //   const previouslyMintedLords = JSON.parse(previouslyMintedLordsContent)
+      //   const mintedLords = [...previouslyMintedLords, lordToMint]
+      //   const contentToWrite = JSON.stringify(mintedLords, null, 2)
+      //   fileService.writeFile(filePath, contentToWrite)
+      // }
 
 
-      console.log(`Done, minted ${mintedCounter} Lord NFTs`) // eslint-disable-line
-      console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      // console.log(`Done, minted ${mintedCounter} Lord NFTs`) // eslint-disable-line
+      // console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
       break
     }
     case 'mintPacks': {

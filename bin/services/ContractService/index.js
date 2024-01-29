@@ -135,7 +135,8 @@ class ContractService {
       case 'NFT_LORDS':
         contractAddress = lordsContractAddress
         privateKey = lordsOwnerPrivateKey
-        abi = NFT_DEFINED_URI_ABI
+        abi = NFT_ABI
+        // abi = NFT_DEFINED_URI_ABI
         break
       case 'NFT_MEDALS':
         contractAddress = medalsContractAddress

@@ -3,6 +3,8 @@
 require('dotenv').config()
 const { ethers } = require('ethers')
 
+const chunk = require('lodash.chunk')
+
 const ContractService = require('./ContractService')
 
 const RONIN_DECIMALS = 18
@@ -160,6 +162,34 @@ class RoninChainService {
     const [{ tokenId, recieverAddress }] = await contractService.getMintTransactionMetadata(transaction)
 
     return { hash, chainId, smartContractAddress, tokenId, recieverAddress, tokenUri }
+  }
+
+  async mintLordsNFT(addressTo, number) {
+    const CHUNKS_THRESHOLD = 20
+    const address = this._normilizeAddress(addressTo)
+
+    const contractService = new ContractService(this._logger, 'NFT_LORDS', this._chainId)
+    const { contract } = contractService
+
+    const allRecipients = []
+
+    for (let step = 0; step < number; step++) {
+      allRecipients.push(address)
+    }
+
+    const chunks = chunk(allRecipients, CHUNKS_THRESHOLD)
+
+    for (const recipients of chunks) {
+      const transaction = await contract.bulkMint(recipients)
+      const { hash, chainId, to: smartContractAddress } = transaction
+      const transferEvents = await contractService.getMintTransactionMetadata(transaction)
+
+      for (const transferEvent of transferEvents) {
+        const { tokenId } = transferEvent
+        console.log(`Minted tokenId ${tokenId}`)
+      }
+    }
+    // return { hash, chainId, smartContractAddress, tokenId, recieverAddress, tokenUri }
   }
 
   // async setApprovalForAll(address, isApproved) {
