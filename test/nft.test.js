@@ -70,6 +70,7 @@ const deployWithAliceOwner = async () => {
 
 // keccak256('MINTER_ROLE')
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
+const keccak256PauserRole = '0x65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a'
 const keccak256DefaultAdminRole = '0x0000000000000000000000000000000000000000000000000000000000000000'
 
 const transfer_event = transaction =>
@@ -304,6 +305,61 @@ describe('WildForestNft', function () {
 
   it('Minter and admin role available for custom owner (Alice)', async () => {
     const { owner, bob, alice } = await deployWithAliceOwner()
+    const recipients = [bob.address, owner.address]
+    const mint_transaction = await alice.contract.bulkMint(recipients)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
+
+    const events = await transfer_events(mint_transaction)
+    await expect(events.length).to.equal(recipients.length)
+
+    await expect(owner.contract.bulkMint(recipients)).to.be.revertedWith(
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+
+    await expect(alice.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
+
+    await expect(owner.contract.setBaseURI('http:localhost:5000')).to.be.revertedWith(
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
+    )
+
+    await expect(owner.contract.pause()).to.be.revertedWith(
+      'ERC721PresetMinterPauserAutoId: must have pauser role to pause'
+    )
+    await expect(alice.contract.pause()).not.to.be.reverted
+    await expect(alice.contract.unpause()).not.to.be.reverted
+  })
+
+  it('Minter and admin role available for custom owner (Alice) after granting permissions to it and revoke permissions from previous admin', async () => {
+    const DEFAULT_ADMIN_ROLE = keccak256DefaultAdminRole
+    const MINTER_ROLE = keccak256MinterRole
+    const PAUSER_ROLE = keccak256PauserRole
+
+    const { owner, bob, alice } = await deploy()
+    const grantAdminTransaction = await owner.contract.grantRole(DEFAULT_ADMIN_ROLE, alice.address)
+    await transfer_event(grantAdminTransaction)
+
+    const grantMinterTransaction = await owner.contract.grantRole(MINTER_ROLE, alice.address)
+    await transfer_event(grantMinterTransaction)
+
+    const grantPauserTransaction = await owner.contract.grantRole(PAUSER_ROLE, alice.address)
+    await transfer_event(grantPauserTransaction)
+    // ------
+    const revokeMinterTransaction = await owner.contract.revokeRole(MINTER_ROLE, owner.address)
+    await transfer_event(revokeMinterTransaction)
+
+    const revokePauserTransaction = await owner.contract.revokeRole(PAUSER_ROLE, owner.address)
+    await transfer_event(revokePauserTransaction)
+
+    const revokeAdminTransaction = await owner.contract.revokeRole(DEFAULT_ADMIN_ROLE, owner.address)
+    await transfer_event(revokeAdminTransaction)
+
+    await expect(owner.contract.grantRole(MINTER_ROLE, bob.address)).to.be.revertedWith(
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${DEFAULT_ADMIN_ROLE}`
+    )
+
+    await expect(alice.contract.grantRole(MINTER_ROLE, bob.address)).not.to.be.reverted
+
     const recipients = [bob.address, owner.address]
     const mint_transaction = await alice.contract.bulkMint(recipients)
     const { _tokenId } = await transfer_event(mint_transaction)
