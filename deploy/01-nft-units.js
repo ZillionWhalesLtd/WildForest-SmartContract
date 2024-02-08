@@ -16,7 +16,7 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
     unitsOwnerAddress = SAIGON_UNITS_OWNER_ADDRESS
   }
 
-  const baseTokenURI = `${basePathUrl}/v1/unit_info?nftId=`
+  const baseTokenURI = `${basePathUrl}/v1/unit_info_release?nftId=`
 
   const { deployer } = await getNamedAccounts()
 
