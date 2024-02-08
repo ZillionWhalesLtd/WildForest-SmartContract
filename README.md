@@ -34,6 +34,7 @@
 
 ## NFTs (Units ERC721 based PROXY):
 - Saigon [tx: 0x8c68a4173f1c05d61790424e8e0d23289359b3d7f4e180451fc61e78c2eb918f, deployed at 0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6](https://saigon-app.roninchain.com/address/0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6?t=contract&st=write-contract)
+- Saigon (RELEASE)[deployed at 0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93](https://saigon-app.roninchain.com/address/0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93?t=contract&st=write-contract)
 - Ronin  [...](https://app.roninchain.com/address/)
 
 ## NFTs (Skins ERC721 based PROXY):
