@@ -35,19 +35,19 @@
 ## NFTs (Units ERC721 based PROXY):
 - Saigon [tx: 0x8c68a4173f1c05d61790424e8e0d23289359b3d7f4e180451fc61e78c2eb918f, deployed at 0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6](https://saigon-app.roninchain.com/address/0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6?t=contract&st=write-contract)
 - Saigon (RELEASE)[deployed at 0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93](https://saigon-app.roninchain.com/address/0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93?t=contract&st=write-contract)
-- Ronin  [...](https://app.roninchain.com/address/)
+- Ronin  (RELEASE)[tx: 0x760be494f59a01cc852dcba590d9c9c4043537579b574122af1ca59c0ef81f6c, deployed at 0xa038C593115f6FCd673f6833E15462B475994879](https://app.roninchain.com/address/0xa038C593115f6FCd673f6833E15462B475994879)
 
 ## NFTs (Skins ERC721 based PROXY):
 - Saigon [tx: 0x07922116bb5f70d5fe29204c4eea53539cc909f5ba05aa84e61ff9895b1935ce, deployed at 0x8d31c370b677fe84503d9299F08F6801EB05894B](https://saigon-app.roninchain.com/address/0x8d31c370b677fe84503d9299F08F6801EB05894B?t=contract&st=write-contract)
-- Ronin  [...](https://app.roninchain.com/address/)
+- Ronin  [tx: 0xe879c7dd66dcdbc749a7e5fc4ef56bc94f20cde97f08f48e054b739272ca0732, deployed at 0xa899849929E113315200609Be208e6a0858F645C](https://app.roninchain.com/address/0xa899849929E113315200609Be208e6a0858F645C)
 
 ## NFT (Lords ERC721 based PROXY):
 - Saigon [tx: 0xebab85aed76c4bbd6e711e21399049efc0dd3fdaf97043de067b88bcdbd5baec, deployed at 0x178C38A06773ca0370Cc818a98810D7BC717d057](https://saigon-app.roninchain.com/address/0x178C38A06773ca0370Cc818a98810D7BC717d057?t=contract&st=write-contract)
-- Ronin  [...](https://app.roninchain.com/address/)
+- Ronin  [tx: 0xc0d98dd4cf15e539d74882b5636037608f2aeeafc3de2afa7b0e7154a70853f8, deployed at 0xA1cE53B661be73bf9a5EdD3F0087484f0E3E7363](https://app.roninchain.com/address/0xA1cE53B661be73bf9a5EdD3F0087484f0E3E7363)
 
 ## NFTs (Packs ERC1155 based PROXY):
 - Saigon [tx: 0xecde996089a0a29a720f8e83fd2186d5d7a6be4cb2099b7f93a5727996cbc159, deployed at 0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251](https://saigon-app.roninchain.com/address/0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251?t=contract&st=read-contract-proxy&f=9&params=1)
-- Ronin (Live) [](https://app.roninchain.com/address/0x56bf1139e562be570ccf378fe8d37025a1d1b2a8?t=contract)
+- Ronin [tx: 0x9161b7e0fe094fc4a99bea7bf97d067558e09929e1fe454706ffee24ae8cc32e, deployed at 0x0328b534d094B097020B4538230F998027a54dB0](https://app.roninchain.com/address/0x0328b534d094B097020B4538230F998027a54dB0?t=contract)
 
 
 
