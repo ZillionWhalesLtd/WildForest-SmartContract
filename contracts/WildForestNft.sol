@@ -8,6 +8,37 @@ contract WildForestNft is ERC721Common {
   //   ERC721Common(name, symbol, baseTokenURI, ownerAddress)
   // {}
 
+  /// @notice thrown when a signature is expired
+  error Expired();
+
+  /// @notice thrown when the loan offer has already been submitted or canceled
+  error NonceAlreadyUsed(uint256 nonce);
+
+  /// @notice thrown when an invalid contract name parameter was provided
+  error InvalidContractName();
+
+  /// @notice thrown when an invalid signature was provided
+  error InvalidSignature();
+
+  /// @param walletAddress for whoom issued permission to execute mint
+  /// @param nonce a random non sequential nonce for the loan offer
+  /// @param deadline the deadline after which the signature is invalid
+  struct MintData {
+    address walletAddress;
+    uint256 nonce;
+    uint256 deadline;
+    string contractName;
+  }
+
+  bytes32 private constant MINT_DATA_TYPE_HASH =
+    keccak256(
+      "MintData(address walletAddress,uint256 nonce,uint256 deadline,string contractName)"
+    );
+
+  address private _userMintSigner;
+
+  mapping(address walletAddress => mapping(uint256 nonce => bool used)) public nonces;
+
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
@@ -33,6 +64,43 @@ contract WildForestNft is ERC721Common {
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       _approve(to, tokenIds[_i]);
     }
+  }
+
+  function _invalidateNonce(address walletAddress, uint256 nonce) internal {
+    nonces[walletAddress][nonce] = true;
+  }
+
+  function _validateMintData(MintData calldata data, bytes calldata signature) internal {
+    require(mintData.walletAddress == _msgSender()), "Caller address is not MintData.walletAddress");
+    if (mintData.deadline < block.timestamp) revert Expired();
+
+    if (nonces[data.walletAddress][data.nonce]) revert NonceAlreadyUsed(data.nonce);
+    _invalidateNonce(data.walletAddress, data.nonce);
+    if (data.contractName != name()) revert InvalidContractName();
+
+    bytes32 message = _hashTypedDataV4(
+      keccak256(
+        abi.encode(
+          MINT_DATA_TYPE_HASH,
+          data.walletAddress,
+          data.nonce,
+          data.deadline,
+          data.contractName,
+        )
+      )
+    );
+    address signer = message.recover(signature);
+    if (signer != _userMintSigner) revert InvalidSignature();
+  }
+
+  function userMint(MintData calldata mintData, bytes calldata signature) public virtual returns (uint256 _tokenId) {
+    _validateMintData(mintData, signature);
+
+    return _mintFor(_msgSender());
+  }
+
+  function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _userMintSigner = signerAddress;
   }
 
   function bulkBurn(uint256[] calldata tokenIds) public virtual {
