@@ -3,6 +3,8 @@
 const HARDHAT_LOCAL_CHAIN_ID = 31337
 
 const signMintData = async(signer, mintData, contractName, verifyingContractAddress) => {
+  // const signer = new ethers.Wallet(privateKey)
+
   const domain = {
     name: contractName,
     version: '1',
