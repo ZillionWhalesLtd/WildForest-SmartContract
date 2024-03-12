@@ -153,7 +153,7 @@ class RequirementsService {
     const unitsTypesMap  = groupBy(configUnits, 'type_id')
     const packsToMint = []
 
-    let packCounter = 1
+    let packCounter = 18801
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
       const { pack_id, number, lords, units, skins: originalSkins } = typeDistribution

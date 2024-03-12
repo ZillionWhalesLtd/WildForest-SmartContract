@@ -2,6 +2,8 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
+const { signMintData } = require('./_utils')
+
 chai.use(deep_equal)
 
 const { expect } = chai
@@ -12,7 +14,8 @@ const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const deploy = async () => {
   await deployments.fixture()
-  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const accounts = await ethers.getSigners()
+  const [owner, alice, bob, steve] = accounts
   const ownerAddress = await owner.getAddress()
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
@@ -23,18 +26,22 @@ const deploy = async () => {
     owner: {
       contract: nftContract,
       address: ownerAddress,
+      signer: owner,
     },
     alice: {
       contract: await nftContract.connect(alice),
       address: await alice.getAddress(),
+      signer: alice,
     },
     bob: {
       contract: await nftContract.connect(bob),
       address: await bob.getAddress(),
+      signer: bob,
     },
     steve: {
       contract: await nftContract.connect(steve),
       address: await steve.getAddress(),
+      signer: steve,
     },
   }
 }
@@ -52,18 +59,22 @@ const deployWithAliceOwner = async () => {
     owner: {
       contract: nftContract,
       address: await owner.getAddress(),
+      signer: owner,
     },
     alice: {
       contract: await nftContract.connect(alice),
       address: aliceOwnerAddress,
+      signer: alice,
     },
     bob: {
       contract: await nftContract.connect(bob),
       address: await bob.getAddress(),
+      signer: bob,
     },
     steve: {
       contract: await nftContract.connect(steve),
       address: await steve.getAddress(),
+      signer: steve,
     },
   }
 }
@@ -132,6 +143,65 @@ describe('WildForestNft', function () {
     }
 
     expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
+  })
+
+  it('UserMint should be available only with correct signature', async () => {
+    const { owner, bob } = await deploy()
+    const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
+    const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
+
+    const expiredMintData = {
+      walletAddress: bob.address,
+      nonce: 0,
+      deadline: deadlineExpired,
+    }
+
+    const mintData = {
+      walletAddress: bob.address,
+      nonce: 0,
+      deadline,
+    }
+
+    const verififyingContractAddress = await bob.contract.address
+    const expiredSignature = await signMintData(owner.signer, expiredMintData, cardsContractName, verififyingContractAddress)
+    const signature = await signMintData(owner.signer, mintData, cardsContractName, verififyingContractAddress)
+
+    const invalidContractAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+    const invalidAddressSignature = await signMintData(owner.signer, mintData, cardsContractName, invalidContractAddress)
+
+    await expect(owner.contract.userMint(mintData, signature)).to.be.revertedWith(
+      'Caller address is not MintData.walletAddress'
+    )
+
+    await expect(bob.contract.userMint(expiredMintData, expiredSignature)).to.be.revertedWithCustomError(
+      bob.contract, 'Expired'
+    )
+
+    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
+    )
+
+    await owner.contract.setUserMintSigner(owner.address)
+
+    const invalidData = Object.assign({}, mintData, { nonce: 1 })
+    await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
+    )
+
+    await expect(bob.contract.userMint(mintData, invalidAddressSignature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
+    )
+
+    // await expect(bob.contract.userMint(mintData, signature)).not.to.be.reverted
+    const mint_transaction = await bob.contract.userMint(mintData, signature)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
+    await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
+
+    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
+      bob.contract,
+      'NonceAlreadyUsed'
+    )
   })
 
   // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)
