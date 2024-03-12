@@ -154,20 +154,20 @@ describe('WildForestNft', function () {
       walletAddress: bob.address,
       nonce: 0,
       deadline: deadlineExpired,
-      contractName: cardsContractName,
     }
 
     const mintData = {
       walletAddress: bob.address,
       nonce: 0,
       deadline,
-      contractName: cardsContractName,
     }
 
     const verififyingContractAddress = await bob.contract.address
-    // 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
-    const expiredSignature = await signMintData(owner.signer, expiredMintData, verififyingContractAddress)
-    const signature = await signMintData(owner.signer, mintData, verififyingContractAddress)
+    const expiredSignature = await signMintData(owner.signer, expiredMintData, cardsContractName, verififyingContractAddress)
+    const signature = await signMintData(owner.signer, mintData, cardsContractName, verififyingContractAddress)
+
+    const invalidContractAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
+    const invalidAddressSignature = await signMintData(owner.signer, mintData, cardsContractName, invalidContractAddress)
 
     await expect(owner.contract.userMint(mintData, signature)).to.be.revertedWith(
       'Caller address is not MintData.walletAddress'
@@ -188,14 +188,18 @@ describe('WildForestNft', function () {
       bob.contract, 'InvalidSignature'
     )
 
+    await expect(bob.contract.userMint(mintData, invalidAddressSignature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
+    )
+
     // await expect(bob.contract.userMint(mintData, signature)).not.to.be.reverted
     const mint_transaction = await bob.contract.userMint(mintData, signature)
     const { _tokenId } = await transfer_event(mint_transaction)
     await expect(Number(_tokenId)).to.equal(1)
     await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
 
-    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWith(
-      // revertedWithCustomError( 'NonceAlreadyUsed')
+    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
+      bob.contract,
       'NonceAlreadyUsed'
     )
   })

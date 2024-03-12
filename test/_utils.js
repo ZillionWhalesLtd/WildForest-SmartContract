@@ -1,10 +1,12 @@
 'use strict'
 
-const signMintData = async(signer, mintData, verifyingContractAddress) => {
+const HARDHAT_LOCAL_CHAIN_ID = 31337
+
+const signMintData = async(signer, mintData, contractName, verifyingContractAddress) => {
   const domain = {
-    name: mintData.contractName,
+    name: contractName,
     version: '1',
-    chainId: 31337,
+    chainId: HARDHAT_LOCAL_CHAIN_ID,
     verifyingContract: verifyingContractAddress,
   };
 
@@ -13,7 +15,6 @@ const signMintData = async(signer, mintData, verifyingContractAddress) => {
       { name: 'walletAddress', type: 'address' },
       { name: 'nonce', type: 'uint256' },
       { name: 'deadline', type: 'uint256' },
-      { name: 'contractName', type: 'string' },
     ],
   }
 

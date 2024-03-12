@@ -30,12 +30,11 @@ contract WildForestNft is ERC721Common, EIP712 {
     address walletAddress;
     uint256 nonce;
     uint256 deadline;
-    string contractName;
   }
 
   bytes32 private constant MINT_DATA_TYPE_HASH =
     keccak256(
-      "MintData(address walletAddress,uint256 nonce,uint256 deadline,string contractName)"
+      "MintData(address walletAddress,uint256 nonce,uint256 deadline)"
     );
 
   address private _userMintSigner;
@@ -80,7 +79,6 @@ contract WildForestNft is ERC721Common, EIP712 {
 
     if (_mintNonces[data.walletAddress][data.nonce]) revert NonceAlreadyUsed(data.nonce);
     _invalidateNonce(data.walletAddress, data.nonce);
-    if (keccak256(abi.encodePacked(data.contractName)) != keccak256(abi.encodePacked(name()))) revert InvalidContractName();
 
     bytes32 message = _hashTypedDataV4(
       keccak256(
@@ -88,8 +86,7 @@ contract WildForestNft is ERC721Common, EIP712 {
           MINT_DATA_TYPE_HASH,
           data.walletAddress,
           data.nonce,
-          data.deadline,
-          data.contractName
+          data.deadline
         )
       )
     );
