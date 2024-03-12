@@ -14,7 +14,8 @@ const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const deploy = async () => {
   await deployments.fixture()
-  const [owner, alice, bob, steve] = await ethers.getSigners()
+  const accounts = await ethers.getSigners()
+  const [owner, alice, bob, steve] = accounts
   const ownerAddress = await owner.getAddress()
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
@@ -146,31 +147,45 @@ describe('WildForestNft', function () {
 
   it('UserMint should be available only with correct signature', async () => {
     const { owner, bob } = await deploy()
-    const deadlineExpired = BigInt((await ethers.provider.getBlock('latest'))!.timestamp) // + 60 * 60 * 24
+    const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
+    const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
 
-    const mintData = {
+    const expiredMintData = {
       walletAddress: bob.address,
       nonce: 0,
       deadline: deadlineExpired,
       contractName: cardsContractName,
     }
 
-    const verififyingContractAddress = await owner.contract.getAddress()
+    const mintData = {
+      walletAddress: bob.address,
+      nonce: 0,
+      deadline,
+      contractName: cardsContractName,
+    }
+
+    const verififyingContractAddress = await bob.contract.address
+    // 0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266
+    const expiredSignature = await signMintData(owner.signer, expiredMintData, verififyingContractAddress)
     const signature = await signMintData(owner.signer, mintData, verififyingContractAddress)
 
     await expect(owner.contract.userMint(mintData, signature)).to.be.revertedWith(
       'Caller address is not MintData.walletAddress'
     )
 
-    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWith(
-      'InvalidSignature'
+    await expect(bob.contract.userMint(expiredMintData, expiredSignature)).to.be.revertedWithCustomError(
+      bob.contract, 'Expired'
+    )
+
+    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
     )
 
     await owner.contract.setUserMintSigner(owner.address)
 
     const invalidData = Object.assign({}, mintData, { nonce: 1 })
-    await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWith(
-      'InvalidSignature'
+    await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
+      bob.contract, 'InvalidSignature'
     )
 
     // await expect(bob.contract.userMint(mintData, signature)).not.to.be.reverted

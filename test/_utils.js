@@ -1,6 +1,6 @@
 'use strict'
 
-const signMintData = async => (signer, mintData, verifyingContractAddress) => {
+const signMintData = async(signer, mintData, verifyingContractAddress) => {
   const domain = {
     name: mintData.contractName,
     version: '1',
@@ -17,7 +17,7 @@ const signMintData = async => (signer, mintData, verifyingContractAddress) => {
     ],
   }
 
-  return signer.signTypedData(domain, types, mintData)
+  return signer._signTypedData(domain, types, mintData)
 }
 
 module.exports = { signMintData }

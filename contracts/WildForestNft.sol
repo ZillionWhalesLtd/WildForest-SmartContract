@@ -2,8 +2,11 @@
 pragma solidity ^0.8.16;
 
 import "./sky-mavis-nft/ERC721Common.sol";
+import {EIP712Upgradeable as EIP712} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
+import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract WildForestNft is ERC721Common {
+contract WildForestNft is ERC721Common, EIP712 {
+  using ECDSA for bytes32;
   // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
   //   ERC721Common(name, symbol, baseTokenURI, ownerAddress)
   // {}
@@ -37,7 +40,7 @@ contract WildForestNft is ERC721Common {
 
   address private _userMintSigner;
 
-  mapping(address walletAddress => mapping(uint256 nonce => bool used)) public nonces;
+  mapping(address => mapping(uint256 => bool)) public _mintNonces;
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -46,6 +49,7 @@ contract WildForestNft is ERC721Common {
 
   function initialize(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) public initializer {
     __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
+    __EIP712_init(name, "1");
   }
 
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
@@ -67,16 +71,16 @@ contract WildForestNft is ERC721Common {
   }
 
   function _invalidateNonce(address walletAddress, uint256 nonce) internal {
-    nonces[walletAddress][nonce] = true;
+    _mintNonces[walletAddress][nonce] = true;
   }
 
   function _validateMintData(MintData calldata data, bytes calldata signature) internal {
-    require(mintData.walletAddress == _msgSender()), "Caller address is not MintData.walletAddress");
-    if (mintData.deadline < block.timestamp) revert Expired();
+    require(data.walletAddress == _msgSender(), "Caller address is not MintData.walletAddress");
+    if (data.deadline < block.timestamp) revert Expired();
 
-    if (nonces[data.walletAddress][data.nonce]) revert NonceAlreadyUsed(data.nonce);
+    if (_mintNonces[data.walletAddress][data.nonce]) revert NonceAlreadyUsed(data.nonce);
     _invalidateNonce(data.walletAddress, data.nonce);
-    if (data.contractName != name()) revert InvalidContractName();
+    if (keccak256(abi.encodePacked(data.contractName)) != keccak256(abi.encodePacked(name()))) revert InvalidContractName();
 
     bytes32 message = _hashTypedDataV4(
       keccak256(
@@ -85,7 +89,7 @@ contract WildForestNft is ERC721Common {
           data.walletAddress,
           data.nonce,
           data.deadline,
-          data.contractName,
+          data.contractName
         )
       )
     );
