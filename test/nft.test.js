@@ -20,6 +20,7 @@ const deploy = async () => {
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
   const nftContract = await upgrades.deployProxy(WildForestNft, [cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress])
+  await nftContract.initialize712(cardsContractName, "1")
   // const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
 
   return {
@@ -152,6 +153,13 @@ describe('WildForestNft', function () {
 
   it('UserMint should be available only with correct signature', async () => {
     const { owner, bob } = await deploy()
+    await expect(bob.contract.initialize712(cardsContractName, "1")).to.be.revertedWith(
+      `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+    )
+    await expect(owner.contract.initialize712(cardsContractName, "1")).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+
     const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
     const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
 

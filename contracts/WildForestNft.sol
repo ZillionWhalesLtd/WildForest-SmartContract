@@ -53,6 +53,10 @@ contract WildForestNft is ERC721Common, EIP712 {
     __EIP712_init(name, "1");
   }
 
+  function initialize712(string memory name, string memory version) public onlyRole(DEFAULT_ADMIN_ROLE) reinitializer(2) {
+    __EIP712_init(name, version);
+  }
+
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
     require(tokenIds.length > 0, "WildForestNft: invalid array lengths");
 
