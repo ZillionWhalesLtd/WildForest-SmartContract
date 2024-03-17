@@ -15,7 +15,7 @@ contract WildForestNft is ERC721Common, EIP712 {
   error Expired();
 
   /// @notice thrown when the loan offer has already been submitted or canceled
-  error NonceAlreadyUsed(uint256 nonce);
+  error NonceAlreadyUsed(string identificator);
 
   /// @notice thrown when an invalid contract name parameter was provided
   error InvalidContractName();
@@ -23,25 +23,25 @@ contract WildForestNft is ERC721Common, EIP712 {
   /// @notice thrown when an invalid signature was provided
   error InvalidSignature();
 
-  event UserMint(address indexed walletAddress, uint256 tokenId, uint256 nonce);
+  event UserMint(address indexed walletAddress, uint256 tokenId, string identificator);
 
   /// @param walletAddress for whoom issued permission to execute mint
-  /// @param nonce a random non sequential nonce for the loan offer
+  /// @param identificator a identificator for the nft promise
   /// @param deadline the deadline after which the signature is invalid
   struct MintData {
     address walletAddress;
-    uint256 nonce;
+    string identificator;
     uint256 deadline;
   }
 
   bytes32 private constant MINT_DATA_TYPE_HASH =
     keccak256(
-      "MintData(address walletAddress,uint256 nonce,uint256 deadline)"
+      "MintData(address walletAddress,string identificator,uint256 deadline)"
     );
 
   address private _userMintSigner;
 
-  mapping(address => mapping(uint256 => bool)) public _mintNonces;
+  mapping(address => mapping(string => bool)) public _mintNonces;
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -71,23 +71,23 @@ contract WildForestNft is ERC721Common, EIP712 {
     }
   }
 
-  function _invalidateNonce(address walletAddress, uint256 nonce) internal {
-    _mintNonces[walletAddress][nonce] = true;
+  function _invalidateNonce(address walletAddress, string memory identificator) internal {
+    _mintNonces[walletAddress][identificator] = true;
   }
 
   function _validateMintData(MintData calldata data, bytes calldata signature) internal {
     require(data.walletAddress == _msgSender(), "Caller address is not MintData.walletAddress");
     if (data.deadline < block.timestamp) revert Expired();
 
-    if (_mintNonces[data.walletAddress][data.nonce]) revert NonceAlreadyUsed(data.nonce);
-    _invalidateNonce(data.walletAddress, data.nonce);
+    if (_mintNonces[data.walletAddress][data.identificator]) revert NonceAlreadyUsed(data.identificator);
+    _invalidateNonce(data.walletAddress, data.identificator);
 
     bytes32 message = _hashTypedDataV4(
       keccak256(
         abi.encode(
           MINT_DATA_TYPE_HASH,
           data.walletAddress,
-          data.nonce,
+          keccak256(bytes(data.identificator)),
           data.deadline
         )
       )
@@ -100,7 +100,7 @@ contract WildForestNft is ERC721Common, EIP712 {
     _validateMintData(mintData, signature);
 
     _tokenId = _mintFor(_msgSender());
-    emit UserMint(mintData.walletAddress, _tokenId, mintData.nonce);
+    emit UserMint(mintData.walletAddress, _tokenId, mintData.identificator);
   }
 
   function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {

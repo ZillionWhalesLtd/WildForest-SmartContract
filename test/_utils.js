@@ -15,7 +15,7 @@ const signMintData = async(signer, mintData, contractName, verifyingContractAddr
   const types = {
     MintData: [
       { name: 'walletAddress', type: 'address' },
-      { name: 'nonce', type: 'uint256' },
+      { name: 'identificator', type: 'string' },
       { name: 'deadline', type: 'uint256' },
     ],
   }

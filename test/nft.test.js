@@ -157,13 +157,13 @@ describe('WildForestNft', function () {
 
     const expiredMintData = {
       walletAddress: bob.address,
-      nonce: 0,
+      identificator: '550e8400-e29b-41d4-a716-446655440000',
       deadline: deadlineExpired,
     }
 
     const mintData = {
       walletAddress: bob.address,
-      nonce: 0,
+      identificator: '550e8400-e29b-41d4-a716-446655440000',
       deadline,
     }
 
@@ -188,7 +188,7 @@ describe('WildForestNft', function () {
 
     await owner.contract.setUserMintSigner(owner.address)
 
-    const invalidData = Object.assign({}, mintData, { nonce: 1 })
+    const invalidData = Object.assign({}, mintData, { identificator: '550e8400-e29b-41d4-a716-446655440001' })
     await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
       bob.contract, 'InvalidSignature'
     )
@@ -206,10 +206,11 @@ describe('WildForestNft', function () {
     await expect(Number(_tokenId)).to.equal(1)
 
     const userMintEvent = events.find(e => e.event === 'UserMint')
-    const { args: { walletAddress, tokenId, nonce } } = userMintEvent
+    const { args: { walletAddress, tokenId, identificator } } = userMintEvent
 
     expect(Number(tokenId)).to.equal(Number(_tokenId))
     expect(mintData.walletAddress).to.equal(walletAddress)
+    expect(mintData.identificator).to.equal(identificator)
 
     await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
 
