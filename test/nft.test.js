@@ -98,6 +98,11 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
+const all_events = transaction =>
+  transaction
+    .wait()
+    .then(({ events }) => events)
+
 describe('WildForestNft', function () {
   it('Minting should be available only for owner (error when other trying)', async () => {
     const { alice, bob, steve } = await deploy()
@@ -194,8 +199,18 @@ describe('WildForestNft', function () {
 
     // await expect(bob.contract.userMint(mintData, signature)).not.to.be.reverted
     const mint_transaction = await bob.contract.userMint(mintData, signature)
-    const { _tokenId } = await transfer_event(mint_transaction)
+    const events = await all_events(mint_transaction)
+
+    const transferEvent = events.find(e => e.event === 'Transfer')
+    const { args: { tokenId: _tokenId } } = transferEvent
     await expect(Number(_tokenId)).to.equal(1)
+
+    const userMintEvent = events.find(e => e.event === 'UserMint')
+    const { args: { walletAddress, tokenId, nonce } } = userMintEvent
+
+    expect(Number(tokenId)).to.equal(Number(_tokenId))
+    expect(mintData.walletAddress).to.equal(walletAddress)
+
     await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
 
     await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(

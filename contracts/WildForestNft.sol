@@ -23,6 +23,8 @@ contract WildForestNft is ERC721Common, EIP712 {
   /// @notice thrown when an invalid signature was provided
   error InvalidSignature();
 
+  event UserMint(address indexed walletAddress, uint256 tokenId, uint256 nonce);
+
   /// @param walletAddress for whoom issued permission to execute mint
   /// @param nonce a random non sequential nonce for the loan offer
   /// @param deadline the deadline after which the signature is invalid
@@ -97,7 +99,8 @@ contract WildForestNft is ERC721Common, EIP712 {
   function userMint(MintData calldata mintData, bytes calldata signature) public virtual returns (uint256 _tokenId) {
     _validateMintData(mintData, signature);
 
-    return _mintFor(_msgSender());
+    _tokenId = _mintFor(_msgSender());
+    emit UserMint(mintData.walletAddress, _tokenId, mintData.nonce);
   }
 
   function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
