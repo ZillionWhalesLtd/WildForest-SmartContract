@@ -20,7 +20,6 @@ const deploy = async () => {
 
   const WildForestNft = await ethers.getContractFactory("WildForestNft")
   const nftContract = await upgrades.deployProxy(WildForestNft, [cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress])
-  await nftContract.initialize712(cardsContractName, "1")
   // const nftContract = await WildForestNft.deploy(cardsContractName, cardsContractSymbol, baseTokenURI, ownerAddress)
 
   return {
@@ -99,11 +98,6 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
-const all_events = transaction =>
-  transaction
-    .wait()
-    .then(({ events }) => events)
-
 describe('WildForestNft', function () {
   it('Minting should be available only for owner (error when other trying)', async () => {
     const { alice, bob, steve } = await deploy()
@@ -149,83 +143,6 @@ describe('WildForestNft', function () {
     }
 
     expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
-  })
-
-  it('UserMint should be available only with correct signature', async () => {
-    const { owner, bob } = await deploy()
-    await expect(bob.contract.initialize712(cardsContractName, "1")).to.be.revertedWith(
-      `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
-    )
-    await expect(owner.contract.initialize712(cardsContractName, "1")).to.be.revertedWith(
-      'Initializable: contract is already initialized'
-    )
-
-    const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
-    const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
-
-    const expiredMintData = {
-      walletAddress: bob.address,
-      identificator: '550e8400-e29b-41d4-a716-446655440000',
-      deadline: deadlineExpired,
-    }
-
-    const mintData = {
-      walletAddress: bob.address,
-      identificator: '550e8400-e29b-41d4-a716-446655440000',
-      deadline,
-    }
-
-    const verififyingContractAddress = await bob.contract.address
-    const expiredSignature = await signMintData(owner.signer, expiredMintData, cardsContractName, verififyingContractAddress)
-    const signature = await signMintData(owner.signer, mintData, cardsContractName, verififyingContractAddress)
-
-    const invalidContractAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
-    const invalidAddressSignature = await signMintData(owner.signer, mintData, cardsContractName, invalidContractAddress)
-
-    await expect(owner.contract.userMint(mintData, signature)).to.be.revertedWith(
-      'Caller address is not MintData.walletAddress'
-    )
-
-    await expect(bob.contract.userMint(expiredMintData, expiredSignature)).to.be.revertedWithCustomError(
-      bob.contract, 'Expired'
-    )
-
-    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
-      bob.contract, 'InvalidSignature'
-    )
-
-    await owner.contract.setUserMintSigner(owner.address)
-
-    const invalidData = Object.assign({}, mintData, { identificator: '550e8400-e29b-41d4-a716-446655440001' })
-    await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
-      bob.contract, 'InvalidSignature'
-    )
-
-    await expect(bob.contract.userMint(mintData, invalidAddressSignature)).to.be.revertedWithCustomError(
-      bob.contract, 'InvalidSignature'
-    )
-
-    // await expect(bob.contract.userMint(mintData, signature)).not.to.be.reverted
-    const mint_transaction = await bob.contract.userMint(mintData, signature)
-    const events = await all_events(mint_transaction)
-
-    const transferEvent = events.find(e => e.event === 'Transfer')
-    const { args: { tokenId: _tokenId } } = transferEvent
-    await expect(Number(_tokenId)).to.equal(1)
-
-    const userMintEvent = events.find(e => e.event === 'UserMint')
-    const { args: { walletAddress, tokenId, identificator } } = userMintEvent
-
-    expect(Number(tokenId)).to.equal(Number(_tokenId))
-    expect(mintData.walletAddress).to.equal(walletAddress)
-    expect(mintData.identificator).to.equal(identificator)
-
-    await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
-
-    await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
-      bob.contract,
-      'NonceAlreadyUsed'
-    )
   })
 
   // NOTE: we need to override methods to make owner be able burn trandfed token (e.g. added his to approved scope)

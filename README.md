@@ -6,10 +6,18 @@
 - OUTDATED Saigon [tx: 0x8c68a4173f1c05d61790424e8e0d23289359b3d7f4e180451fc61e78c2eb918f, deployed at 0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6](https://saigon-app.roninchain.com/address/0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6?t=contract&st=write-contract)
 - Saigon [deployed at 0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93](https://saigon-app.roninchain.com/address/0x75696c1b60630d77DfC28f39Ad0Ec3834677ee93?t=contract&st=write-contract)
 - Ronin  [tx: 0x760be494f59a01cc852dcba590d9c9c4043537579b574122af1ca59c0ef81f6c, deployed at 0xa038C593115f6FCd673f6833E15462B475994879](https://app.roninchain.com/address/0xa038C593115f6FCd673f6833E15462B475994879)
+--------
+*Self Claim*
+- Saigon [deployed at 0x9a83490FB12281aD1338a19f70172569d5d5F5F2](https://saigon-app.roninchain.com/address/0x9a83490FB12281aD1338a19f70172569d5d5F5F2?t=contract&st=write-contract)
+--------
 
 ## RELEASED SKIN NFT (PROXY based ERC721):
 - Saigon [tx: 0x07922116bb5f70d5fe29204c4eea53539cc909f5ba05aa84e61ff9895b1935ce, deployed at 0x8d31c370b677fe84503d9299F08F6801EB05894B](https://saigon-app.roninchain.com/address/0x8d31c370b677fe84503d9299F08F6801EB05894B?t=contract&st=write-contract)
 - Ronin  [tx: 0xe879c7dd66dcdbc749a7e5fc4ef56bc94f20cde97f08f48e054b739272ca0732, deployed at 0xa899849929E113315200609Be208e6a0858F645C](https://app.roninchain.com/address/0xa899849929E113315200609Be208e6a0858F645C)
+--------
+*Self Claim*
+- Saigon [deployed at 0x74046d7168D5b95AC8BbF32a58D34bD0aFeFA918](https://saigon-app.roninchain.com/address/0x74046d7168D5b95AC8BbF32a58D34bD0aFeFA918?t=contract&st=write-contract)
+--------
 
 ## RELEASED LORD NFT (PROXY based ERC721):
 - Saigon [tx: 0xebab85aed76c4bbd6e711e21399049efc0dd3fdaf97043de067b88bcdbd5baec, deployed at 0x178C38A06773ca0370Cc818a98810D7BC717d057](https://saigon-app.roninchain.com/address/0x178C38A06773ca0370Cc818a98810D7BC717d057?t=contract&st=write-contract)
