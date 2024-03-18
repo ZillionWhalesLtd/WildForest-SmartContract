@@ -253,8 +253,8 @@ describe('WildForestTimeLockNft', function () {
     const { owner, bob, alice } = await deploy()
 
     const now = Date.now()
-    const in12Seconds = now + (12 * 1000)
-    const customTimeLocks = [now, in12Seconds]
+    const in21Seconds = now + (21 * 1000)
+    const customTimeLocks = [now, in21Seconds]
     await owner.contract["bulkMint(address[],uint256[])"]([bob.address, bob.address], customTimeLocks)
 
     await expect(bob.contract.transferFrom(bob.address, alice.address, 1)).to.not.be.reverted
@@ -271,8 +271,8 @@ describe('WildForestTimeLockNft', function () {
     const { owner, bob, alice } = await deploy()
 
     const now = Date.now()
-    const in12Seconds = now + (12 * 1000)
-    const customTimeLocks = [now, in12Seconds]
+    const in21Seconds = now + (21 * 1000)
+    const customTimeLocks = [now, in21Seconds]
     await owner.contract["bulkMint(address[],uint256[])"]([bob.address, bob.address], customTimeLocks)
 
     await expect(bob.contract["safeTransferFrom(address,address,uint256)"](bob.address, alice.address, 1)).to.not.be.reverted
