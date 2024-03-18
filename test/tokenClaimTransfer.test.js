@@ -8,10 +8,7 @@ chai.use(deep_equal)
 
 const { expect } = chai
 
-const contractName = 'WildForestUnitsClaim'
-const cardsContractName = 'WildForestCards'
-const cardsContractSymbol = `WFC`
-const baseTokenURI = 'https://localhost:3000/nfts/'
+const contractName = 'WildForestTokenClaimTransfer'
 
 const all_events = transaction =>
   transaction

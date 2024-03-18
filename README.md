@@ -37,6 +37,10 @@
 ## Beta $WF Tokens (ERC20):
 - Saigon [tx: 0x9e9e5c8855bf1dc6937cc99b5b2efba48beeb54005fc668f4a380555260e1faa, deployed at 0x61b832F8Fe4fF691f605b3c6862C76B6793B962d](https://saigon-app.roninchain.com/address/0x61b832F8Fe4fF691f605b3c6862C76B6793B962d?t=contract&st=read-contract)
 - Ronin [tx: 0xa0b10a79817682ace71a3a61aab06c5237c8b3514891d86d528727bc2897657e, deployed at 0x363C3b97152e161Cea85e0E5Dc52dfDCa01A2dB1](https://app.roninchain.com/address/0x363C3b97152e161Cea85e0E5Dc52dfDCa01A2dB1?t=contract)
+--------
+*Self Claim*
+- Saigon [deployed at 0x382be0e87D13fb1fd6026d16C2822A5Ed94205e8](https://saigon-app.roninchain.com/address/0x382be0e87D13fb1fd6026d16C2822A5Ed94205e8?t=contract&st=write-contract)
+--------
 
 
 # OUTDATED SMART-CONTRACTS (before we switched to Proxy):
