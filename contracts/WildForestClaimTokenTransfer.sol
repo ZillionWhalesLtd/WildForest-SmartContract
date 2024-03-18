@@ -46,10 +46,10 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
     _disableInitializers();
   }
 
-  function initialize(string memory name, address ownerAddress, address signerAddress, address nftContractAddress) public initializer {
+  function initialize(string memory name, address ownerAddress, address signerAddress, address tokenContractAddress) public initializer {
     _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
     _userTransferSigner = signerAddress;
-    _tokenContractAddress = nftContractAddress;
+    _tokenContractAddress = tokenContractAddress;
 
     __EIP712_init(name, "1");
   }
