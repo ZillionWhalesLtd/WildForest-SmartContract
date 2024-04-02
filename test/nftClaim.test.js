@@ -97,13 +97,13 @@ describe('WildForestClaimNft', function () {
 
     const expiredMintData = {
       walletAddress: bob.address,
-      identificator: '550e8400-e29b-41d4-a716-446655440000',
+      identificators: ['550e8400-e29b-41d4-a716-446655440000'],
       deadline: deadlineExpired,
     }
 
     const mintData = {
       walletAddress: bob.address,
-      identificator: '550e8400-e29b-41d4-a716-446655440000',
+      identificators: ['550e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440001'],
       deadline,
     }
 
@@ -122,7 +122,7 @@ describe('WildForestClaimNft', function () {
       bob.contract, 'Expired'
     )
 
-    const invalidData = Object.assign({}, mintData, { identificator: '550e8400-e29b-41d4-a716-446655440001' })
+    const invalidData = Object.assign({}, mintData, { identificators: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] })
     await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
       bob.contract, 'InvalidSignature'
     )
@@ -136,13 +136,18 @@ describe('WildForestClaimNft', function () {
     const events = await all_events(mint_transaction)
 
     const userMintEvent = events.find(e => e.event === 'UserMint')
-    const { args: { walletAddress, tokenId, identificator } } = userMintEvent
+    const { args: { walletAddress, tokenIds, identificators } } = userMintEvent
 
-    expect(Number(tokenId)).to.equal(1)
+    expect(Number(tokenIds[0])).to.equal(1)
+    expect(Number(tokenIds[1])).to.equal(2)
+    expect(tokenIds.length).to.equal(2)
     expect(mintData.walletAddress).to.equal(walletAddress)
-    expect(mintData.identificator).to.equal(identificator)
+    expect(mintData.identificators[0]).to.equal(identificators[0])
+    expect(mintData.identificators[1]).to.equal(identificators[1])
+    expect(identificators.length).to.equal(2)
 
-    await expect(bob.nftContract['burn(uint256)'](Number(tokenId))).not.to.be.reverted
+    await expect(bob.nftContract['burn(uint256)'](Number(tokenIds[0]))).not.to.be.reverted
+    await expect(bob.nftContract['burn(uint256)'](Number(tokenIds[1]))).not.to.be.reverted
 
     await expect(bob.contract.userMint(mintData, signature)).to.be.revertedWithCustomError(
       bob.contract,
