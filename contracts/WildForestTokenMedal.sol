@@ -2,22 +2,20 @@
 pragma solidity ^0.8.16;
 
 import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract WildForestMedal is ERC1155Upgradeable {
+contract WildForestMedal is ERC1155Upgradeable, AccessControlEnumerableUpgradeable {
   mapping (uint256 => uint256) public tokenSupply;
 
-  address private _governance;
+  // address private _governance;
 
   uint256 public seasonsCount;
   string public name;
   string public symbol;
 
-  modifier onlyGovernance() {
-    require(msg.sender == _governance, "only governance can call this");
-
-    _;
-  }
+  bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+  bytes32 public constant TYPE_CREATOR_ROLE = keccak256("TYPE_CREATOR_ROLE");
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -28,7 +26,9 @@ contract WildForestMedal is ERC1155Upgradeable {
     __ERC1155_init(uri_);
     name = _name;
     symbol = _symbol;
-    _governance = _ownerAddress;
+    _setupRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
+    _setupRole(MINTER_ROLE, _ownerAddress);
+    _setupRole(TYPE_CREATOR_ROLE, _ownerAddress);
     seasonsCount = 0;
   }
 
@@ -38,13 +38,19 @@ contract WildForestMedal is ERC1155Upgradeable {
     return _seasonNumber <= seasonsCount;
   }
 
-  function setURI(string memory uri_) public onlyGovernance {
+  function setURI(string memory uri_) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _setURI(uri_);
   }
 
-  // function updateGovernance(address _newGovernance) public onlyGovernance {
-  //   _governance = _newGovernance;
-  // }
+  function supportsInterface(bytes4 interfaceId)
+    public
+    view
+    virtual
+    override(ERC1155Upgradeable, AccessControlEnumerableUpgradeable)
+    returns (bool)
+  {
+    return super.supportsInterface(interfaceId);
+  }
 
   function totalSupply(
     uint256 _id
@@ -57,7 +63,7 @@ contract WildForestMedal is ERC1155Upgradeable {
     return string.concat(super.uri(_seasonId), Strings.toString(_seasonId));
   }
 
-  function addNewSeason(uint256 initialSupply) external onlyGovernance returns (uint256) {
+  function addNewSeason(uint256 initialSupply) external onlyRole(TYPE_CREATOR_ROLE) returns (uint256) {
     seasonsCount++;
     uint256 seasonNumber = seasonsCount;
 
@@ -70,7 +76,7 @@ contract WildForestMedal is ERC1155Upgradeable {
     address _to,
     uint256 _seasonId,
     uint256 _amount
-  ) public onlyGovernance {
+  ) public onlyRole(MINTER_ROLE) {
     require(_exists(_seasonId), "season does not exists");
     _mint(_to, _seasonId, _amount, "");
     tokenSupply[_seasonId] = tokenSupply[_seasonId] + _amount;
@@ -80,7 +86,7 @@ contract WildForestMedal is ERC1155Upgradeable {
     address _to,
     uint256[] memory _seasonIds,
     uint256[] memory _amounts
-  ) public onlyGovernance {
+  ) public onlyRole(MINTER_ROLE) {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");
     }
