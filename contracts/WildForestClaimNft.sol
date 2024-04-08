@@ -20,20 +20,21 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
 
   /// @notice thrown when an invalid signature was provided
   error InvalidSignature();
-  event UserMint(address indexed walletAddress, uint256[] tokenIds, string[] identificators);
+  event UserMint(address indexed walletAddress, uint256[] tokenIds, string[] identificators, string playerId);
 
   /// @param walletAddress for whoom issued permission to execute mint
   /// @param identificators a identificator for the nft promise (array)
   /// @param deadline the deadline after which the signature is invalid
   struct MintData {
     address walletAddress;
+    string playerId;
     string[] identificators;
     uint256 deadline;
   }
 
   bytes32 private constant MINT_DATA_TYPE_HASH =
     keccak256(
-      "MintData(address walletAddress,string identificators,uint256 deadline)"
+      "MintData(address walletAddress,string playerId,string identificators,uint256 deadline)"
     );
 
   address private _userMintSigner;
@@ -78,6 +79,7 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
         abi.encode(
           MINT_DATA_TYPE_HASH,
           data.walletAddress,
+          keccak256(bytes(data.playerId)),
           keccak256(encoded),
           data.deadline
         )
@@ -97,7 +99,7 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
     }
 
     _tokenIds = nftContract.bulkMint(_recipients);
-    emit UserMint(mintData.walletAddress, _tokenIds, mintData.identificators);
+    emit UserMint(mintData.walletAddress, _tokenIds, mintData.identificators, mintData.playerId);
   }
 
   function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {

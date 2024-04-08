@@ -95,14 +95,18 @@ describe('WildForestClaimNft', function () {
     const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
     const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
 
+    const playerId = '660e8400-e29b-41d4-a716-446655441234'
+
     const expiredMintData = {
       walletAddress: bob.address,
+      playerId,
       identificators: ['550e8400-e29b-41d4-a716-446655440000'],
       deadline: deadlineExpired,
     }
 
     const mintData = {
       walletAddress: bob.address,
+      playerId,
       identificators: ['550e8400-e29b-41d4-a716-446655440000', '550e8400-e29b-41d4-a716-446655440001'],
       deadline,
     }
@@ -136,7 +140,7 @@ describe('WildForestClaimNft', function () {
     const events = await all_events(mint_transaction)
 
     const userMintEvent = events.find(e => e.event === 'UserMint')
-    const { args: { walletAddress, tokenIds, identificators } } = userMintEvent
+    const { args: { walletAddress, tokenIds, identificators, playerId: playerIdFromEvent } } = userMintEvent
 
     expect(Number(tokenIds[0])).to.equal(1)
     expect(Number(tokenIds[1])).to.equal(2)
@@ -145,6 +149,7 @@ describe('WildForestClaimNft', function () {
     expect(mintData.identificators[0]).to.equal(identificators[0])
     expect(mintData.identificators[1]).to.equal(identificators[1])
     expect(identificators.length).to.equal(2)
+    expect(playerId).to.equal(playerIdFromEvent)
 
     await expect(bob.nftContract['burn(uint256)'](Number(tokenIds[0]))).not.to.be.reverted
     await expect(bob.nftContract['burn(uint256)'](Number(tokenIds[1]))).not.to.be.reverted
