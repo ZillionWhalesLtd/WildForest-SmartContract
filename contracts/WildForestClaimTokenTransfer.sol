@@ -21,10 +21,11 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
   /// @notice thrown when an invalid signature was provided
   error InvalidSignature();
 
-  event UserTransfer(address indexed walletAddress, address indexed senderAddress, uint256 amount, string identificator);
+  event UserTransfer(address indexed walletAddress, address indexed senderAddress, uint256 amount, string identificator, string playerId);
 
   struct TransferData {
     address walletAddress;
+    string playerId;
     address senderAddress;
     uint256 amount;
     string identificator;
@@ -33,7 +34,7 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
 
   bytes32 private constant TRANSFER_DATA_TYPE_HASH =
     keccak256(
-      "TransferData(address walletAddress,address senderAddress,uint256 amount,string identificator,uint256 deadline)"
+      "TransferData(address walletAddress,string playerId,address senderAddress,uint256 amount,string identificator,uint256 deadline)"
     );
 
   address private _userTransferSigner;
@@ -70,6 +71,7 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
         abi.encode(
           TRANSFER_DATA_TYPE_HASH,
           data.walletAddress,
+          keccak256(bytes(data.playerId)),
           data.senderAddress,
           data.amount,
           keccak256(bytes(data.identificator)),
@@ -86,7 +88,7 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
 
     ITokenBase tokenContract = ITokenBase(_tokenContractAddress);
     tokenContract.transferFrom(transferData.senderAddress, msg.sender, transferData.amount);
-    emit UserTransfer(transferData.walletAddress, transferData.senderAddress, transferData.amount, transferData.identificator);
+    emit UserTransfer(transferData.walletAddress, transferData.senderAddress, transferData.amount, transferData.identificator, transferData.playerId);
   }
 
   function setUserTransferSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {

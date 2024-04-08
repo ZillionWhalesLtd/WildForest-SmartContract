@@ -40,6 +40,7 @@ const signTransferData = async(signer, transferData, contractName, verifyingCont
   const types = {
     TransferData: [
       { name: 'walletAddress', type: 'address' },
+      { name: 'playerId', type: 'string' },
       { name: 'senderAddress', type: 'address' },
       { name: 'amount', type: 'uint256' },
       { name: 'identificator', type: 'string' },

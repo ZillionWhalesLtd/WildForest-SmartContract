@@ -98,6 +98,7 @@ describe('WildForestClaimTokenTransfer', function () {
 
     const expiredTransferData = {
       walletAddress: bob.address,
+      playerId: '660e8400-e29b-41d4-a716-446655441234',
       senderAddress: steve.address,
       amount,
       identificator: '550e8400-e29b-41d4-a716-446655440000',
@@ -106,6 +107,7 @@ describe('WildForestClaimTokenTransfer', function () {
 
     const transferData = {
       walletAddress: bob.address,
+      playerId: '660e8400-e29b-41d4-a716-446655441234',
       senderAddress: steve.address,
       amount,
       identificator: '550e8400-e29b-41d4-a716-446655440000',
@@ -141,12 +143,13 @@ describe('WildForestClaimTokenTransfer', function () {
     const events = await all_events(mint_transaction)
 
     const userTransferEvent = events.find(e => e.event === 'UserTransfer')
-    const { args: { walletAddress, senderAddress, amount: _amount, identificator } } = userTransferEvent
+    const { args: { walletAddress, senderAddress, amount: _amount, identificator, playerId } } = userTransferEvent
 
     expect(Number(_amount)).to.equal(amount)
     expect(transferData.walletAddress).to.equal(walletAddress)
     expect(transferData.senderAddress).to.equal(senderAddress)
     expect(transferData.identificator).to.equal(identificator)
+    expect(transferData.playerId).to.equal(playerId)
 
     await expect(bob.contract.userTransfer(transferData, signature)).to.be.revertedWithCustomError(
       bob.contract,
