@@ -5,10 +5,10 @@ import "@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 
-contract WildForestMedal is ERC1155Upgradeable, AccessControlEnumerableUpgradeable {
+contract WildForestMedalStorage {
   mapping (uint256 => uint256) public tokenSupply;
 
-  // address private _governance;
+  address public _governance;
 
   uint256 public seasonsCount;
   string public name;
@@ -17,6 +17,12 @@ contract WildForestMedal is ERC1155Upgradeable, AccessControlEnumerableUpgradeab
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   bytes32 public constant TYPE_CREATOR_ROLE = keccak256("TYPE_CREATOR_ROLE");
 
+  bool public _upgradeV2;
+
+  // uint256[49] private __gap;
+}
+
+contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessControlEnumerableUpgradeable {
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
@@ -26,10 +32,22 @@ contract WildForestMedal is ERC1155Upgradeable, AccessControlEnumerableUpgradeab
     __ERC1155_init(uri_);
     name = _name;
     symbol = _symbol;
+    _governance = _ownerAddress;
     _setupRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
     _setupRole(MINTER_ROLE, _ownerAddress);
     _setupRole(TYPE_CREATOR_ROLE, _ownerAddress);
     seasonsCount = 0;
+    _upgradeV2 = false;
+  }
+
+  function upgradeSetInitRoles(address _ownerAddress) public {
+    require (!_upgradeV2, "Contract already upgraded to V2");
+    require(msg.sender == _governance, "only governance can call this");
+    _upgradeV2 = true;
+
+    _setupRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
+    _setupRole(MINTER_ROLE, _ownerAddress);
+    _setupRole(TYPE_CREATOR_ROLE, _ownerAddress);
   }
 
   function _exists(

@@ -25,7 +25,15 @@ const deploy = async () => {
 
   const WildForestMedal2 = await ethers.getContractFactory('WildForestMedal', owner)
   nftContract = await upgrades.upgradeProxy(nftContract.address, WildForestMedal2)
-  // const nftContract = await WildForestMedal.deploy(name, symbol, uri, ownerAddress)
+
+  const aliceContract = await nftContract.connect(alice)
+  // await expect(aliceContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
+  //   'only governance can call this'
+  // )
+  await nftContract.upgradeSetInitRoles(ownerAddress)
+  await expect(nftContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
+    'Contract already upgraded to V2'
+  )
 
   return {
     owner: {
@@ -33,7 +41,7 @@ const deploy = async () => {
       address: ownerAddress,
     },
     alice: {
-      contract: await nftContract.connect(alice),
+      contract: aliceContract,
       address: await alice.getAddress(),
     },
     bob: {
