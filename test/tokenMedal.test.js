@@ -11,6 +11,10 @@ const symbol = `WFM`
 // const uri = 'https://localhost:3000/api/mdeal/{id}'
 const uri = 'https://localhost:3000/api/mdeal/'
 
+const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
+const keccak256TypeCreatorRole = '0xa179fee20f85ec961934693e9c82cdcfa7a5e03830c24fff006b46f3fd75fa9e'
+const keccak256DefaultAdminRole = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
 const deploy = async () => {
   await deployments.fixture()
   const [owner, alice, bob, steve] = await ethers.getSigners()
@@ -21,7 +25,15 @@ const deploy = async () => {
 
   const WildForestMedal2 = await ethers.getContractFactory('WildForestMedal', owner)
   nftContract = await upgrades.upgradeProxy(nftContract.address, WildForestMedal2)
-  // const nftContract = await WildForestMedal.deploy(name, symbol, uri, ownerAddress)
+
+  const aliceContract = await nftContract.connect(alice)
+  // await expect(aliceContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
+  //   'only governance can call this'
+  // )
+  await nftContract.upgradeSetInitRoles(ownerAddress)
+  await expect(nftContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
+    'Contract already upgraded to V2'
+  )
 
   return {
     owner: {
@@ -29,7 +41,7 @@ const deploy = async () => {
       address: ownerAddress,
     },
     alice: {
-      contract: await nftContract.connect(alice),
+      contract: aliceContract,
       address: await alice.getAddress(),
     },
     bob: {
@@ -91,23 +103,23 @@ describe('WildForestMedal', function () {
     const { owner, alice } = await deployWithAliceOwner()
 
     await expect(owner.contract.addNewSeason(50)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256TypeCreatorRole}`
     )
     await alice.contract.addNewSeason(50)
 
     const newURI = 'http://test.com'
     await expect(owner.contract.setURI(newURI)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
     )
 
     await alice.contract.setURI(newURI)
     expect(await alice.contract.uri(1)).to.equal(`${newURI}1`)
 
     await expect(owner.contract.mintBatch(alice.address, [1], [1])).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
     await expect(owner.contract.mint(alice.address, 1, 1)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
 
     await expect(alice.contract.mintBatch(owner.address, [1], [1])).not.to.be.reverted
@@ -132,11 +144,11 @@ describe('WildForestMedal', function () {
     expect(await alice.contract.totalSupply(sesonNumber)).to.equal(seasonSupply)
 
     await expect(alice.contract.addNewSeason(50)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256TypeCreatorRole}`
     )
 
     await expect(bob.contract.addNewSeason(50)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${bob.address.toLowerCase()} is missing role ${keccak256TypeCreatorRole}`
     )
   })
 
@@ -152,7 +164,7 @@ describe('WildForestMedal', function () {
 
     const newURI = 'https://localhost:4000/api/mdeal/'
     await expect(alice.contract.setURI(newURI)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
     )
 
     await owner.contract.setURI(newURI)
@@ -164,10 +176,10 @@ describe('WildForestMedal', function () {
     await owner.contract.addNewSeason(50)
 
     await expect(alice.contract.mintBatch(bob.address, [1], [1])).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
     await expect(alice.contract.mint(bob.address, 1, 1)).to.be.revertedWith(
-      'only governance can call this'
+      `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
     )
 
     await expect(owner.contract.mintBatch(bob.address, [2], [1])).to.be.revertedWith(
