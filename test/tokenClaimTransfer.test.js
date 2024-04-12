@@ -68,6 +68,13 @@ const deploy = async () => {
 }
 
 describe('WildForestClaimTokenTransfer', function () {
+  it('initialize not available second time', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.initialize(contractName, owner.address, owner.address, tokenContractAddress)).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+  })
+
   it('setUserTransferSigner should be available only for admin', async () => {
     const { owner, bob } = await deploy()
 
