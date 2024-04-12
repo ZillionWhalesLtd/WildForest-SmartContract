@@ -44,7 +44,7 @@ const deploy = async () => {
   return {
     owner: {
       contract: tokenClaimTransferContract,
-      tokenContract: tokenContract,
+      // tokenContract: tokenContract,
       address: ownerAddress,
       signer: owner,
     },
@@ -129,7 +129,7 @@ describe('WildForestClaimTokenTransfer', function () {
       bob.contract, 'Expired'
     )
 
-    const invalidData = Object.assign({}, transferData, { identificator: '550e8400-e29b-41d4-a716-446655440001' })
+    const invalidData = { ...transferData, identificator: '550e8400-e29b-41d4-a716-446655440001' }
     await expect(bob.contract.userTransfer(invalidData, signature)).to.be.revertedWithCustomError(
       bob.contract, 'InvalidSignature'
     )

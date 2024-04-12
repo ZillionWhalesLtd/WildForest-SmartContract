@@ -2,32 +2,33 @@ require('dotenv').config()
 const { PACKS_OWNER_ADDRESS, SAIGON_PACKS_NFT_OWNER_ADDRESS } = process.env
 
 const func = async function ({ getChainId, getNamedAccounts, deployments: { deploy } }) {
-  const cardsContractName = 'Wild Forest Packs'
-  const cardsContractSymbol = 'WildForestPack'
+  const name = 'Wild Forest Packs'
+  const symbol = `WildForestPack`
 
   const chainId = await getChainId()
   const isSaigon = chainId === '2021'
 
   let basePathUrl = 'https://nft-info.server.playwildforest.io'
-  let packsOwnerAddress = PACKS_OWNER_ADDRESS
+  let medalsOwnerAddress = PACKS_OWNER_ADDRESS
 
   if (isSaigon) {
     basePathUrl = 'https://stage-nft-info.server.playwildforest.io'
-    packsOwnerAddress = SAIGON_PACKS_NFT_OWNER_ADDRESS
+    medalsOwnerAddress = SAIGON_PACKS_NFT_OWNER_ADDRESS
   }
 
-  const baseTokenURI = `${basePathUrl}/v1/pack_metadata?typeId=`
+  const uri = `${basePathUrl}/v1/pack_metadata?typeId=`
 
   const { deployer } = await getNamedAccounts()
+  const params = [name, symbol, uri, medalsOwnerAddress]
 
-  await deploy('WildForestNft', {
+  await deploy('WildForestMedal', {
     from: deployer,
     log: true,
     proxy: {
       execute: {
         init: {
           methodName: 'initialize',
-          args: [cardsContractName, cardsContractSymbol, baseTokenURI, packsOwnerAddress],
+          args: params,
         },
       },
       proxyContract: 'OpenZeppelinTransparentProxy',
@@ -36,4 +37,4 @@ const func = async function ({ getChainId, getNamedAccounts, deployments: { depl
 }
 
 module.exports = func
-func.tags = ['nftPacks']
+func.tags = ['nftPacks1155']

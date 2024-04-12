@@ -2,8 +2,6 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
-const { signMintData } = require('./_utils')
-
 chai.use(deep_equal)
 
 const { expect } = chai
