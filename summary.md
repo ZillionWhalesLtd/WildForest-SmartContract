@@ -1,12 +1,12 @@
-#NFT
+# NFT
 
-##ERC721 based (WildForestNft)
+## ERC721 based (WildForestNft)
 Its proxy Smart Contract with Pause functionallity.
 It have have role based permissions (MINTER_ROLE, PAUSER_ROLE, DEFAULT_ADMIN_ROLE) roles.
 It have extra bulk operations to perform on several tokens (bulkMint, bulkApprove, bulkBurn)
 (Main use cases - its to use bulkMint to create NFTs for some wallet and bulkApprove + bulkBurn to burn them)
 
-##ERC1155 based (WildForestMedalStorage)
+## ERC1155 based (WildForestMedalStorage)
 Its proxy Smart Contract with option to create new types(intenrally called seasons) by the Admin
 From second version it have have role based permissions (MINTER_ROLE, TYPE_CREATOR_ROLE, DEFAULT_ADMIN_ROLE) roles (had just initial governance address which had a power to execute all functions).
 
@@ -21,9 +21,9 @@ minting NFTs for this address.
 Address of this (WildForestClaimNft) contract added as `MINTER_ROLE` at the `WildForestNft` contract,
 so this contract could mint NFTs
 
-#TOKEN
+# TOKEN
 
-##ERC20 based (WildForestToken)
+## ERC20 based (WildForestToken)
 This just clean ERC20 contract
 
 ## WildForestClaimTokenTransfer
