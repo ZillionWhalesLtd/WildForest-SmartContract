@@ -8,7 +8,6 @@ const { expect } = chai
 
 const name = 'WildForestMedals'
 const symbol = `WFM`
-// const uri = 'https://localhost:3000/api/mdeal/{id}'
 const uri = 'https://localhost:3000/api/mdeal/'
 
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
@@ -27,9 +26,9 @@ const deploy = async () => {
   nftContract = await upgrades.upgradeProxy(nftContract.address, WildForestMedal2)
 
   const aliceContract = await nftContract.connect(alice)
-  // await expect(aliceContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
-  //   'only governance can call this'
-  // )
+  await expect(aliceContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
+    'only governance can call this'
+  )
   await nftContract.upgradeSetInitRoles(ownerAddress)
   await expect(nftContract.upgradeSetInitRoles(ownerAddress)).to.be.revertedWith(
     'Contract already upgraded to V2'
@@ -84,21 +83,28 @@ const deployWithAliceOwner = async () => {
   }
 }
 
-const transfer_event = transaction =>
-  transaction
-    .wait()
-    .then(({ events }) => events)
-    .then(([{ args }]) => args)
+// const transfer_event = transaction =>
+//   transaction
+//     .wait()
+//     .then(({ events }) => events)
+//     .then(([{ args }]) => args)
 
-const transfer_events = transaction =>
-  transaction
-    .wait()
-    .then(({ events }) => events)
-    .then((events) => {
-      return events.filter(e => e.event === 'Transfer')
-    })
+// const transfer_events = transaction =>
+//   transaction
+//     .wait()
+//     .then(({ events }) => events)
+//     .then((events) => {
+//       return events.filter(e => e.event === 'Transfer')
+//     })
 
 describe('WildForestMedal', function () {
+  it('initialize not available second time', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.initialize(name, symbol, uri, owner.address)).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+  })
+
   it('custom owner', async () => {
     const { owner, alice } = await deployWithAliceOwner()
 
@@ -124,6 +130,12 @@ describe('WildForestMedal', function () {
 
     await expect(alice.contract.mintBatch(owner.address, [1], [1])).not.to.be.reverted
     await expect(alice.contract.mint(owner.address, 1, 1)).not.to.be.reverted
+  })
+
+  it('The supportsInterface function should be a simple override', async () => {
+    const { steve } = await deploy()
+
+    await expect(steve.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
   })
 
   it('Only owner could add new season', async () => {

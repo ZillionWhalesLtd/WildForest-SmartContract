@@ -2,8 +2,6 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
-const { signMintData } = require('./_utils')
-
 chai.use(deep_equal)
 
 const { expect } = chai
@@ -99,11 +97,22 @@ const transfer_events = transaction =>
     })
 
 describe('WildForestNft', function () {
+  it('initialize not available second time', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.initialize(cardsContractName, cardsContractSymbol, baseTokenURI, owner.address)).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+  })
+
   it('Minting should be available only for owner (error when other trying)', async () => {
-    const { alice, bob, steve } = await deploy()
+    const { owner, alice, bob, steve } = await deploy()
     const recipients = [bob.address, steve.address]
     await expect(alice.contract.bulkMint(recipients)).to.be.revertedWith(
       `AccessControl: account ${alice.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+
+    await expect(owner.contract.bulkMint([])).to.be.revertedWith(
+      'ERC721Common: invalid array lengths'
     )
   })
   // revertedWithCustomError
@@ -175,6 +184,10 @@ describe('WildForestNft', function () {
     const response = await steve.contract.stateOf(1)
 
     expect(response).not.to.be.undefined // eslint-disable-line
+
+    await expect(steve.contract.stateOf(2)).to.be.revertedWith(
+      'ERC721Common: query for non-existent token'
+    )
   })
 
   it('Admin can setBaseURI', async () => {

@@ -44,7 +44,7 @@ const deploy = async () => {
   return {
     owner: {
       contract: tokenClaimTransferContract,
-      tokenContract: tokenContract,
+      // tokenContract: tokenContract,
       address: ownerAddress,
       signer: owner,
     },
@@ -68,6 +68,13 @@ const deploy = async () => {
 }
 
 describe('WildForestClaimTokenTransfer', function () {
+  it('initialize not available second time', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.initialize(contractName, owner.address, owner.address, tokenContractAddress)).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+  })
+
   it('setUserTransferSigner should be available only for admin', async () => {
     const { owner, bob } = await deploy()
 
@@ -129,7 +136,7 @@ describe('WildForestClaimTokenTransfer', function () {
       bob.contract, 'Expired'
     )
 
-    const invalidData = Object.assign({}, transferData, { identificator: '550e8400-e29b-41d4-a716-446655440001' })
+    const invalidData = { ...transferData, identificator: '550e8400-e29b-41d4-a716-446655440001' }
     await expect(bob.contract.userTransfer(invalidData, signature)).to.be.revertedWithCustomError(
       bob.contract, 'InvalidSignature'
     )

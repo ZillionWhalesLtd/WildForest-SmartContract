@@ -45,7 +45,7 @@ const deploy = async () => {
   return {
     owner: {
       contract: nftClaimContract,
-      nftContract: nftContract,
+      // nftContract: nftContract,
       address: ownerAddress,
       signer: owner,
     },
@@ -69,6 +69,13 @@ const deploy = async () => {
 }
 
 describe('WildForestClaimNft', function () {
+  it('initialize not available second time', async () => {
+    const { owner } = await deploy()
+    await expect(owner.contract.initialize(contractName, owner.address, owner.address, nftContractAddress)).to.be.revertedWith(
+      'Initializable: contract is already initialized'
+    )
+  })
+
   it('setUserMintSigner should be available only for admin', async () => {
     const { owner, bob } = await deploy()
 
@@ -90,7 +97,7 @@ describe('WildForestClaimNft', function () {
   })
 
   it('UserMint should be available only with correct signature', async () => {
-    const { owner, bob, steve } = await deploy()
+    const { owner, bob } = await deploy()
 
     const deadlineExpired = BigInt((await ethers.provider.getBlock('latest')).timestamp) // + 60 * 60 * 24
     const deadline = BigInt((await ethers.provider.getBlock('latest')).timestamp + 60 * 60 * 24)
@@ -126,7 +133,7 @@ describe('WildForestClaimNft', function () {
       bob.contract, 'Expired'
     )
 
-    const invalidData = Object.assign({}, mintData, { identificators: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] })
+    const invalidData = { ...mintData, identificators: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }
     await expect(bob.contract.userMint(invalidData, signature)).to.be.revertedWithCustomError(
       bob.contract, 'InvalidSignature'
     )
