@@ -32,6 +32,10 @@
 - Saigon [tx: 0x289de444ee28c9171013eaad49e2923f7f07053cb86c717c6534d030f2c69f06, deployed at 0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6](https://saigon-app.roninchain.com/address/0xD560ad4De2e06Bbdc22929Ba81CCe7436B3659a6?t=contract&st=write-contract)
 - Ronin [tx: 0xef7c573b5619d37dc788338de14d689d90d3e01f5279bdc0166ea28a53c53791, deployed at 0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA](https://app.roninchain.com/address/0xF6C5f9a72e6D46F30c7223a4CfF854F94C7E95AA?t=contract)
 - OUTDATED Ronin (Live) [tx: 0xd8505e79202110e2ecdd4240fbc72cfd8caf415ca4c04a2ea4394a37082c8d8a, deployed at 0x4B7B799C5B21623c810E6d2EF3Ad89643D02fF86](https://app.roninchain.com/address/0x4B7B799C5B21623c810E6d2EF3Ad89643D02fF86?t=contract)
+--------
+*Self Claim*
+- Saigon [deployed at 0xe65f9B074aCaC85923BB19Fb70Ad10f5Ef3FE2E2](https://saigon-app.roninchain.com/address/0xe65f9B074aCaC85923BB19Fb70Ad10f5Ef3FE2E2?t=contract&st=write-contract)
+--------
 
 
 ## Beta $WF Tokens (ERC20):
