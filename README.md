@@ -9,6 +9,7 @@
 --------
 *Self Claim*
 - Saigon [deployed at 0x9a83490FB12281aD1338a19f70172569d5d5F5F2](https://saigon-app.roninchain.com/address/0x9a83490FB12281aD1338a19f70172569d5d5F5F2?t=contract&st=write-contract)
+- Ronin [deployed at 0xc2f81D4f3AAC3FD49768E418E290e850D1d3aC8b](https://app.roninchain.com/address/0xc2f81D4f3AAC3FD49768E418E290e850D1d3aC8b?t=contract&st=write-contract)
 --------
 
 ## RELEASED SKIN NFT (PROXY based ERC721):
@@ -17,6 +18,7 @@
 --------
 *Self Claim*
 - Saigon [deployed at 0x74046d7168D5b95AC8BbF32a58D34bD0aFeFA918](https://saigon-app.roninchain.com/address/0x74046d7168D5b95AC8BbF32a58D34bD0aFeFA918?t=contract&st=write-contract)
+- Ronin [deployed at 0xc42cA096E60d997B6f6E2B937253F5b69A6FA6aa](https://app.roninchain.com/address/0xc42cA096E60d997B6f6E2B937253F5b69A6FA6aa?t=contract&st=write-contract)
 --------
 
 ## RELEASED LORD NFT (PROXY based ERC721):
@@ -35,6 +37,7 @@
 --------
 *Self Claim*
 - Saigon [deployed at 0xe65f9B074aCaC85923BB19Fb70Ad10f5Ef3FE2E2](https://saigon-app.roninchain.com/address/0xe65f9B074aCaC85923BB19Fb70Ad10f5Ef3FE2E2?t=contract&st=write-contract)
+- Ronin [deployed at 0x078e97a332dcD862F5355ffeAdbC1fbf2De40d65](https://app.roninchain.com/address/0x078e97a332dcD862F5355ffeAdbC1fbf2De40d65?t=contract&st=write-contract)
 --------
 
 
@@ -44,6 +47,7 @@
 --------
 *Self Claim*
 - Saigon [deployed at 0x382be0e87D13fb1fd6026d16C2822A5Ed94205e8](https://saigon-app.roninchain.com/address/0x382be0e87D13fb1fd6026d16C2822A5Ed94205e8?t=contract&st=write-contract)
+- Ronin [deployed at 0x8B3156fb4504CbCF41c8E63Aa9eF596383C6480e](https://app.roninchain.com/address/0x8B3156fb4504CbCF41c8E63Aa9eF596383C6480e?t=contract&st=write-contract)
 --------
 
 
