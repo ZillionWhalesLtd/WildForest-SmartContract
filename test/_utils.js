@@ -3,13 +3,6 @@
 const HARDHAT_LOCAL_CHAIN_ID = 31337
 
 const signMintData = async(signer, mintData, contractName, verifyingContractAddress) => {
-  // const signer = new ethers.Wallet(privateKey)
-
-  let identificators = ''
-  for (const identificator of mintData.identificators) {
-    identificators += identificator
-  }
-
   const domain = {
     name: contractName,
     version: '1',
@@ -21,12 +14,12 @@ const signMintData = async(signer, mintData, contractName, verifyingContractAddr
     MintData: [
       { name: 'walletAddress', type: 'address' },
       { name: 'playerId', type: 'string' },
-      { name: 'identificators', type: 'string' },
+      { name: 'identificators', type: 'string[]' },
       { name: 'deadline', type: 'uint256' },
     ],
   }
 
-  return signer._signTypedData(domain, types, Object.assign({}, mintData, { identificators }))
+  return signer._signTypedData(domain, types, mintData)
 }
 
 const signTransferData = async(signer, transferData, contractName, verifyingContractAddress) => {

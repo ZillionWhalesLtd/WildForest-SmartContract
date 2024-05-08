@@ -34,7 +34,7 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
 
   bytes32 private constant MINT_DATA_TYPE_HASH =
     keccak256(
-      "MintData(address walletAddress,string playerId,string identificators,uint256 deadline)"
+      "MintData(address walletAddress,string playerId,string[] identificators,uint256 deadline)"
     );
 
   address private _userMintSigner;
@@ -68,10 +68,12 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
       _invalidateNonce(data.walletAddress, data.identificators[_i]);
     }
 
-    bytes memory encoded;
+    bytes32[] memory encoded = new bytes32[](
+      data.identificators.length
+    );
 
     for (uint256 i = 0; i < data.identificators.length; i++) {
-      encoded = abi.encodePacked(encoded, data.identificators[i]);
+      encoded[i] = keccak256(bytes(data.identificators[i]));
     }
 
     bytes32 message = _hashTypedDataV4(
@@ -80,7 +82,7 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
           MINT_DATA_TYPE_HASH,
           data.walletAddress,
           keccak256(bytes(data.playerId)),
-          keccak256(encoded),
+          keccak256(abi.encodePacked(encoded)),
           data.deadline
         )
       )
