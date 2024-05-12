@@ -23,6 +23,9 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
 
   event UserTransfer(address indexed walletAddress, address indexed senderAddress, uint256 amount, string identificator, string playerId);
 
+  event SignerAddressChanged(address indexed signerAddress);
+  event TokenContractChanged(address indexed tokenContractAddress);
+
   struct TransferData {
     address walletAddress;
     string playerId;
@@ -93,9 +96,11 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
 
   function setUserTransferSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _userTransferSigner = signerAddress;
+    emit SignerAddressChanged(signerAddress);
   }
 
   function setTokenContractAddress(address tokenContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _tokenContractAddress = tokenContractAddress;
+    emit TokenContractChanged(tokenContractAddress);
   }
 }

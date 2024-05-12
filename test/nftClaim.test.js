@@ -14,6 +14,7 @@ const cardsContractSymbol = `WFC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
+const MAXIMUM_THRESHOLD = 40 + 2
 
 const all_events = transaction =>
   transaction
@@ -83,7 +84,12 @@ describe('WildForestClaimNft', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
-    await owner.contract.setUserMintSigner(owner.address)
+    const set_transaction = await owner.contract.setUserMintSigner(owner.address)
+    const events = await all_events(set_transaction)
+
+    const setSignerEvent = events.find(e => e.event === 'SignerAddressChanged')
+    const { args: { signerAddress } } = setSignerEvent
+    expect(signerAddress).to.equal(owner.address)
   })
 
   it('setNftContractAddress should be available only for admin', async () => {
@@ -93,7 +99,12 @@ describe('WildForestClaimNft', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
-    await owner.contract.setNftContractAddress(nftContractAddress)
+    const set_transaction = await owner.contract.setNftContractAddress(nftContractAddress)
+    const events = await all_events(set_transaction)
+
+    const setSignerEvent = events.find(e => e.event === 'NftContractChanged')
+    const { args: { nftContractAddress: updatedContract } } = setSignerEvent
+    expect(updatedContract).to.equal(nftContractAddress)
   })
 
   it('UserMint should be available only with correct signature', async () => {
@@ -111,6 +122,17 @@ describe('WildForestClaimNft', function () {
       deadline: deadlineExpired,
     }
 
+    const exceededIdentificators = []
+    for (let _i = 0; _i < MAXIMUM_THRESHOLD; _i++) {
+      exceededIdentificators.push('550e8400-e29b-41d4-a716-446655440000')
+    }
+    const exceededMaximumMintData = {
+      walletAddress: bob.address,
+      playerId,
+      identificators: exceededIdentificators,
+      deadline,
+    }
+
     const mintData = {
       walletAddress: bob.address,
       playerId,
@@ -120,6 +142,7 @@ describe('WildForestClaimNft', function () {
 
     const verififyingContractAddress = await bob.contract.address
     const expiredSignature = await signMintData(owner.signer, expiredMintData, contractName, verififyingContractAddress)
+    const exceededMaxSignature = await signMintData(owner.signer, exceededMaximumMintData, contractName, verififyingContractAddress)
     const signature = await signMintData(owner.signer, mintData, contractName, verififyingContractAddress)
 
     const invalidContractAddress = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266'
@@ -131,6 +154,10 @@ describe('WildForestClaimNft', function () {
 
     await expect(bob.contract.userMint(expiredMintData, expiredSignature)).to.be.revertedWithCustomError(
       bob.contract, 'Expired'
+    )
+
+    await expect(bob.contract.userMint(exceededMaximumMintData, exceededMaxSignature)).to.be.revertedWithCustomError(
+      bob.contract, 'MaximumIdentificatorsExceeded'
     )
 
     const invalidData = { ...mintData, identificators: ['550e8400-e29b-41d4-a716-446655440001', '550e8400-e29b-41d4-a716-446655440002'] }

@@ -82,7 +82,12 @@ describe('WildForestClaimTokenTransfer', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
-    await owner.contract.setUserTransferSigner(owner.address)
+    const set_transaction = await owner.contract.setUserTransferSigner(owner.address)
+    const events = await all_events(set_transaction)
+
+    const setSignerEvent = events.find(e => e.event === 'SignerAddressChanged')
+    const { args: { signerAddress } } = setSignerEvent
+    expect(signerAddress).to.equal(owner.address)
   })
 
   it('setTokenContractAddress should be available only for admin', async () => {
@@ -92,7 +97,12 @@ describe('WildForestClaimTokenTransfer', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
-    await owner.contract.setTokenContractAddress(tokenContractAddress)
+    const set_transaction = await owner.contract.setTokenContractAddress(tokenContractAddress)
+    const events = await all_events(set_transaction)
+
+    const setSignerEvent = events.find(e => e.event === 'TokenContractChanged')
+    const { args: { tokenContractAddress: updatedAddress } } = setSignerEvent
+    expect(updatedAddress).to.equal(tokenContractAddress)
   })
 
   it('UserTransfer should be available only with correct signature', async () => {

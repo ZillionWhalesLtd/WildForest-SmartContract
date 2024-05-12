@@ -11,6 +11,8 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
 
   /// @notice thrown when a signature is expired
   error Expired();
+  /// @notice thrown when a number of identificators exceed maximum (50)
+  error MaximumIdentificatorsExceeded();
 
   /// @notice thrown when the loan offer has already been submitted or canceled
   error NonceAlreadyUsed(string identificator);
@@ -21,6 +23,9 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
   /// @notice thrown when an invalid signature was provided
   error InvalidSignature();
   event UserMint(address indexed walletAddress, uint256[] tokenIds, string[] identificators, string playerId);
+
+  event SignerAddressChanged(address indexed signerAddress);
+  event NftContractChanged(address indexed nftContractAddress);
 
   /// @param walletAddress for whoom issued permission to execute mint
   /// @param identificators a identificator for the nft promise (array)
@@ -62,6 +67,8 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
   function _validateMintData(MintData calldata data, bytes calldata signature) internal {
     require(data.walletAddress == msg.sender, "Caller address is not MintData.walletAddress");
     if (data.deadline < block.timestamp) revert Expired();
+
+    if (data.identificators.length > 40) revert MaximumIdentificatorsExceeded();
 
     for (uint256 _i = 0; _i < data.identificators.length; _i++) {
       if (_mintNonces[data.walletAddress][data.identificators[_i]]) revert NonceAlreadyUsed(data.identificators[_i]);
@@ -106,9 +113,11 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
 
   function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _userMintSigner = signerAddress;
+    emit SignerAddressChanged(signerAddress);
   }
 
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _nftContractAddress = nftContractAddress;
+    emit NftContractChanged(nftContractAddress);
   }
 }
