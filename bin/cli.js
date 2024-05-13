@@ -225,9 +225,8 @@ const main = async() => {
         addressTo = RONIN_PACKS_OWNER_ADDRESS
       }
       const dataRequirements = require(`./mintRequirements/${path}`)
-      const lordsData = require(`./resultData/${lordsPath}`)
 
-      const packsToMint = await requirementsService.buildPacksToMint(dataRequirements, lordsData)
+      const packsToMint = await requirementsService.buildPacksToMint(dataRequirements, lordsPath)
       console.log('Prepared Packs To Mint:', packsToMint) // eslint-disable-line
 
       const { isOk } = await _askToProcessPacks()

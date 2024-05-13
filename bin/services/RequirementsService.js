@@ -134,26 +134,28 @@ class RequirementsService {
     return arrayWithWeights
   }
 
-  async buildPacksToMint(dataRequirements, lordsData) {
+  async buildPacksToMint(dataRequirements, lordsFile) {
 
     const cryptoService = new CryptoService(this._logger)
-    const lordsGroupedMap = groupBy(lordsData, 'rank')
 
     const repoPath = process.cwd()
     const unitsWeights = require(`${repoPath}/bin/mintRequirements/unitsWeights.json`)
 
-    const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins.csv`
+    const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_t1.csv`
     const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
+    const lordsConfigPath = `${repoPath}/bin/csvConfigs/${lordsFile}`
 
     const configSkins = await this._csvService.readFile(skinsConfigPath)
     const configUnits = await this._csvService.readFile(unitsConfigPath)
+    const configLords = await this._csvService.readFile(lordsConfigPath)
 
     const skinsGroupedMap = groupBy(configSkins, 'rarity')
     const unitsGroupedMap = groupBy(configUnits, 'rarity')
     const unitsTypesMap  = groupBy(configUnits, 'type_id')
+    const lordsGroupedMap = groupBy(configLords, 'rank')
     const packsToMint = []
 
-    let packCounter = 18801
+    let packCounter = 19301
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
       const { pack_id, number, lords, units, skins: originalSkins } = typeDistribution
@@ -240,7 +242,7 @@ class RequirementsService {
           const mintedLordsRanks = lordsGroupedMap[randomLord.rank]
           const randomLorTypePosition = randomNumber(0, mintedLordsRanks.length)
           const [mintedTypeLord] = mintedLordsRanks.splice(randomLorTypePosition, 1)
-          const { tokenId } = mintedTypeLord
+          const { nft_id: tokenId } = mintedTypeLord
           treasure.lords = [{ tokenId }]
         }
 

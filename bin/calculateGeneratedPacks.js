@@ -4,25 +4,25 @@ const uniq = require('lodash.uniq')
 // const FileService = require('./services/FileService')
 const CsvService = require('./services/CsvService')
 
-const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706389873132.json'
+const GENERATED_PACKS_FILE_NAME = 'minted_packs-1715610318554.json'
 // const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706387582481.json'
-const MINTED_LORDS_FILE_NAME = 'minted_lords-saigon.json'
 
 const main = async() => {
   // const fileService = new FileService()
   // fileService.writeFile(filePath, contentToWrite)
   const csvService = new CsvService()
   const repoPath = process.cwd()
-  const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins.csv`
+  const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_t1.csv`
   const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
+  const lordsConfigPath = `${repoPath}/bin/csvConfigs/NewConfigs - LordsMetadata.csv`
 
   const configSkins = await csvService.readFile(skinsConfigPath)
   const configUnits = await csvService.readFile(unitsConfigPath)
-  const mintedLords = require(`./resultData/${MINTED_LORDS_FILE_NAME}`)
+  const configLords = await csvService.readFile(lordsConfigPath)
 
   const configSkinsMap = keyBy(configSkins, 'skin_id')
   const configUnitsMap = keyBy(configUnits, 'id')
-  const lordsMap = keyBy(mintedLords, 'tokenId')
+  const lordsMap = keyBy(configLords, 'nft_id')
 
   const data = require(`./resultData/${GENERATED_PACKS_FILE_NAME}`)
   const resultsMap = { All: { units: {}, skins: {}, lords: {} } }
