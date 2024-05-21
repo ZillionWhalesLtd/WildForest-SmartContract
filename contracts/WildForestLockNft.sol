@@ -6,23 +6,12 @@ import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 // import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {INFTBase} from "./interfaces/INFTBase.sol";
 
-contract WildForestLockNft is AccessControlEnumerableUpgradeable, IERC721ReceiverUpgradeable {
+contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   // using ECDSA for bytes32;
 
-  // /// @notice thrown when a signature is expired
   error NoLockedTokenForAddress();
-  // /// @notice thrown when a number of identificators exceed maximum (50)
   error LockActive(uint256 lockExpiration);
 
-  // /// @notice thrown when the loan offer has already been submitted or canceled
-  // error NonceAlreadyUsed(string identificator);
-
-  // /// @notice thrown when an invalid contract name parameter was provided
-  // error InvalidContractName();
-
-  // /// @notice thrown when an invalid signature was provided
-  // error InvalidSignature();
-  // event UserMint(address indexed walletAddress, uint256[] tokenIds, string[] identificators, string playerId);
   event DepositLock(address indexed account, uint256[] tokenIds, uint256 lockPeriod);
   event WithdrawLock(address indexed account, uint256[] tokenIds);
 
@@ -31,7 +20,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable, IERC721Receive
 
   address public _nftContractAddress;
   uint256 public _lockPeriod;
-  uint256 public _name;
+  string public _name;
 
   mapping(uint256 => mapping(address => uint256)) public _lockedTokens;
 
@@ -48,7 +37,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable, IERC721Receive
   }
 
   function _lock(address account, uint256 tokenId) internal virtual returns (uint256) {
-    unlockTimestamp = block.timestamp + _lockPeriod;
+    uint256 unlockTimestamp = block.timestamp + _lockPeriod;
 
     _lockedTokens[tokenId][account] = unlockTimestamp;
     return unlockTimestamp;
@@ -62,9 +51,9 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable, IERC721Receive
   function _validateOwnerAndLock(address account, uint256 tokenId) internal {
     uint256 lockExpiration = _lockedTokens[tokenId][account];
 
-    if (!lockExpiration) revert NoLockedTokenForAddress();
+    if (lockExpiration == 0) revert NoLockedTokenForAddress();
 
-    if (lockExpiration < block.timestamp) revert LockActive(lockExpiration);
+    if (lockExpiration > block.timestamp) revert LockActive(lockExpiration);
   }
 
   /**
@@ -124,10 +113,10 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable, IERC721Receive
   //   address from,
   //   uint256 tokenId,
   //   bytes memory
-  // ) public virtual override returns (bytes4) {
-  //   require(address(underlying()) == _msgSender(), "ERC721Wrapper: caller is not underlying");
-  //   _safeMint(from, tokenId);
-  //   return IERC721Receiver.onERC721Received.selector;
+  // ) public virtual returns (bytes4) {
+  //   // require(address(underlying()) == _msgSender(), "ERC721Wrapper: caller is not underlying");
+  //   // _safeMint(from, tokenId);
+  //   return IERC721ReceiverUpgradeable.onERC721Received.selector;
   // }
 
   // /**
