@@ -56,9 +56,6 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     if (lockExpiration > block.timestamp) revert LockActive(lockExpiration);
   }
 
-  /**
-   * @dev Allow a user to deposit underlying tokens and mint the corresponding tokenIds.
-   */
   function deposit(uint256[] memory tokenIds) public virtual returns (bool) {
     INFTBase nftContract = INFTBase(_nftContractAddress);
 
@@ -77,9 +74,6 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     return true;
   }
 
-  /**
-   * @dev Allow a user to burn wrapped tokens and withdraw the corresponding tokenIds of the underlying tokens.
-   */
   function withdraw(uint256[] memory tokenIds) public virtual returns (bool) {
     INFTBase nftContract = INFTBase(_nftContractAddress);
 
@@ -96,6 +90,16 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
 
     emit WithdrawLock(msg.sender, tokenIds);
     return true;
+  }
+
+  function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _nftContractAddress = nftContractAddress;
+    emit NftContractChanged(nftContractAddress);
+  }
+
+  function setNftLockPeriod(uint256 lockPeriod) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _lockPeriod = lockPeriod;
+    emit LockPeriodChanged(lockPeriod);
   }
 
   // /**
@@ -128,14 +132,4 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   //   _safeMint(account, tokenId);
   //   return tokenId;
   // }
-
-  function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    _nftContractAddress = nftContractAddress;
-    emit NftContractChanged(nftContractAddress);
-  }
-
-  function setNftLockPeriod(uint256 lockPeriod) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    _lockPeriod = lockPeriod;
-    emit LockPeriodChanged(lockPeriod);
-  }
 }
