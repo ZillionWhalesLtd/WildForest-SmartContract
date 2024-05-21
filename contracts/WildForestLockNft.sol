@@ -12,8 +12,8 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   error NoLockedTokenForAddress();
   error LockActive(uint256 lockExpiration);
 
-  event DepositLock(address indexed account, uint256[] tokenIds, uint256 lockPeriod);
-  event WithdrawLock(address indexed account, uint256[] tokenIds);
+  event StakeLock(address indexed account, uint256[] tokenIds, uint256 lockPeriod);
+  event UnstakeLock(address indexed account, uint256[] tokenIds);
 
   event NftContractChanged(address indexed nftContractAddress);
   event LockPeriodChanged(uint256 indexed lockPeriod);
@@ -56,7 +56,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     if (lockExpiration > block.timestamp) revert LockActive(lockExpiration);
   }
 
-  function deposit(uint256[] memory tokenIds) public virtual returns (bool) {
+  function stake(uint256[] memory tokenIds) public virtual returns (bool) {
     INFTBase nftContract = INFTBase(_nftContractAddress);
 
     uint256 length = tokenIds.length;
@@ -70,11 +70,11 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       _lock(msg.sender, tokenId);
     }
 
-    emit DepositLock(msg.sender, tokenIds, _lockPeriod);
+    emit StakeLock(msg.sender, tokenIds, _lockPeriod);
     return true;
   }
 
-  function withdraw(uint256[] memory tokenIds) public virtual returns (bool) {
+  function unstake(uint256[] memory tokenIds) public virtual returns (bool) {
     INFTBase nftContract = INFTBase(_nftContractAddress);
 
     uint256 length = tokenIds.length;
@@ -88,7 +88,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       nftContract.safeTransferFrom(address(this), msg.sender, tokenId);
     }
 
-    emit WithdrawLock(msg.sender, tokenIds);
+    emit UnstakeLock(msg.sender, tokenIds);
     return true;
   }
 

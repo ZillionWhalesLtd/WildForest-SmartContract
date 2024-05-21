@@ -109,10 +109,10 @@ describe('WildForestLockNft', function () {
     expect(updatedContract).to.equal(nftContractAddress)
   })
 
-  it('deposit should be available only if user approved and own token', async () => {
+  it('stake should be available only if user approved and own token', async () => {
     const { owner, bob } = await deploy()
 
-    await expect(bob.contract.deposit([1])).to.be.revertedWith(
+    await expect(bob.contract.stake([1])).to.be.revertedWith(
       'ERC721: invalid token ID'
     )
 
@@ -125,28 +125,28 @@ describe('WildForestLockNft', function () {
       tokenIds.push(Number(args.tokenId))
     }
 
-    await expect(owner.contract.deposit(tokenIds)).to.be.revertedWith(
+    await expect(owner.contract.stake(tokenIds)).to.be.revertedWith(
       'ERC721: caller is not token owner or approved'
     )
 
     await owner.nftContract.bulkApprove(owner.contract.address, tokenIds)
 
-    const beforeDepositOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
-    expect(beforeDepositOwner1).to.equal(owner.address)
-    const beforeDepositOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
-    expect(beforeDepositOwner2).to.equal(owner.address)
+    const beforestakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(beforestakeOwner1).to.equal(owner.address)
+    const beforestakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(beforestakeOwner2).to.equal(owner.address)
 
-    const depositTransaction = await owner.contract.deposit(tokenIds)
+    const stakeTransaction = await owner.contract.stake(tokenIds)
 
-    const afterDepositOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
-    expect(afterDepositOwner1).to.equal(owner.contract.address)
-    const afterDepositOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
-    expect(afterDepositOwner2).to.equal(owner.contract.address)
+    const afterstakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(afterstakeOwner1).to.equal(owner.contract.address)
+    const afterstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(afterstakeOwner2).to.equal(owner.contract.address)
 
-    const events = await all_events(depositTransaction)
-    const depositLockEvent = events.find(e => e.event === 'DepositLock')
+    const events = await all_events(stakeTransaction)
+    const stakeLockEvent = events.find(e => e.event === 'StakeLock')
 
-    const { args: { account, tokenIds: lockedTokenIds, lockPeriod: currentLockPeriod } } = depositLockEvent
+    const { args: { account, tokenIds: lockedTokenIds, lockPeriod: currentLockPeriod } } = stakeLockEvent
     expect(account).to.equal(owner.address)
     expect(lockedTokenIds.length).to.equal(tokenIds.length)
     expect(Number(lockedTokenIds[0])).to.equal(tokenIds[0])
@@ -154,26 +154,26 @@ describe('WildForestLockNft', function () {
     expect(currentLockPeriod).to.equal(lockPeriod)
   })
 
-  it('withdraw (not pass validation)', async () => {
+  it('unstake (not pass validation)', async () => {
     const { owner } = await deploy()
 
     const recipients = [owner.address, owner.address]
     await owner.nftContract.bulkMint(recipients)
 
     await owner.nftContract.approve(owner.contract.address, [1])
-    await owner.contract.deposit([1])
+    await owner.contract.stake([1])
 
-    await expect(owner.contract.withdraw([3])).to.be.revertedWithCustomError(
+    await expect(owner.contract.unstake([3])).to.be.revertedWithCustomError(
       owner.contract,
       'NoLockedTokenForAddress'
     )
-    await expect(owner.contract.withdraw([1])).to.be.revertedWithCustomError(
+    await expect(owner.contract.unstake([1])).to.be.revertedWithCustomError(
       owner.contract,
       'LockActive'
     )
   })
 
-  it('withdraw', async () => {
+  it('unstake', async () => {
     const lockPeriodInSeconds = 3600
     const { owner, bob } = await deploy(lockPeriodInSeconds)
 
@@ -182,37 +182,37 @@ describe('WildForestLockNft', function () {
     const tokenIds = [1,2]
 
     await owner.nftContract.bulkApprove(owner.contract.address, tokenIds)
-    await owner.contract.deposit(tokenIds)
+    await owner.contract.stake(tokenIds)
 
-    const beforeWithdrawOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
-    expect(beforeWithdrawOwner1).to.equal(owner.contract.address)
-    const beforeWithdrawOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
-    expect(beforeWithdrawOwner2).to.equal(owner.contract.address)
+    const beforeunstakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(beforeunstakeOwner1).to.equal(owner.contract.address)
+    const beforeunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(beforeunstakeOwner2).to.equal(owner.contract.address)
 
     await time.increase(lockPeriodInSeconds / 2)
-    await expect(owner.contract.withdraw(tokenIds)).to.be.revertedWithCustomError(
+    await expect(owner.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
       owner.contract,
       'LockActive'
     )
 
     await time.increase(lockPeriodInSeconds / 2)
 
-    await expect(bob.contract.withdraw(tokenIds)).to.be.revertedWithCustomError(
+    await expect(bob.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
       owner.contract,
       'NoLockedTokenForAddress'
     )
 
-    const withdrawTransaction = await owner.contract.withdraw(tokenIds)
+    const unstakeTransaction = await owner.contract.unstake(tokenIds)
 
-    const afterWithdrawOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
-    expect(afterWithdrawOwner1).to.equal(owner.address)
-    const afterWithdrawOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
-    expect(afterWithdrawOwner2).to.equal(owner.address)
+    const afterunstakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(afterunstakeOwner1).to.equal(owner.address)
+    const afterunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(afterunstakeOwner2).to.equal(owner.address)
 
-    const events = await all_events(withdrawTransaction)
-    const withdrawLockEvent = events.find(e => e.event === 'WithdrawLock')
+    const events = await all_events(unstakeTransaction)
+    const unstakeLockEvent = events.find(e => e.event === 'UnstakeLock')
 
-    const { args: { account, tokenIds: unlockedTokenIds } } = withdrawLockEvent
+    const { args: { account, tokenIds: unlockedTokenIds } } = unstakeLockEvent
     expect(account).to.equal(owner.address)
     expect(unlockedTokenIds.length).to.equal(tokenIds.length)
     expect(Number(unlockedTokenIds[0])).to.equal(tokenIds[0])
