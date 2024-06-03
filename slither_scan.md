@@ -8,24 +8,25 @@ Summary
  - [divide-before-multiply](#divide-before-multiply) (16 results) (Medium)
  - [unused-return](#unused-return) (2 results) (Medium)
  - [shadowing-local](#shadowing-local) (12 results) (Low)
- - [missing-zero-check](#missing-zero-check) (9 results) (Low)
- - [reentrancy-benign](#reentrancy-benign) (2 results) (Low)
- - [reentrancy-events](#reentrancy-events) (2 results) (Low)
- - [timestamp](#timestamp) (2 results) (Low)
+ - [missing-zero-check](#missing-zero-check) (11 results) (Low)
+ - [calls-loop](#calls-loop) (2 results) (Low)
+ - [reentrancy-benign](#reentrancy-benign) (3 results) (Low)
+ - [reentrancy-events](#reentrancy-events) (4 results) (Low)
+ - [timestamp](#timestamp) (3 results) (Low)
  - [assembly](#assembly) (15 results) (Informational)
  - [pragma](#pragma) (1 results) (Informational)
  - [costly-loop](#costly-loop) (2 results) (Informational)
  - [dead-code](#dead-code) (1 results) (Informational)
- - [solc-version](#solc-version) (52 results) (Informational)
+ - [solc-version](#solc-version) (53 results) (Informational)
  - [low-level-calls](#low-level-calls) (4 results) (Informational)
- - [naming-convention](#naming-convention) (67 results) (Informational)
+ - [naming-convention](#naming-convention) (71 results) (Informational)
 ## arbitrary-send-erc20
 Impact: High
 Confidence: High
  - [ ] ID-0
-[WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L86-L92) uses arbitrary from in transferFrom: [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L90)
+[WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L89-L95) uses arbitrary from in transferFrom: [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L93)
 
-contracts/WildForestClaimTokenTransfer.sol#L86-L92
+contracts/WildForestClaimTokenTransfer.sol#L89-L95
 
 
 ## incorrect-exp
@@ -49,9 +50,9 @@ node_modules/@openzeppelin/contracts/utils/math/Math.sol#L55-L134
 Impact: High
 Confidence: Medium
  - [ ] ID-3
-[WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L86-L92) ignores return value by [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L90)
+[WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L89-L95) ignores return value by [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L93)
 
-contracts/WildForestClaimTokenTransfer.sol#L86-L92
+contracts/WildForestClaimTokenTransfer.sol#L89-L95
 
 
 ## uninitialized-state
@@ -314,72 +315,112 @@ contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L64
 Impact: Low
 Confidence: Medium
  - [ ] ID-35
-[WildForestClaimNft.setUserMintSigner(address).signerAddress](contracts/WildForestClaimNft.sol#L107) lacks a zero-check on :
-    - [_userMintSigner = signerAddress](contracts/WildForestClaimNft.sol#L108)
+[WildForestLockNft.initialize(string,address,address,uint256).nftContractAddress](contracts/WildForestLockNft.sol#L32) lacks a zero-check on :
+    - [_nftContractAddress = nftContractAddress](contracts/WildForestLockNft.sol#L34)
 
-contracts/WildForestClaimNft.sol#L107
+contracts/WildForestLockNft.sol#L32
 
 
  - [ ] ID-36
-[WildForestClaimNft.initialize(string,address,address,address).signerAddress](contracts/WildForestClaimNft.sol#L50) lacks a zero-check on :
-    - [_userMintSigner = signerAddress](contracts/WildForestClaimNft.sol#L52)
+[WildForestLockNft.setNftContractAddress(address).nftContractAddress](contracts/WildForestLockNft.sol#L95) lacks a zero-check on :
+    - [_nftContractAddress = nftContractAddress](contracts/WildForestLockNft.sol#L96)
 
-contracts/WildForestClaimNft.sol#L50
+contracts/WildForestLockNft.sol#L95
 
 
  - [ ] ID-37
-[WildForestClaimTokenTransfer.initialize(string,address,address,address).tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L50) lacks a zero-check on :
-    - [_tokenContractAddress = tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L53)
+[WildForestClaimNft.initialize(string,address,address,address).signerAddress](contracts/WildForestClaimNft.sol#L55) lacks a zero-check on :
+    - [_userMintSigner = signerAddress](contracts/WildForestClaimNft.sol#L57)
 
-contracts/WildForestClaimTokenTransfer.sol#L50
+contracts/WildForestClaimNft.sol#L55
 
 
  - [ ] ID-38
-[WildForestClaimTokenTransfer.setTokenContractAddress(address).tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L98) lacks a zero-check on :
-    - [_tokenContractAddress = tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L99)
+[WildForestClaimNft.initialize(string,address,address,address).nftContractAddress](contracts/WildForestClaimNft.sol#L55) lacks a zero-check on :
+    - [_nftContractAddress = nftContractAddress](contracts/WildForestClaimNft.sol#L58)
 
-contracts/WildForestClaimTokenTransfer.sol#L98
+contracts/WildForestClaimNft.sol#L55
 
 
  - [ ] ID-39
-[WildForestClaimNft.initialize(string,address,address,address).nftContractAddress](contracts/WildForestClaimNft.sol#L50) lacks a zero-check on :
-    - [_nftContractAddress = nftContractAddress](contracts/WildForestClaimNft.sol#L53)
+[WildForestClaimTokenTransfer.setTokenContractAddress(address).tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L102) lacks a zero-check on :
+    - [_tokenContractAddress = tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L103)
 
-contracts/WildForestClaimNft.sol#L50
+contracts/WildForestClaimTokenTransfer.sol#L102
 
 
  - [ ] ID-40
-[WildForestClaimTokenTransfer.initialize(string,address,address,address).signerAddress](contracts/WildForestClaimTokenTransfer.sol#L50) lacks a zero-check on :
-    - [_userTransferSigner = signerAddress](contracts/WildForestClaimTokenTransfer.sol#L52)
+[WildForestClaimTokenTransfer.setUserTransferSigner(address).signerAddress](contracts/WildForestClaimTokenTransfer.sol#L97) lacks a zero-check on :
+    - [_userTransferSigner = signerAddress](contracts/WildForestClaimTokenTransfer.sol#L98)
 
-contracts/WildForestClaimTokenTransfer.sol#L50
+contracts/WildForestClaimTokenTransfer.sol#L97
 
 
  - [ ] ID-41
-[WildForestClaimNft.setNftContractAddress(address).nftContractAddress](contracts/WildForestClaimNft.sol#L111) lacks a zero-check on :
-    - [_nftContractAddress = nftContractAddress](contracts/WildForestClaimNft.sol#L112)
-
-contracts/WildForestClaimNft.sol#L111
-
-
- - [ ] ID-42
 [WildForestMedal.initialize(string,string,string,address)._ownerAddress](contracts/WildForestTokenMedal.sol#L31) lacks a zero-check on :
     - [_governance = _ownerAddress](contracts/WildForestTokenMedal.sol#L35)
 
 contracts/WildForestTokenMedal.sol#L31
 
 
- - [ ] ID-43
-[WildForestClaimTokenTransfer.setUserTransferSigner(address).signerAddress](contracts/WildForestClaimTokenTransfer.sol#L94) lacks a zero-check on :
-    - [_userTransferSigner = signerAddress](contracts/WildForestClaimTokenTransfer.sol#L95)
+ - [ ] ID-42
+[WildForestClaimNft.setNftContractAddress(address).nftContractAddress](contracts/WildForestClaimNft.sol#L119) lacks a zero-check on :
+    - [_nftContractAddress = nftContractAddress](contracts/WildForestClaimNft.sol#L120)
 
-contracts/WildForestClaimTokenTransfer.sol#L94
+contracts/WildForestClaimNft.sol#L119
+
+
+ - [ ] ID-43
+[WildForestClaimNft.setUserMintSigner(address).signerAddress](contracts/WildForestClaimNft.sol#L114) lacks a zero-check on :
+    - [_userMintSigner = signerAddress](contracts/WildForestClaimNft.sol#L115)
+
+contracts/WildForestClaimNft.sol#L114
+
+
+ - [ ] ID-44
+[WildForestClaimTokenTransfer.initialize(string,address,address,address).signerAddress](contracts/WildForestClaimTokenTransfer.sol#L53) lacks a zero-check on :
+    - [_userTransferSigner = signerAddress](contracts/WildForestClaimTokenTransfer.sol#L55)
+
+contracts/WildForestClaimTokenTransfer.sol#L53
+
+
+ - [ ] ID-45
+[WildForestClaimTokenTransfer.initialize(string,address,address,address).tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L53) lacks a zero-check on :
+    - [_tokenContractAddress = tokenContractAddress](contracts/WildForestClaimTokenTransfer.sol#L56)
+
+contracts/WildForestClaimTokenTransfer.sol#L53
+
+
+## calls-loop
+Impact: Low
+Confidence: Medium
+ - [ ] ID-46
+[WildForestLockNft.unstake(uint256[])](contracts/WildForestLockNft.sol#L77-L93) has external calls inside a loop: [nftContract.transferFrom(address(this),msg.sender,tokenId)](contracts/WildForestLockNft.sol#L88)
+
+contracts/WildForestLockNft.sol#L77-L93
+
+
+ - [ ] ID-47
+[WildForestLockNft.stake(uint256[])](contracts/WildForestLockNft.sol#L59-L75) has external calls inside a loop: [nftContract.transferFrom(msg.sender,address(this),tokenId)](contracts/WildForestLockNft.sol#L69)
+
+contracts/WildForestLockNft.sol#L59-L75
 
 
 ## reentrancy-benign
 Impact: Low
 Confidence: Medium
- - [ ] ID-44
+ - [ ] ID-48
+Reentrancy in [WildForestLockNft.stake(uint256[])](contracts/WildForestLockNft.sol#L59-L75):
+  External calls:
+  - [nftContract.transferFrom(msg.sender,address(this),tokenId)](contracts/WildForestLockNft.sol#L69)
+  State variables written after the call(s):
+  - [_lock(msg.sender,tokenId)](contracts/WildForestLockNft.sol#L70)
+    - [_lockedTokens[tokenId][account] = unlockTimestamp](contracts/WildForestLockNft.sol#L42)
+
+contracts/WildForestLockNft.sol#L59-L75
+
+
+ - [ ] ID-49
 Reentrancy in [WildForestMedal.mint(address,uint256,uint256)](contracts/WildForestTokenMedal.sol#L93-L101):
   External calls:
   - [_mint(_to,_seasonId,_amount,)](contracts/WildForestTokenMedal.sol#L99)
@@ -390,7 +431,7 @@ Reentrancy in [WildForestMedal.mint(address,uint256,uint256)](contracts/WildFore
 contracts/WildForestTokenMedal.sol#L93-L101
 
 
- - [ ] ID-45
+ - [ ] ID-50
 Reentrancy in [WildForestMedal.addNewSeason(uint256)](contracts/WildForestTokenMedal.sol#L84-L91):
   External calls:
   - [_mint(msg.sender,seasonNumber,initialSupply,)](contracts/WildForestTokenMedal.sol#L88)
@@ -404,49 +445,77 @@ contracts/WildForestTokenMedal.sol#L84-L91
 ## reentrancy-events
 Impact: Low
 Confidence: Medium
- - [ ] ID-46
-Reentrancy in [WildForestClaimNft.userMint(WildForestClaimNft.MintData,bytes)](contracts/WildForestClaimNft.sol#L94-L105):
+ - [ ] ID-51
+Reentrancy in [WildForestClaimNft.userMint(WildForestClaimNft.MintData,bytes)](contracts/WildForestClaimNft.sol#L101-L112):
   External calls:
-  - [_tokenIds = nftContract.bulkMint(_recipients)](contracts/WildForestClaimNft.sol#L103)
+  - [_tokenIds = nftContract.bulkMint(_recipients)](contracts/WildForestClaimNft.sol#L110)
   Event emitted after the call(s):
-  - [UserMint(mintData.walletAddress,_tokenIds,mintData.identificators,mintData.playerId)](contracts/WildForestClaimNft.sol#L104)
+  - [UserMint(mintData.walletAddress,_tokenIds,mintData.identificators,mintData.playerId)](contracts/WildForestClaimNft.sol#L111)
 
-contracts/WildForestClaimNft.sol#L94-L105
+contracts/WildForestClaimNft.sol#L101-L112
 
 
- - [ ] ID-47
-Reentrancy in [WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L86-L92):
+ - [ ] ID-52
+Reentrancy in [WildForestLockNft.unstake(uint256[])](contracts/WildForestLockNft.sol#L77-L93):
   External calls:
-  - [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L90)
+  - [nftContract.transferFrom(address(this),msg.sender,tokenId)](contracts/WildForestLockNft.sol#L88)
   Event emitted after the call(s):
-  - [UserTransfer(transferData.walletAddress,transferData.senderAddress,transferData.amount,transferData.identificator,transferData.playerId)](contracts/WildForestClaimTokenTransfer.sol#L91)
+  - [UnstakeLock(msg.sender,tokenIds)](contracts/WildForestLockNft.sol#L91)
 
-contracts/WildForestClaimTokenTransfer.sol#L86-L92
+contracts/WildForestLockNft.sol#L77-L93
+
+
+ - [ ] ID-53
+Reentrancy in [WildForestClaimTokenTransfer.userTransfer(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L89-L95):
+  External calls:
+  - [tokenContract.transferFrom(transferData.senderAddress,msg.sender,transferData.amount)](contracts/WildForestClaimTokenTransfer.sol#L93)
+  Event emitted after the call(s):
+  - [UserTransfer(transferData.walletAddress,transferData.senderAddress,transferData.amount,transferData.identificator,transferData.playerId)](contracts/WildForestClaimTokenTransfer.sol#L94)
+
+contracts/WildForestClaimTokenTransfer.sol#L89-L95
+
+
+ - [ ] ID-54
+Reentrancy in [WildForestLockNft.stake(uint256[])](contracts/WildForestLockNft.sol#L59-L75):
+  External calls:
+  - [nftContract.transferFrom(msg.sender,address(this),tokenId)](contracts/WildForestLockNft.sol#L69)
+  Event emitted after the call(s):
+  - [StakeLock(msg.sender,tokenIds,_lockPeriod)](contracts/WildForestLockNft.sol#L73)
+
+contracts/WildForestLockNft.sol#L59-L75
 
 
 ## timestamp
 Impact: Low
 Confidence: Medium
- - [ ] ID-48
-[WildForestClaimTokenTransfer._validateTransferData(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L62-L84) uses timestamp for comparisons
+ - [ ] ID-55
+[WildForestClaimNft._validateMintData(WildForestClaimNft.MintData,bytes)](contracts/WildForestClaimNft.sol#L67-L99) uses timestamp for comparisons
   Dangerous comparisons:
-  - [data.deadline < block.timestamp](contracts/WildForestClaimTokenTransfer.sol#L64)
+  - [data.deadline < block.timestamp](contracts/WildForestClaimNft.sol#L69)
 
-contracts/WildForestClaimTokenTransfer.sol#L62-L84
+contracts/WildForestClaimNft.sol#L67-L99
 
 
- - [ ] ID-49
-[WildForestClaimNft._validateMintData(WildForestClaimNft.MintData,bytes)](contracts/WildForestClaimNft.sol#L62-L92) uses timestamp for comparisons
+ - [ ] ID-56
+[WildForestLockNft._validateOwnerAndLock(address,uint256)](contracts/WildForestLockNft.sol#L51-L57) uses timestamp for comparisons
   Dangerous comparisons:
-  - [data.deadline < block.timestamp](contracts/WildForestClaimNft.sol#L64)
+  - [lockExpiration > block.timestamp](contracts/WildForestLockNft.sol#L56)
 
-contracts/WildForestClaimNft.sol#L62-L92
+contracts/WildForestLockNft.sol#L51-L57
+
+
+ - [ ] ID-57
+[WildForestClaimTokenTransfer._validateTransferData(WildForestClaimTokenTransfer.TransferData,bytes)](contracts/WildForestClaimTokenTransfer.sol#L65-L87) uses timestamp for comparisons
+  Dangerous comparisons:
+  - [data.deadline < block.timestamp](contracts/WildForestClaimTokenTransfer.sol#L67)
+
+contracts/WildForestClaimTokenTransfer.sol#L65-L87
 
 
 ## assembly
 Impact: Informational
 Confidence: High
- - [ ] ID-50
+ - [ ] ID-58
 [MathUpgradeable.mulDiv(uint256,uint256,uint256)](node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L55-L134) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L62-L66)
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L85-L92)
@@ -455,49 +524,49 @@ Confidence: High
 node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L55-L134
 
 
- - [ ] ID-51
+ - [ ] ID-59
 [ECDSAUpgradeable.tryRecover(bytes32,bytes)](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L55-L72) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L63-L67)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L55-L72
 
 
- - [ ] ID-52
+ - [ ] ID-60
 [ERC721Upgradeable._checkOnERC721Received(address,address,uint256,bytes)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L404-L426) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L418-L420)
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L404-L426
 
 
- - [ ] ID-53
+ - [ ] ID-61
 [ECDSA.tryRecover(bytes32,bytes)](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L55-L72) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L63-L67)
 
 node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L55-L72
 
 
- - [ ] ID-54
+ - [ ] ID-62
 [AddressUpgradeable._revert(bytes,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L231-L243) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L236-L239)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L231-L243
 
 
- - [ ] ID-55
+ - [ ] ID-63
 [EnumerableSetUpgradeable.values(EnumerableSetUpgradeable.Bytes32Set)](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L219-L229) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L224-L226)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L219-L229
 
 
- - [ ] ID-56
+ - [ ] ID-64
 [ECDSA.toEthSignedMessageHash(bytes32)](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L165-L174) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L169-L173)
 
 node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L165-L174
 
 
- - [ ] ID-57
+ - [ ] ID-65
 [Math.mulDiv(uint256,uint256,uint256)](node_modules/@openzeppelin/contracts/utils/math/Math.sol#L55-L134) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/math/Math.sol#L62-L66)
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/math/Math.sol#L85-L92)
@@ -506,28 +575,28 @@ node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L165-L174
 node_modules/@openzeppelin/contracts/utils/math/Math.sol#L55-L134
 
 
- - [ ] ID-58
+ - [ ] ID-66
 [EnumerableSetUpgradeable.values(EnumerableSetUpgradeable.AddressSet)](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L293-L303) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L298-L300)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L293-L303
 
 
- - [ ] ID-59
+ - [ ] ID-67
 [ECDSAUpgradeable.toEthSignedMessageHash(bytes32)](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L165-L174) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L169-L173)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L165-L174
 
 
- - [ ] ID-60
+ - [ ] ID-68
 [EnumerableSetUpgradeable.values(EnumerableSetUpgradeable.UintSet)](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L367-L377) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L372-L374)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L367-L377
 
 
- - [ ] ID-61
+ - [ ] ID-69
 [Strings.toString(uint256)](node_modules/@openzeppelin/contracts/utils/Strings.sol#L19-L39) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/Strings.sol#L25-L27)
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/Strings.sol#L31-L33)
@@ -535,7 +604,7 @@ node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgr
 node_modules/@openzeppelin/contracts/utils/Strings.sol#L19-L39
 
 
- - [ ] ID-62
+ - [ ] ID-70
 [StringsUpgradeable.toString(uint256)](node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L19-L39) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L25-L27)
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L31-L33)
@@ -543,14 +612,14 @@ node_modules/@openzeppelin/contracts/utils/Strings.sol#L19-L39
 node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L19-L39
 
 
- - [ ] ID-63
+ - [ ] ID-71
 [ECDSAUpgradeable.toTypedDataHash(bytes32,bytes32)](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L197-L206) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L199-L205)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L197-L206
 
 
- - [ ] ID-64
+ - [ ] ID-72
 [ECDSA.toTypedDataHash(bytes32,bytes32)](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L197-L206) uses assembly
   - [INLINE ASM](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L199-L205)
 
@@ -560,7 +629,7 @@ node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L197-L206
 ## pragma
 Impact: Informational
 Confidence: High
- - [ ] ID-65
+ - [ ] ID-73
 Different versions of Solidity are used:
   - Version used: ['^0.8.0', '^0.8.1', '^0.8.16', '^0.8.2', '^0.8.8']
   - [^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L4)
@@ -607,6 +676,7 @@ Different versions of Solidity are used:
   - [^0.8.1](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L4)
   - [^0.8.16](contracts/WildForestClaimNft.sol#L2)
   - [^0.8.16](contracts/WildForestClaimTokenTransfer.sol#L2)
+  - [^0.8.16](contracts/WildForestLockNft.sol#L2)
   - [^0.8.16](contracts/WildForestNft.sol#L2)
   - [^0.8.16](contracts/WildForestToken.sol#L2)
   - [^0.8.16](contracts/WildForestTokenMedal.sol#L2)
@@ -621,14 +691,14 @@ node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableU
 ## costly-loop
 Impact: Informational
 Confidence: Medium
- - [ ] ID-66
+ - [ ] ID-74
 [ERC721Upgradeable._burn(uint256)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L304-L325) has costly operations inside a loop:
   - [delete _owners[tokenId]](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L320)
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L304-L325
 
 
- - [ ] ID-67
+ - [ ] ID-75
 [ERC721Upgradeable._burn(uint256)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L304-L325) has costly operations inside a loop:
   - [delete _tokenApprovals[tokenId]](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L313)
 
@@ -638,7 +708,7 @@ node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.
 ## dead-code
 Impact: Informational
 Confidence: Medium
- - [ ] ID-68
+ - [ ] ID-76
 [ERC721Nonce._beforeTokenTransfer(address,address,uint256,uint256)](contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L27-L36) is never used and should be removed
 
 contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L27-L36
@@ -647,310 +717,316 @@ contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L27-L36
 ## solc-version
 Impact: Informational
 Confidence: High
- - [ ] ID-69
+ - [ ] ID-77
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L4
 
 
- - [ ] ID-70
+ - [ ] ID-78
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/cryptography/ECDSA.sol#L4
 
 
- - [ ] ID-71
+ - [ ] ID-79
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L4
 
 
- - [ ] ID-72
+ - [ ] ID-80
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol#L4
 
 
- - [ ] ID-73
+ - [ ] ID-81
 solc-0.8.16 is not recommended for deployment
 
- - [ ] ID-74
+ - [ ] ID-82
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/math/Math.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/math/Math.sol#L4
 
 
- - [ ] ID-75
+ - [ ] ID-83
 Pragma version[^0.8.16](contracts/interfaces/ITokenBase.sol#L2) allows old versions
 
 contracts/interfaces/ITokenBase.sol#L2
 
 
- - [ ] ID-76
+ - [ ] ID-84
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/Context.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/Context.sol#L4
 
 
- - [ ] ID-77
+ - [ ] ID-85
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721Upgradeable.sol#L4
 
 
- - [ ] ID-78
+ - [ ] ID-86
 Pragma version[^0.8.16](contracts/WildForestTokenMedal.sol#L2) allows old versions
 
 contracts/WildForestTokenMedal.sol#L2
 
 
- - [ ] ID-79
+ - [ ] ID-87
 Pragma version[^0.8.16](contracts/WildForestNft.sol#L2) allows old versions
 
 contracts/WildForestNft.sol#L2
 
 
- - [ ] ID-80
+ - [ ] ID-88
 Pragma version[^0.8.0](contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L2) allows old versions
 
 contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L2
 
 
- - [ ] ID-81
+ - [ ] ID-89
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/Strings.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/Strings.sol#L4
 
 
- - [ ] ID-82
+ - [ ] ID-90
 Pragma version[^0.8.0](contracts/sky-mavis-nft/refs/IERC721State.sol#L2) allows old versions
 
 contracts/sky-mavis-nft/refs/IERC721State.sol#L2
 
 
- - [ ] ID-83
+ - [ ] ID-91
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/IERC1155MetadataURIUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/extensions/IERC1155MetadataURIUpgradeable.sol#L4
 
 
- - [ ] ID-84
+ - [ ] ID-92
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L4
 
 
- - [ ] ID-85
+ - [ ] ID-93
 Pragma version[^0.8.8](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L4) is known to contain severe issues (https://solidity.readthedocs.io/en/latest/bugs.html)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L4
 
 
- - [ ] ID-86
+ - [ ] ID-94
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155ReceiverUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155ReceiverUpgradeable.sol#L4
 
 
- - [ ] ID-87
+ - [ ] ID-95
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/access/IAccessControlEnumerableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/access/IAccessControlEnumerableUpgradeable.sol#L4
 
 
- - [ ] ID-88
+ - [ ] ID-96
 Pragma version[^0.8.16](contracts/WildForestClaimTokenTransfer.sol#L2) allows old versions
 
 contracts/WildForestClaimTokenTransfer.sol#L2
 
 
- - [ ] ID-89
+ - [ ] ID-97
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L4
 
 
- - [ ] ID-90
+ - [ ] ID-98
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L4
 
 
- - [ ] ID-91
+ - [ ] ID-99
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/math/MathUpgradeable.sol#L4
 
 
- - [ ] ID-92
+ - [ ] ID-100
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/Counters.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/Counters.sol#L4
 
 
- - [ ] ID-93
+ - [ ] ID-101
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L4
 
 
- - [ ] ID-94
+ - [ ] ID-102
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/token/ERC20/IERC20.sol#L4
 
 
- - [ ] ID-95
+ - [ ] ID-103
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L5) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/structs/EnumerableSetUpgradeable.sol#L5
 
 
- - [ ] ID-96
+ - [ ] ID-104
 Pragma version[^0.8.16](contracts/interfaces/INFTBase.sol#L2) allows old versions
 
 contracts/interfaces/INFTBase.sol#L2
 
 
- - [ ] ID-97
+ - [ ] ID-105
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721EnumerableUpgradeable.sol#L4
 
 
- - [ ] ID-98
+ - [ ] ID-106
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/IERC1155Upgradeable.sol#L4
 
 
- - [ ] ID-99
+ - [ ] ID-107
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/token/ERC20/ERC20.sol#L4
 
 
- - [ ] ID-100
+ - [ ] ID-108
+Pragma version[^0.8.16](contracts/WildForestLockNft.sol#L2) allows old versions
+
+contracts/WildForestLockNft.sol#L2
+
+
+ - [ ] ID-109
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/IERC721ReceiverUpgradeable.sol#L4
 
 
- - [ ] ID-101
+ - [ ] ID-110
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/math/SignedMath.sol#L4
 
 
- - [ ] ID-102
+ - [ ] ID-111
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L4
 
 
- - [ ] ID-103
+ - [ ] ID-112
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/interfaces/IERC5267Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/interfaces/IERC5267Upgradeable.sol#L4
 
 
- - [ ] ID-104
+ - [ ] ID-113
 Pragma version[^0.8.16](contracts/WildForestClaimNft.sol#L2) allows old versions
 
 contracts/WildForestClaimNft.sol#L2
 
 
- - [ ] ID-105
+ - [ ] ID-114
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/token/ERC721/IERC721.sol#L4
 
 
- - [ ] ID-106
+ - [ ] ID-115
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/IERC165Upgradeable.sol#L4
 
 
- - [ ] ID-107
+ - [ ] ID-116
 Pragma version[^0.8.16](contracts/WildForestToken.sol#L2) allows old versions
 
 contracts/WildForestToken.sol#L2
 
 
- - [ ] ID-108
+ - [ ] ID-117
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/access/IAccessControlUpgradeable.sol#L4
 
 
- - [ ] ID-109
+ - [ ] ID-118
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L4
 
 
- - [ ] ID-110
+ - [ ] ID-119
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/math/SignedMathUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/math/SignedMathUpgradeable.sol#L4
 
 
- - [ ] ID-111
+ - [ ] ID-120
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L4
 
 
- - [ ] ID-112
+ - [ ] ID-121
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L4
 
 
- - [ ] ID-113
+ - [ ] ID-122
 Pragma version[^0.8.2](node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol#L4
 
 
- - [ ] ID-114
+ - [ ] ID-123
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/ECDSAUpgradeable.sol#L4
 
 
- - [ ] ID-115
+ - [ ] ID-124
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts/utils/introspection/IERC165.sol#L4
 
 
- - [ ] ID-116
+ - [ ] ID-125
 Pragma version[^0.8.0](contracts/sky-mavis-nft/ERC721Common.sol#L2) allows old versions
 
 contracts/sky-mavis-nft/ERC721Common.sol#L2
 
 
- - [ ] ID-117
+ - [ ] ID-126
 Pragma version[^0.8.1](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L4
 
 
- - [ ] ID-118
+ - [ ] ID-127
 Pragma version[^0.8.0](contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L2) allows old versions
 
 contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L2
 
 
- - [ ] ID-119
+ - [ ] ID-128
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L4
 
 
- - [ ] ID-120
+ - [ ] ID-129
 Pragma version[^0.8.0](node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L4) allows old versions
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L4
@@ -959,28 +1035,28 @@ node_modules/@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol#L4
 ## low-level-calls
 Impact: Informational
 Confidence: High
- - [ ] ID-121
+ - [ ] ID-130
 Low level call in [AddressUpgradeable.functionDelegateCall(address,bytes,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L180-L187):
   - [(success,returndata) = target.delegatecall(data)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L185)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L180-L187
 
 
- - [ ] ID-122
+ - [ ] ID-131
 Low level call in [AddressUpgradeable.functionCallWithValue(address,bytes,uint256,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L128-L137):
   - [(success,returndata) = target.call{value: value}(data)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L135)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L128-L137
 
 
- - [ ] ID-123
+ - [ ] ID-132
 Low level call in [AddressUpgradeable.functionStaticCall(address,bytes,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L155-L162):
   - [(success,returndata) = target.staticcall(data)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L160)
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L155-L162
 
 
- - [ ] ID-124
+ - [ ] ID-133
 Low level call in [AddressUpgradeable.sendValue(address,uint256)](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L64-L69):
   - [(success) = recipient.call{value: amount}()](node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L67)
 
@@ -990,406 +1066,430 @@ node_modules/@openzeppelin/contracts-upgradeable/utils/AddressUpgradeable.sol#L6
 ## naming-convention
 Impact: Informational
 Confidence: High
- - [ ] ID-125
+ - [ ] ID-134
 Function [ERC1155Upgradeable.__ERC1155_init_unchained(string)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L40-L42) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L40-L42
 
 
- - [ ] ID-126
+ - [ ] ID-135
 Parameter [WildForestMedal.totalSupply(uint256)._id](contracts/WildForestTokenMedal.sol#L74) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L74
 
 
- - [ ] ID-127
-Variable [WildForestClaimNft._mintNonces](contracts/WildForestClaimNft.sol#L43) is not in mixedCase
+ - [ ] ID-136
+Variable [WildForestClaimNft._mintNonces](contracts/WildForestClaimNft.sol#L48) is not in mixedCase
 
-contracts/WildForestClaimNft.sol#L43
+contracts/WildForestClaimNft.sol#L48
 
 
- - [ ] ID-128
+ - [ ] ID-137
 Parameter [WildForestMedal.burnBatch(address,uint256[],uint256[])._seasonIds](contracts/WildForestTokenMedal.sol#L135) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L135
 
 
- - [ ] ID-129
+ - [ ] ID-138
+Variable [WildForestLockNft._name](contracts/WildForestLockNft.sol#L23) is not in mixedCase
+
+contracts/WildForestLockNft.sol#L23
+
+
+ - [ ] ID-139
 Parameter [WildForestMedal.burnBatch(address,uint256[],uint256[])._from](contracts/WildForestTokenMedal.sol#L134) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L134
 
 
- - [ ] ID-130
+ - [ ] ID-140
 Parameter [WildForestMedal.upgradeSetInitRoles(address)._ownerAddress](contracts/WildForestTokenMedal.sol#L43) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L43
 
 
- - [ ] ID-131
+ - [ ] ID-141
 Parameter [WildForestMedal.burnBatch(address,uint256[],uint256[])._amounts](contracts/WildForestTokenMedal.sol#L136) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L136
 
 
- - [ ] ID-132
+ - [ ] ID-142
 Variable [EIP712Upgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L204) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L204
 
 
- - [ ] ID-133
+ - [ ] ID-143
 Function [AccessControlUpgradeable.__AccessControl_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L79-L80) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L79-L80
 
 
- - [ ] ID-134
+ - [ ] ID-144
 Parameter [WildForestMedal.mint(address,uint256,uint256)._to](contracts/WildForestTokenMedal.sol#L94) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L94
 
 
- - [ ] ID-135
+ - [ ] ID-145
+Variable [WildForestLockNft._lockPeriod](contracts/WildForestLockNft.sol#L22) is not in mixedCase
+
+contracts/WildForestLockNft.sol#L22
+
+
+ - [ ] ID-146
 Function [EIP712Upgradeable.__EIP712_init(string,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L59-L61) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L59-L61
 
 
- - [ ] ID-136
+ - [ ] ID-147
 Variable [ContextUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L40) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L40
 
 
- - [ ] ID-137
+ - [ ] ID-148
 Variable [AccessControlUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L260) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L260
 
 
- - [ ] ID-138
+ - [ ] ID-149
 Variable [ERC721Upgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L477) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L477
 
 
- - [ ] ID-139
+ - [ ] ID-150
 Parameter [WildForestMedal.mintBatch(address,uint256[],uint256[])._seasonIds](contracts/WildForestTokenMedal.sol#L105) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L105
 
 
- - [ ] ID-140
+ - [ ] ID-151
 Function [ERC721PresetMinterPauserAutoIdCustomized.__ERC721PresetMinterPauserAutoIdCustomized_init_unchained(string,string,string,address)](contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L64-L74) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L64-L74
 
 
- - [ ] ID-141
+ - [ ] ID-152
 Function [ERC721BurnableUpgradeable.__ERC721Burnable_init()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L15-L16) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L15-L16
 
 
- - [ ] ID-142
-Variable [WildForestClaimTokenTransfer._transferNonces](contracts/WildForestClaimTokenTransfer.sol#L43) is not in mixedCase
+ - [ ] ID-153
+Variable [WildForestClaimTokenTransfer._transferNonces](contracts/WildForestClaimTokenTransfer.sol#L46) is not in mixedCase
 
-contracts/WildForestClaimTokenTransfer.sol#L43
+contracts/WildForestClaimTokenTransfer.sol#L46
 
 
- - [ ] ID-143
+ - [ ] ID-154
 Function [ERC721Common.__ERC721Common_init(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L13-L15) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721Common.sol#L13-L15
 
 
- - [ ] ID-144
+ - [ ] ID-155
 Parameter [WildForestMedal.uri(uint256)._seasonId](contracts/WildForestTokenMedal.sol#L79) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L79
 
 
- - [ ] ID-145
+ - [ ] ID-156
 Function [ERC721BurnableUpgradeable.__ERC721Burnable_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L18-L19) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L18-L19
 
 
- - [ ] ID-146
+ - [ ] ID-157
 Variable [ERC721BurnableUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L38) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721BurnableUpgradeable.sol#L38
 
 
- - [ ] ID-147
+ - [ ] ID-158
 Function [ERC721Upgradeable.__ERC721_init_unchained(string,string)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L49-L52) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L49-L52
 
 
- - [ ] ID-148
+ - [ ] ID-159
 Parameter [WildForestMedal.burn(address,uint256,uint256)._seasonId](contracts/WildForestTokenMedal.sol#L121) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L121
 
 
- - [ ] ID-149
+ - [ ] ID-160
 Variable [ERC721Nonce.______gap](contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L22) is not in mixedCase
 
 contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L22
 
 
- - [ ] ID-150
+ - [ ] ID-161
 Variable [PausableUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L116) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L116
 
 
- - [ ] ID-151
+ - [ ] ID-162
 Parameter [ERC721Common.bulkMint(address[])._recipients](contracts/sky-mavis-nft/ERC721Common.sol#L77) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721Common.sol#L77
 
 
- - [ ] ID-152
+ - [ ] ID-163
 Function [ERC721PausableUpgradeable.__ERC721Pausable_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L28-L29) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L28-L29
 
 
- - [ ] ID-153
+ - [ ] ID-164
 Parameter [WildForestMedal.mintBatch(address,uint256[],uint256[])._to](contracts/WildForestTokenMedal.sol#L104) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L104
 
 
- - [ ] ID-154
+ - [ ] ID-165
 Function [ERC721PausableUpgradeable.__ERC721Pausable_init()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L24-L26) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L24-L26
 
 
- - [ ] ID-155
+ - [ ] ID-166
 Function [ERC165Upgradeable.__ERC165_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L27-L28) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L27-L28
 
 
- - [ ] ID-156
+ - [ ] ID-167
 Function [ContextUpgradeable.__Context_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L21-L22) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L21-L22
 
 
- - [ ] ID-157
+ - [ ] ID-168
 Function [EIP712Upgradeable._EIP712VersionHash()](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L183-L197) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L183-L197
 
 
- - [ ] ID-158
+ - [ ] ID-169
 Parameter [WildForestMedal.mint(address,uint256,uint256)._seasonId](contracts/WildForestTokenMedal.sol#L95) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L95
 
 
- - [ ] ID-159
+ - [ ] ID-170
 Parameter [WildForestMedal.initialize(string,string,string,address)._ownerAddress](contracts/WildForestTokenMedal.sol#L31) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L31
 
 
- - [ ] ID-160
+ - [ ] ID-171
 Variable [ERC1155Upgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L508) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L508
 
 
- - [ ] ID-161
+ - [ ] ID-172
+Variable [WildForestLockNft._lockedTokens](contracts/WildForestLockNft.sol#L25) is not in mixedCase
+
+contracts/WildForestLockNft.sol#L25
+
+
+ - [ ] ID-173
 Function [AccessControlUpgradeable.__AccessControl_init()](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L76-L77) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol#L76-L77
 
 
- - [ ] ID-162
+ - [ ] ID-174
 Function [EIP712Upgradeable._EIP712NameHash()](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L162-L176) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L162-L176
 
 
- - [ ] ID-163
+ - [ ] ID-175
 Function [EIP712Upgradeable._EIP712Version()](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L153-L155) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L153-L155
 
 
- - [ ] ID-164
+ - [ ] ID-176
 Function [ERC1155Upgradeable.__ERC1155_init(string)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L36-L38) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC1155/ERC1155Upgradeable.sol#L36-L38
 
 
- - [ ] ID-165
+ - [ ] ID-177
 Parameter [WildForestMedal.initialize(string,string,string,address)._name](contracts/WildForestTokenMedal.sol#L31) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L31
 
 
- - [ ] ID-166
+ - [ ] ID-178
 Variable [AccessControlEnumerableUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L76) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L76
 
 
- - [ ] ID-167
+ - [ ] ID-179
 Parameter [WildForestMedal.initialize(string,string,string,address)._symbol](contracts/WildForestTokenMedal.sol#L31) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L31
 
 
- - [ ] ID-168
+ - [ ] ID-180
 Variable [ERC165Upgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L41) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L41
 
 
- - [ ] ID-169
+ - [ ] ID-181
+Variable [WildForestLockNft._nftContractAddress](contracts/WildForestLockNft.sol#L21) is not in mixedCase
+
+contracts/WildForestLockNft.sol#L21
+
+
+ - [ ] ID-182
 Variable [ERC721EnumerableUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L171) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L171
 
 
- - [ ] ID-170
+ - [ ] ID-183
 Function [AccessControlEnumerableUpgradeable.__AccessControlEnumerable_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L22-L23) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L22-L23
 
 
- - [ ] ID-171
+ - [ ] ID-184
 Variable [ERC721PausableUpgradeable.__gap](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L53) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721PausableUpgradeable.sol#L53
 
 
- - [ ] ID-172
+ - [ ] ID-185
 Function [EIP712Upgradeable._EIP712Name()](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L143-L145) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L143-L145
 
 
- - [ ] ID-173
+ - [ ] ID-186
 Variable [WildForestMedalStorage._governance](contracts/WildForestTokenMedal.sol#L11) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L11
 
 
- - [ ] ID-174
+ - [ ] ID-187
 Function [ERC721PresetMinterPauserAutoIdCustomized.__ERC721PresetMinterPauserAutoIdCustomized_init(string,string,string,address)](contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L60-L62) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L60-L62
 
 
- - [ ] ID-175
+ - [ ] ID-188
 Function [ERC721Common.__ERC721Common_init_unchained(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L17-L19) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721Common.sol#L17-L19
 
 
- - [ ] ID-176
+ - [ ] ID-189
 Parameter [ERC721Common.stateOf(uint256)._tokenId](contracts/sky-mavis-nft/ERC721Common.sol#L24) is not in mixedCase
 
 contracts/sky-mavis-nft/ERC721Common.sol#L24
 
 
- - [ ] ID-177
+ - [ ] ID-190
 Parameter [WildForestMedal.mintBatch(address,uint256[],uint256[])._amounts](contracts/WildForestTokenMedal.sol#L106) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L106
 
 
- - [ ] ID-178
+ - [ ] ID-191
 Parameter [WildForestMedal.burn(address,uint256,uint256)._amount](contracts/WildForestTokenMedal.sol#L122) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L122
 
 
- - [ ] ID-179
+ - [ ] ID-192
 Function [ERC721EnumerableUpgradeable.__ERC721Enumerable_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L31-L32) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L31-L32
 
 
- - [ ] ID-180
+ - [ ] ID-193
 Function [PausableUpgradeable.__Pausable_init()](node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L34-L36) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L34-L36
 
 
- - [ ] ID-181
+ - [ ] ID-194
 Function [ContextUpgradeable.__Context_init()](node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L18-L19) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol#L18-L19
 
 
- - [ ] ID-182
+ - [ ] ID-195
 Variable [WildForestMedalStorage._upgradeV2](contracts/WildForestTokenMedal.sol#L20) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L20
 
 
- - [ ] ID-183
+ - [ ] ID-196
 Function [AccessControlEnumerableUpgradeable.__AccessControlEnumerable_init()](node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L19-L20) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol#L19-L20
 
 
- - [ ] ID-184
+ - [ ] ID-197
 Function [ERC165Upgradeable.__ERC165_init()](node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L24-L25) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/introspection/ERC165Upgradeable.sol#L24-L25
 
 
- - [ ] ID-185
+ - [ ] ID-198
 Function [ERC721Upgradeable.__unsafe_increaseBalance(address,uint256)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L468-L470) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L468-L470
 
 
- - [ ] ID-186
+ - [ ] ID-199
 Parameter [WildForestMedal.burn(address,uint256,uint256)._from](contracts/WildForestTokenMedal.sol#L120) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L120
 
 
- - [ ] ID-187
+ - [ ] ID-200
 Function [EIP712Upgradeable.__EIP712_init_unchained(string,string)](node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L63-L70) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol#L63-L70
 
 
- - [ ] ID-188
+ - [ ] ID-201
 Parameter [WildForestMedal.mint(address,uint256,uint256)._amount](contracts/WildForestTokenMedal.sol#L96) is not in mixedCase
 
 contracts/WildForestTokenMedal.sol#L96
 
 
- - [ ] ID-189
+ - [ ] ID-202
 Function [PausableUpgradeable.__Pausable_init_unchained()](node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L38-L40) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol#L38-L40
 
 
- - [ ] ID-190
+ - [ ] ID-203
 Function [ERC721Upgradeable.__ERC721_init(string,string)](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L45-L47) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L45-L47
 
 
- - [ ] ID-191
+ - [ ] ID-204
 Function [ERC721EnumerableUpgradeable.__ERC721Enumerable_init()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L28-L29) is not in mixedCase
 
 node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol#L28-L29
 
 
-INFO:Slither:. analyzed (52 contracts with 93 detectors), 192 result(s) found
+INFO:Slither:. analyzed (53 contracts with 94 detectors), 205 result(s) found

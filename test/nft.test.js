@@ -251,9 +251,32 @@ describe('WildForestNft', function () {
     const events = await all_events(burn_transaction)
 
     const individualBurnEvent = events.find(e => e.event === 'IndividualBurn')
-    const { args: { walletAddress, tokenId } } = individualBurnEvent
+    const { args: { walletAddress, tokenId, metadata } } = individualBurnEvent
     expect(Number(tokenId)).to.equal(tokenToBurn)
     expect(walletAddress).to.equal(bob.address)
+    expect(metadata).to.equal('N/A')
+  })
+
+  it('Only the owner of token can burnWithInfo a token', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address])
+
+    const tokenToBurn = 1
+
+    await expect(alice.contract.burnWithInfo(tokenToBurn, 'N/A')).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+
+    const passedMetadata = 'PlayerId: 2'
+
+    const burn_transaction = await bob.contract.burnWithInfo(tokenToBurn, passedMetadata)
+    const events = await all_events(burn_transaction)
+
+    const individualBurnEvent = events.find(e => e.event === 'IndividualBurn')
+    const { args: { walletAddress, tokenId, metadata } } = individualBurnEvent
+    expect(Number(tokenId)).to.equal(tokenToBurn)
+    expect(walletAddress).to.equal(bob.address)
+    expect(metadata).to.equal(passedMetadata)
   })
 
   it('Only the owner of token can bulkBurn a token', async () => {
@@ -270,10 +293,35 @@ describe('WildForestNft', function () {
     const events = await all_events(burn_transaction)
 
     const bulkBurnEvent = events.find(e => e.event === 'BulkBurn')
-    const { args: { walletAddress, tokenIds } } = bulkBurnEvent
+    const { args: { walletAddress, tokenIds, metadata } } = bulkBurnEvent
     expect(tokenIds.length).to.equal(tokensToBurn.length)
     expect(Number(tokenIds[0])).to.equal(tokensToBurn[0])
     expect(Number(tokenIds[1])).to.equal(tokensToBurn[1])
+    expect(metadata).to.equal('N/A')
+    expect(walletAddress).to.equal(bob.address)
+  })
+
+  it('Only the owner of token can bulkBurnWithInfo a token', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const tokensToBurn = [1,2]
+
+    await expect(alice.contract.bulkBurnWithInfo(tokensToBurn, 'N/A')).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+
+    const passedMetadata = 'SenderId: 1'
+
+    const burn_transaction = await bob.contract.bulkBurnWithInfo(tokensToBurn, passedMetadata)
+    const events = await all_events(burn_transaction)
+
+    const bulkBurnEvent = events.find(e => e.event === 'BulkBurn')
+    const { args: { walletAddress, tokenIds, metadata } } = bulkBurnEvent
+    expect(tokenIds.length).to.equal(tokensToBurn.length)
+    expect(Number(tokenIds[0])).to.equal(tokensToBurn[0])
+    expect(Number(tokenIds[1])).to.equal(tokensToBurn[1])
+    expect(metadata).to.equal(passedMetadata)
     expect(walletAddress).to.equal(bob.address)
   })
 

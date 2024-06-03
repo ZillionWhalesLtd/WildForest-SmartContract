@@ -5,8 +5,8 @@ import "./sky-mavis-nft/ERC721Common.sol";
 
 contract WildForestNft is ERC721Common {
 
-  event IndividualBurn(address indexed walletAddress, uint256 tokenId);
-  event BulkBurn(address indexed walletAddress, uint256[] tokenIds);
+  event IndividualBurn(address indexed walletAddress, uint256 tokenId, string metadata);
+  event BulkBurn(address indexed walletAddress, uint256[] tokenIds, string metadata);
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -40,7 +40,7 @@ contract WildForestNft is ERC721Common {
     require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved");
     _burn(tokenId);
 
-    emit IndividualBurn(_msgSender(), tokenId);
+    emit IndividualBurn(_msgSender(), tokenId, "N/A");
   }
 
   function bulkBurn(uint256[] calldata tokenIds) public virtual {
@@ -50,6 +50,25 @@ contract WildForestNft is ERC721Common {
       _burn(tokenIds[_i]);
     }
 
-    emit BulkBurn(_msgSender(), tokenIds);
+    emit BulkBurn(_msgSender(), tokenIds, "N/A");
   }
+
+  function burnWithInfo(uint256 tokenId, string memory metadata) public virtual {
+    //solhint-disable-next-line max-line-length
+    require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved");
+    _burn(tokenId);
+
+    emit IndividualBurn(_msgSender(), tokenId, metadata);
+  }
+
+  function bulkBurnWithInfo(uint256[] calldata tokenIds, string memory metadata) public virtual {
+    for (uint256 _i = 0; _i < tokenIds.length; _i++) {
+      //solhint-disable-next-line max-line-length
+      require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
+      _burn(tokenIds[_i]);
+    }
+
+    emit BulkBurn(_msgSender(), tokenIds, metadata);
+  }
+
 }
