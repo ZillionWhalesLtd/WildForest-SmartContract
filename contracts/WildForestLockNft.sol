@@ -48,7 +48,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     return true;
   }
 
-  function _validateOwnerAndLock(address account, uint256 tokenId) internal {
+  function _validateOwnerAndLock(address account, uint256 tokenId) internal view {
     uint256 lockExpiration = _lockedTokens[tokenId][account];
 
     if (lockExpiration == 0) revert NoLockedTokenForAddress();
@@ -85,7 +85,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       // Checks were already performed at this point, and there's no way to retake ownership or approval from
       // the wrapped tokenId after this point, so it's safe to remove the reentrancy check for the next line.
       // slither-disable-next-line reentrancy-no-eth
-      nftContract.safeTransferFrom(address(this), msg.sender, tokenId);
+      nftContract.transferFrom(address(this), msg.sender, tokenId);
     }
 
     emit UnstakeLock(msg.sender, tokenIds);
