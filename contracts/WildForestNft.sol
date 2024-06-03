@@ -4,9 +4,9 @@ pragma solidity ^0.8.16;
 import "./sky-mavis-nft/ERC721Common.sol";
 
 contract WildForestNft is ERC721Common {
-  // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
-  //   ERC721Common(name, symbol, baseTokenURI, ownerAddress)
-  // {}
+
+  event IndividualBurn(address indexed walletAddress, uint256 tokenId);
+  event BulkBurn(address indexed walletAddress, uint256[] tokenIds);
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -35,12 +35,21 @@ contract WildForestNft is ERC721Common {
     }
   }
 
-  function bulkBurn(uint256[] calldata tokenIds) public virtual {
+  function burn(uint256 tokenId) override public virtual {
     //solhint-disable-next-line max-line-length
+    require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved");
+    _burn(tokenId);
+
+    emit IndividualBurn(_msgSender(), tokenId);
+  }
+
+  function bulkBurn(uint256[] calldata tokenIds) public virtual {
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
+      //solhint-disable-next-line max-line-length
       require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
       _burn(tokenIds[_i]);
     }
 
+    emit BulkBurn(_msgSender(), tokenIds);
   }
 }

@@ -96,6 +96,11 @@ const transfer_events = transaction =>
       return events.filter(e => e.event === 'Transfer')
     })
 
+const all_events = transaction =>
+  transaction
+    .wait()
+    .then(({ events }) => events)
+
 describe('WildForestNft', function () {
   it('initialize not available second time', async () => {
     const { owner } = await deploy()
@@ -236,20 +241,40 @@ describe('WildForestNft', function () {
     const { owner, bob, alice } = await deploy()
     await owner.contract.bulkMint([bob.address])
 
-    await expect(alice.contract.burn(1)).to.be.revertedWith(
+    const tokenToBurn = 1
+
+    await expect(alice.contract.burn(tokenToBurn)).to.be.revertedWith(
       'ERC721: caller is not token owner or approved'
     )
-    await expect(bob.contract.burn(1)).to.not.be.reverted
+
+    const burn_transaction = await bob.contract.burn(tokenToBurn)
+    const events = await all_events(burn_transaction)
+
+    const individualBurnEvent = events.find(e => e.event === 'IndividualBurn')
+    const { args: { walletAddress, tokenId } } = individualBurnEvent
+    expect(Number(tokenId)).to.equal(tokenToBurn)
+    expect(walletAddress).to.equal(bob.address)
   })
 
   it('Only the owner of token can bulkBurn a token', async () => {
     const { owner, bob, alice } = await deploy()
     await owner.contract.bulkMint([bob.address, bob.address])
 
-    await expect(alice.contract.bulkBurn([1,2])).to.be.revertedWith(
+    const tokensToBurn = [1,2]
+
+    await expect(alice.contract.bulkBurn(tokensToBurn)).to.be.revertedWith(
       'ERC721: caller is not token owner or approved'
     )
-    await expect(bob.contract.bulkBurn([1,2])).to.not.be.reverted
+
+    const burn_transaction = await bob.contract.bulkBurn(tokensToBurn)
+    const events = await all_events(burn_transaction)
+
+    const bulkBurnEvent = events.find(e => e.event === 'BulkBurn')
+    const { args: { walletAddress, tokenIds } } = bulkBurnEvent
+    expect(tokenIds.length).to.equal(tokensToBurn.length)
+    expect(Number(tokenIds[0])).to.equal(tokensToBurn[0])
+    expect(Number(tokenIds[1])).to.equal(tokensToBurn[1])
+    expect(walletAddress).to.equal(bob.address)
   })
 
   it('owner can mint several tokens to the same address', async () => {
