@@ -4,6 +4,7 @@ pragma solidity ^0.8.16;
 import "./sky-mavis-nft/ERC721Common.sol";
 
 contract WildForestNft is ERC721Common {
+  error MaximumTokenIdsExceeded();
 
   event IndividualBurn(address indexed walletAddress, uint256 tokenId, string metadata);
   event BulkBurn(address indexed walletAddress, uint256[] tokenIds, string metadata);
@@ -13,12 +14,17 @@ contract WildForestNft is ERC721Common {
     _disableInitializers();
   }
 
-  function initialize(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) public initializer {
+  function initialize(string calldata name, string calldata symbol, string calldata baseTokenURI, address ownerAddress) public initializer {
     __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
   }
 
-  function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
+  function _validateTokenIdsNumber(uint256[] calldata tokenIds) internal {
     require(tokenIds.length > 0, "WildForestNft: invalid array lengths");
+    if (tokenIds.length > 50) revert MaximumTokenIdsExceeded();
+  }
+
+  function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
+    _validateTokenIdsNumber(tokenIds);
 
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       address owner = ERC721Upgradeable.ownerOf(tokenIds[_i]);
@@ -36,21 +42,11 @@ contract WildForestNft is ERC721Common {
   }
 
   function burn(uint256 tokenId) override public virtual {
-    //solhint-disable-next-line max-line-length
-    require(_isApprovedOrOwner(_msgSender(), tokenId), "ERC721: caller is not token owner or approved");
-    _burn(tokenId);
-
-    emit IndividualBurn(_msgSender(), tokenId, "N/A");
+    burnWithInfo(tokenId, "N/A");
   }
 
   function bulkBurn(uint256[] calldata tokenIds) public virtual {
-    for (uint256 _i = 0; _i < tokenIds.length; _i++) {
-      //solhint-disable-next-line max-line-length
-      require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");
-      _burn(tokenIds[_i]);
-    }
-
-    emit BulkBurn(_msgSender(), tokenIds, "N/A");
+    bulkBurnWithInfo(tokenIds, "N/A");
   }
 
   function burnWithInfo(uint256 tokenId, string memory metadata) public virtual {
@@ -62,6 +58,8 @@ contract WildForestNft is ERC721Common {
   }
 
   function bulkBurnWithInfo(uint256[] calldata tokenIds, string memory metadata) public virtual {
+    _validateTokenIdsNumber(tokenIds);
+
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       //solhint-disable-next-line max-line-length
       require(_isApprovedOrOwner(_msgSender(), tokenIds[_i]), "ERC721: caller is not token owner or approved");

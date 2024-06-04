@@ -2,7 +2,7 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
-const { signMintData } = require('./_utils')
+const { signMintData, ZERO_ADDRESS } = require('./_utils')
 
 chai.use(deep_equal)
 
@@ -84,6 +84,10 @@ describe('WildForestClaimNft', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
+    await expect(owner.contract.setUserMintSigner(ZERO_ADDRESS)).to.be.revertedWith(
+      'ClaimNFT: signerAddress is the zero address'
+    )
+
     const set_transaction = await owner.contract.setUserMintSigner(owner.address)
     const events = await all_events(set_transaction)
 
@@ -97,6 +101,10 @@ describe('WildForestClaimNft', function () {
 
     await expect(bob.contract.setNftContractAddress(nftContractAddress)).to.be.revertedWith(
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+    )
+
+    await expect(owner.contract.setNftContractAddress(ZERO_ADDRESS)).to.be.revertedWith(
+      'ClaimNFT: nftContractAddress is the zero address'
     )
 
     const set_transaction = await owner.contract.setNftContractAddress(nftContractAddress)

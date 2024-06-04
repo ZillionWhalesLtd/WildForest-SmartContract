@@ -10,6 +10,8 @@ const cardsContractName = 'WildForestCards'
 const cardsContractSymbol = `WFC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 
+const MAXIMUM_THRESHOLD = 51
+
 const deploy = async () => {
   await deployments.fixture()
   const accounts = await ethers.getSigners()
@@ -289,6 +291,14 @@ describe('WildForestNft', function () {
       'ERC721: caller is not token owner or approved'
     )
 
+    const tokensLimitExceeded = []
+    for (let _i = 0; _i < MAXIMUM_THRESHOLD; _i++) {
+      tokensLimitExceeded.push(_i + 1)
+    }
+    await expect(bob.contract.bulkBurn(tokensLimitExceeded)).to.be.revertedWithCustomError(
+      bob.contract, 'MaximumTokenIdsExceeded'
+    )
+
     const burn_transaction = await bob.contract.bulkBurn(tokensToBurn)
     const events = await all_events(burn_transaction)
 
@@ -415,6 +425,16 @@ describe('WildForestNft', function () {
     )
 
     await expect(alice.contract.setBaseURI('http:localhost:4000')).not.to.be.reverted
+
+    const newUri = 'http:localhost:4000'
+    const uri_transaction = await alice.contract.setBaseURI(newUri)
+
+    const setUriEvents = await all_events(uri_transaction)
+
+    const changeUriEvent = setUriEvents.find(e => e.event === 'BaseUriChanged')
+    const { args: { uri } } = changeUriEvent
+    expect(uri).to.equal(newUri)
+
 
     await expect(owner.contract.setBaseURI('http:localhost:5000')).to.be.revertedWith(
       `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`

@@ -2,6 +2,8 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
+const { ZERO_ADDRESS } = require('./_utils')
+
 chai.use(deep_equal)
 
 const { expect } = chai
@@ -13,6 +15,13 @@ const uri = 'https://localhost:3000/api/mdeal/'
 const keccak256MinterRole = '0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6'
 const keccak256TypeCreatorRole = '0xa179fee20f85ec961934693e9c82cdcfa7a5e03830c24fff006b46f3fd75fa9e'
 const keccak256DefaultAdminRole = '0x0000000000000000000000000000000000000000000000000000000000000000'
+
+const MAXIMUM_THRESHOLD = 11
+
+const all_events = transaction =>
+  transaction
+    .wait()
+    .then(({ events }) => events)
 
 const deploy = async () => {
   await deployments.fixture()
@@ -105,6 +114,13 @@ describe('WildForestMedal', function () {
     )
   })
 
+  it('initialize zero address', async () => {
+  const WildForestMedal = await ethers.getContractFactory("WildForestMedal")
+    await expect(upgrades.deployProxy(WildForestMedal, [name, symbol, uri, ZERO_ADDRESS])).to.be.revertedWith(
+      'TokenMedal: _ownerAddress is the zero address'
+    )
+  })
+
   it('custom owner', async () => {
     const { owner, alice } = await deployWithAliceOwner()
 
@@ -118,7 +134,14 @@ describe('WildForestMedal', function () {
       `AccessControl: account ${owner.address.toLowerCase()} is missing role ${keccak256DefaultAdminRole}`
     )
 
-    await alice.contract.setURI(newURI)
+    const uri_transaction = await alice.contract.setURI(newURI)
+
+    const setUriEvents = await all_events(uri_transaction)
+
+    const changeUriEvent = setUriEvents.find(e => e.event === 'BaseUriChanged')
+    const { args: { uri } } = changeUriEvent
+    expect(uri).to.equal(newURI)
+
     expect(await alice.contract.uri(1)).to.equal(`${newURI}1`)
 
     await expect(owner.contract.mintBatch(alice.address, [1], [1])).to.be.revertedWith(
@@ -225,6 +248,18 @@ describe('WildForestMedal', function () {
     )
 
     await bob.contract.setApprovalForAll(alice.address, true)
+
+    const seasonsLimitExceeded = []
+    const tokensToBurn = []
+    for (let _i = 0; _i < MAXIMUM_THRESHOLD; _i++) {
+      seasonsLimitExceeded.push(_i + 1)
+      tokensToBurn.push(1)
+      await owner.contract.addNewSeason(10)
+    }
+    await expect(bob.contract.burnBatch(bob.address, seasonsLimitExceeded, tokensToBurn)).to.be.revertedWithCustomError(
+      bob.contract, 'MaximumSeasonIdsExceeded'
+    )
+
     await expect(alice.contract.burnBatch(bob.address, [1], [1])).not.to.be.reverted
     await expect(alice.contract.burn(bob.address, 1, 1)).not.to.be.reverted
     // await expect(owner.contract.burnBatch(bob.address, [1], [1])).not.to.be.reverted

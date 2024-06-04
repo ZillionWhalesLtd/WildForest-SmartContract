@@ -52,12 +52,23 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
     _disableInitializers();
   }
 
-  function initialize(string memory name, address ownerAddress, address signerAddress, address nftContractAddress) public initializer {
-    _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
+  function initialize(string calldata name, address ownerAddress, address signerAddress, address nftContractAddress) public initializer {
+    _validateSignerAddress(signerAddress);
+    _validateNftContractAddress(nftContractAddress);
+
+    _grantRole(DEFAULT_ADMIN_ROLE, ownerAddress);
     _userMintSigner = signerAddress;
     _nftContractAddress = nftContractAddress;
 
     __EIP712_init(name, "1");
+  }
+
+  function _validateSignerAddress(address signerAddress) internal {
+    require(signerAddress != address(0), "ClaimNFT: signerAddress is the zero address");
+  }
+
+  function _validateNftContractAddress(address nftContractAddress) internal {
+    require(nftContractAddress != address(0), "ClaimNFT: nftContractAddress is the zero address");
   }
 
   function _invalidateNonce(address walletAddress, string memory identificator) internal {
@@ -112,11 +123,13 @@ contract WildForestClaimNft is AccessControlEnumerableUpgradeable, EIP712 {
   }
 
   function setUserMintSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _validateSignerAddress(signerAddress);
     _userMintSigner = signerAddress;
     emit SignerAddressChanged(signerAddress);
   }
 
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _validateNftContractAddress(nftContractAddress);
     _nftContractAddress = nftContractAddress;
     emit NftContractChanged(nftContractAddress);
   }

@@ -30,10 +30,16 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   }
 
   function initialize(string memory name, address ownerAddress, address nftContractAddress, uint256 lockPeriod) public initializer {
-    _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
+    _validateNftContractAddress(nftContractAddress);
+
+    _grantRole(DEFAULT_ADMIN_ROLE, ownerAddress);
     _nftContractAddress = nftContractAddress;
     _lockPeriod = lockPeriod;
     _name = name;
+  }
+
+  function _validateNftContractAddress(address nftContractAddress) internal {
+    require(nftContractAddress != address(0), "LockNFT: nftContractAddress is the zero address");
   }
 
   function _lock(address account, uint256 tokenId) internal virtual returns (uint256) {
@@ -93,6 +99,8 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   }
 
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _validateNftContractAddress(nftContractAddress);
+
     _nftContractAddress = nftContractAddress;
     emit NftContractChanged(nftContractAddress);
   }
@@ -101,35 +109,4 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     _lockPeriod = lockPeriod;
     emit LockPeriodChanged(lockPeriod);
   }
-
-  // /**
-  //  * @dev Overrides {IERC721Receiver-onERC721Received} to allow minting on direct ERC721 transfers to
-  //  * this contract.
-  //  *
-  //  * In case there's data attached, it validates that the operator is this contract, so only trusted data
-  //  * is accepted from {depositFor}.
-  //  *
-  //  * WARNING: Doesn't work with unsafe transfers (eg. {IERC721-transferFrom}). Use {ERC721Wrapper-_recover}
-  //  * for recovering in that scenario.
-  //  */
-  // function onERC721Received(
-  //   address,
-  //   address from,
-  //   uint256 tokenId,
-  //   bytes memory
-  // ) public virtual returns (bytes4) {
-  //   // require(address(underlying()) == _msgSender(), "ERC721Wrapper: caller is not underlying");
-  //   // _safeMint(from, tokenId);
-  //   return IERC721ReceiverUpgradeable.onERC721Received.selector;
-  // }
-
-  // /**
-  //  * @dev Mint a wrapped token to cover any underlyingToken that would have been transferred by mistake. Internal
-  //  * function that can be exposed with access control if desired.
-  //  */
-  // function _recover(address account, uint256 tokenId) internal virtual returns (uint256) {
-  //   require(underlying().ownerOf(tokenId) == address(this), "ERC721Wrapper: wrapper is not token owner");
-  //   _safeMint(account, tokenId);
-  //   return tokenId;
-  // }
 }

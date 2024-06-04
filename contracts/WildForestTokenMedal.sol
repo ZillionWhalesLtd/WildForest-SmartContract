@@ -6,6 +6,10 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgrad
 import "@openzeppelin/contracts/utils/Strings.sol";
 
 contract WildForestMedalStorage {
+  error MaximumSeasonIdsExceeded();
+
+  event BaseUriChanged(string uri);
+
   mapping (uint256 => uint256) public tokenSupply;
 
   address public _governance;
@@ -28,14 +32,16 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
     _disableInitializers();
   }
 
-  function initialize(string memory _name, string memory _symbol, string memory uri_, address _ownerAddress) public initializer {
+  function initialize(string calldata _name, string calldata _symbol, string calldata uri_, address _ownerAddress) public initializer {
+    require(_ownerAddress != address(0), "TokenMedal: _ownerAddress is the zero address");
+
     __ERC1155_init(uri_);
     name = _name;
     symbol = _symbol;
     _governance = _ownerAddress;
-    _setupRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
-    _setupRole(MINTER_ROLE, _ownerAddress);
-    _setupRole(TYPE_CREATOR_ROLE, _ownerAddress);
+    _grantRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
+    _grantRole(MINTER_ROLE, _ownerAddress);
+    _grantRole(TYPE_CREATOR_ROLE, _ownerAddress);
     seasonsCount = 0;
     _upgradeV2 = false;
   }
@@ -45,9 +51,13 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
     require(msg.sender == _governance, "only governance can call this");
     _upgradeV2 = true;
 
-    _setupRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
-    _setupRole(MINTER_ROLE, _ownerAddress);
-    _setupRole(TYPE_CREATOR_ROLE, _ownerAddress);
+    _grantRole(DEFAULT_ADMIN_ROLE, _ownerAddress);
+    _grantRole(MINTER_ROLE, _ownerAddress);
+    _grantRole(TYPE_CREATOR_ROLE, _ownerAddress);
+  }
+
+  function _validateSeasonIdsNumber(uint256[] calldata _seasonIds) internal {
+    if (_seasonIds.length > 10) revert MaximumSeasonIdsExceeded();
   }
 
   function _exists(
@@ -58,6 +68,7 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
 
   function setURI(string memory uri_) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _setURI(uri_);
+    emit BaseUriChanged(uri_);
   }
 
   function supportsInterface(bytes4 interfaceId)
@@ -85,8 +96,8 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
     seasonsCount++;
     uint256 seasonNumber = seasonsCount;
 
-    _mint(msg.sender, seasonNumber, initialSupply, "");
     tokenSupply[seasonNumber] = initialSupply;
+    _mint(msg.sender, seasonNumber, initialSupply, "");
     return seasonNumber;
   }
 
@@ -96,14 +107,14 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
     uint256 _amount
   ) public onlyRole(MINTER_ROLE) {
     require(_exists(_seasonId), "season does not exists");
-    _mint(_to, _seasonId, _amount, "");
     tokenSupply[_seasonId] = tokenSupply[_seasonId] + _amount;
+    _mint(_to, _seasonId, _amount, "");
   }
 
   function mintBatch(
     address _to,
-    uint256[] memory _seasonIds,
-    uint256[] memory _amounts
+    uint256[] calldata _seasonIds,
+    uint256[] calldata _amounts
   ) public onlyRole(MINTER_ROLE) {
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");
@@ -132,13 +143,14 @@ contract WildForestMedal is ERC1155Upgradeable, WildForestMedalStorage, AccessCo
 
   function burnBatch(
     address _from,
-    uint256[] memory _seasonIds,
-    uint256[] memory _amounts
+    uint256[] calldata _seasonIds,
+    uint256[] calldata _amounts
   ) public {
     require(
       _from == _msgSender() || isApprovedForAll(_from, _msgSender()),
       "ERC1155: caller is not token owner or approved"
     );
+    _validateSeasonIdsNumber(_seasonIds);
 
     for (uint256 i = 0; i < _seasonIds.length; i++) {
       require(_exists(_seasonIds[i]), "season does not exists");

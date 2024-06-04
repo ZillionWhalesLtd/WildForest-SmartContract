@@ -2,6 +2,8 @@
 
 const HARDHAT_LOCAL_CHAIN_ID = 31337
 
+const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000'
+
 const signMintData = async(signer, mintData, contractName, verifyingContractAddress) => {
   const domain = {
     name: contractName,
@@ -44,4 +46,4 @@ const signTransferData = async(signer, transferData, contractName, verifyingCont
   return signer._signTypedData(domain, types, transferData)
 }
 
-module.exports = { signMintData, signTransferData }
+module.exports = { signMintData, signTransferData, ZERO_ADDRESS }

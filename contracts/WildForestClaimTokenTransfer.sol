@@ -5,6 +5,7 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgrad
 import {EIP712Upgradeable as EIP712} from "@openzeppelin/contracts-upgradeable/utils/cryptography/EIP712Upgradeable.sol";
 import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {ITokenBase} from "./interfaces/ITokenBase.sol";
+import {SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP712 {
   using ECDSA for bytes32;
@@ -50,12 +51,23 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
     _disableInitializers();
   }
 
-  function initialize(string memory name, address ownerAddress, address signerAddress, address tokenContractAddress) public initializer {
-    _setupRole(DEFAULT_ADMIN_ROLE, ownerAddress);
+  function initialize(string calldata name, address ownerAddress, address signerAddress, address tokenContractAddress) public initializer {
+    _validateSignerAddress(signerAddress);
+    _validateTokenContractAddress(tokenContractAddress);
+
+    _grantRole(DEFAULT_ADMIN_ROLE, ownerAddress);
     _userTransferSigner = signerAddress;
     _tokenContractAddress = tokenContractAddress;
 
     __EIP712_init(name, "1");
+  }
+
+  function _validateSignerAddress(address signerAddress) internal {
+    require(signerAddress != address(0), "ClaimTokenTransfer: signerAddress is the zero address");
+  }
+
+  function _validateTokenContractAddress(address tokenContractAddress) internal {
+    require(tokenContractAddress != address(0), "ClaimTokenTransfer: tokenContractAddress is the zero address");
   }
 
   function _invalidateNonce(address walletAddress, string memory identificator) internal {
@@ -90,16 +102,18 @@ contract WildForestClaimTokenTransfer is AccessControlEnumerableUpgradeable, EIP
     _validateTransferData(transferData, signature);
 
     ITokenBase tokenContract = ITokenBase(_tokenContractAddress);
-    tokenContract.transferFrom(transferData.senderAddress, msg.sender, transferData.amount);
+    SafeERC20.safeTransferFrom(tokenContract, transferData.senderAddress, msg.sender, transferData.amount);
     emit UserTransfer(transferData.walletAddress, transferData.senderAddress, transferData.amount, transferData.identificator, transferData.playerId);
   }
 
   function setUserTransferSigner(address signerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _validateSignerAddress(signerAddress);
     _userTransferSigner = signerAddress;
     emit SignerAddressChanged(signerAddress);
   }
 
   function setTokenContractAddress(address tokenContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    _validateTokenContractAddress(tokenContractAddress);
     _tokenContractAddress = tokenContractAddress;
     emit TokenContractChanged(tokenContractAddress);
   }

@@ -2,7 +2,7 @@ const chai = require('chai')
 const { deployments, ethers, upgrades } = require('hardhat')
 const deep_equal = require('deep-equal-in-any-order')
 
-const { signTransferData } = require('./_utils')
+const { signTransferData, ZERO_ADDRESS } = require('./_utils')
 
 chai.use(deep_equal)
 
@@ -82,6 +82,10 @@ describe('WildForestClaimTokenTransfer', function () {
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
+    await expect(owner.contract.setUserTransferSigner(ZERO_ADDRESS)).to.be.revertedWith(
+      'ClaimTokenTransfer: signerAddress is the zero address'
+    )
+
     const set_transaction = await owner.contract.setUserTransferSigner(owner.address)
     const events = await all_events(set_transaction)
 
@@ -95,6 +99,10 @@ describe('WildForestClaimTokenTransfer', function () {
 
     await expect(bob.contract.setTokenContractAddress(tokenContractAddress)).to.be.revertedWith(
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
+    )
+
+    await expect(owner.contract.setTokenContractAddress(ZERO_ADDRESS)).to.be.revertedWith(
+      'ClaimTokenTransfer: tokenContractAddress is the zero address'
     )
 
     const set_transaction = await owner.contract.setTokenContractAddress(tokenContractAddress)
