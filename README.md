@@ -25,6 +25,10 @@
 - Saigon [tx: 0xebab85aed76c4bbd6e711e21399049efc0dd3fdaf97043de067b88bcdbd5baec, deployed at 0x178C38A06773ca0370Cc818a98810D7BC717d057](https://saigon-app.roninchain.com/address/0x178C38A06773ca0370Cc818a98810D7BC717d057?t=contract&st=write-contract)
 - Ronin  [tx: 0xc0d98dd4cf15e539d74882b5636037608f2aeeafc3de2afa7b0e7154a70853f8, deployed at 0xA1cE53B661be73bf9a5EdD3F0087484f0E3E7363](https://app.roninchain.com/address/0xA1cE53B661be73bf9a5EdD3F0087484f0E3E7363)
 
+## RELEASED LORD STAKE (PROXY custom):
+- Saigon [deployed at 0xaec833B058E12286bda73A26D2d25FB28D3A819E](https://saigon-app.roninchain.com/address/0xaec833B058E12286bda73A26D2d25FB28D3A819E?t=contract&st=read-contract-proxy)
+- Ronin  [tx: , deployed at ](https://app.roninchain.com/address/0xA1cE53B661be73bf9a5EdD3F0087484f0E3E7363)
+
 ## RELEASE PACK NFT (PROXY based ERC1155):
 - Saigon [tx: 0xecde996089a0a29a720f8e83fd2186d5d7a6be4cb2099b7f93a5727996cbc159, deployed at 0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251](https://saigon-app.roninchain.com/address/0xC8D431503c18D5b3A414eDEbbb5551f1AE7Bb251?t=contract&st=read-contract-proxy&f=9&params=1)
 - Ronin [tx: 0x9161b7e0fe094fc4a99bea7bf97d067558e09929e1fe454706ffee24ae8cc32e, deployed at 0x0328b534d094B097020B4538230F998027a54dB0](https://app.roninchain.com/address/0x0328b534d094B097020B4538230F998027a54dB0?t=contract)
