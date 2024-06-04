@@ -50,7 +50,7 @@ Impact: High
 Confidence: High
  - [ ] ID-3
 [ERC721Nonce.nonces](contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L16) is never initialized. It is used in:
-  - [ERC721Common.stateOf(uint256)](contracts/sky-mavis-nft/ERC721Common.sol#L24-L27)
+  - [ERC721Common.stateOf(uint256)](contracts/sky-mavis-nft/ERC721Common.sol#L21-L24)
   - [ERC721Nonce._beforeTokenTransfer(address,address,uint256,uint256)](contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L27-L36)
 
 contracts/sky-mavis-nft/refs/ERC721Nonce.sol#L16
@@ -206,19 +206,19 @@ node_modules/@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableU
 Impact: Low
 Confidence: High
  - [ ] ID-22
-[ERC721Common.__ERC721Common_init(string,string,string,address).symbol](contracts/sky-mavis-nft/ERC721Common.sol#L13) shadows:
+[ERC721Common.__ERC721Common_init(string,string,string,address).symbol](contracts/sky-mavis-nft/ERC721Common.sol#L10) shadows:
   - [ERC721Upgradeable.symbol()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L91-L93) (function)
   - [IERC721MetadataUpgradeable.symbol()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L21) (function)
 
-contracts/sky-mavis-nft/ERC721Common.sol#L13
+contracts/sky-mavis-nft/ERC721Common.sol#L10
 
 
  - [ ] ID-23
-[ERC721Common.__ERC721Common_init_unchained(string,string,string,address).name](contracts/sky-mavis-nft/ERC721Common.sol#L17) shadows:
+[ERC721Common.__ERC721Common_init_unchained(string,string,string,address).name](contracts/sky-mavis-nft/ERC721Common.sol#L14) shadows:
   - [ERC721Upgradeable.name()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L84-L86) (function)
   - [IERC721MetadataUpgradeable.name()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L16) (function)
 
-contracts/sky-mavis-nft/ERC721Common.sol#L17
+contracts/sky-mavis-nft/ERC721Common.sol#L14
 
 
  - [ ] ID-24
@@ -246,19 +246,19 @@ contracts/WildForestNft.sol#L17
 
 
  - [ ] ID-27
-[ERC721Common.__ERC721Common_init_unchained(string,string,string,address).symbol](contracts/sky-mavis-nft/ERC721Common.sol#L17) shadows:
+[ERC721Common.__ERC721Common_init_unchained(string,string,string,address).symbol](contracts/sky-mavis-nft/ERC721Common.sol#L14) shadows:
   - [ERC721Upgradeable.symbol()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L91-L93) (function)
   - [IERC721MetadataUpgradeable.symbol()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L21) (function)
 
-contracts/sky-mavis-nft/ERC721Common.sol#L17
+contracts/sky-mavis-nft/ERC721Common.sol#L14
 
 
  - [ ] ID-28
-[ERC721Common.__ERC721Common_init(string,string,string,address).name](contracts/sky-mavis-nft/ERC721Common.sol#L13) shadows:
+[ERC721Common.__ERC721Common_init(string,string,string,address).name](contracts/sky-mavis-nft/ERC721Common.sol#L10) shadows:
   - [ERC721Upgradeable.name()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol#L84-L86) (function)
   - [IERC721MetadataUpgradeable.name()](node_modules/@openzeppelin/contracts-upgradeable/token/ERC721/extensions/IERC721MetadataUpgradeable.sol#L16) (function)
 
-contracts/sky-mavis-nft/ERC721Common.sol#L13
+contracts/sky-mavis-nft/ERC721Common.sol#L10
 
 
  - [ ] ID-29
@@ -1217,9 +1217,9 @@ contracts/WildForestClaimTokenTransfer.sol#L47
 
 
  - [ ] ID-160
-Function [ERC721Common.__ERC721Common_init(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L13-L15) is not in mixedCase
+Function [ERC721Common.__ERC721Common_init(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L10-L12) is not in mixedCase
 
-contracts/sky-mavis-nft/ERC721Common.sol#L13-L15
+contracts/sky-mavis-nft/ERC721Common.sol#L10-L12
 
 
  - [ ] ID-161
@@ -1265,9 +1265,9 @@ node_modules/@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.so
 
 
  - [ ] ID-168
-Parameter [ERC721Common.bulkMint(address[])._recipients](contracts/sky-mavis-nft/ERC721Common.sol#L77) is not in mixedCase
+Parameter [ERC721Common.bulkMint(address[])._recipients](contracts/sky-mavis-nft/ERC721Common.sol#L74) is not in mixedCase
 
-contracts/sky-mavis-nft/ERC721Common.sol#L77
+contracts/sky-mavis-nft/ERC721Common.sol#L74
 
 
  - [ ] ID-169
@@ -1427,15 +1427,15 @@ contracts/sky-mavis-nft/ERC721PresetMinterPauserAutoIdCustomized.sol#L44-L46
 
 
  - [ ] ID-195
-Function [ERC721Common.__ERC721Common_init_unchained(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L17-L19) is not in mixedCase
+Function [ERC721Common.__ERC721Common_init_unchained(string,string,string,address)](contracts/sky-mavis-nft/ERC721Common.sol#L14-L16) is not in mixedCase
 
-contracts/sky-mavis-nft/ERC721Common.sol#L17-L19
+contracts/sky-mavis-nft/ERC721Common.sol#L14-L16
 
 
  - [ ] ID-196
-Parameter [ERC721Common.stateOf(uint256)._tokenId](contracts/sky-mavis-nft/ERC721Common.sol#L24) is not in mixedCase
+Parameter [ERC721Common.stateOf(uint256)._tokenId](contracts/sky-mavis-nft/ERC721Common.sol#L21) is not in mixedCase
 
-contracts/sky-mavis-nft/ERC721Common.sol#L24
+contracts/sky-mavis-nft/ERC721Common.sol#L21
 
 
  - [ ] ID-197

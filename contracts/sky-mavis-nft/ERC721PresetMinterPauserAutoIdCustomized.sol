@@ -29,7 +29,7 @@ contract ERC721PresetMinterPauserAutoIdCustomized is
 {
   using Counters for Counters.Counter;
 
-  event BaseUriChanged(string uri);
+  // event BaseUriChanged(string uri);
 
   bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
   bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
@@ -59,7 +59,7 @@ contract ERC721PresetMinterPauserAutoIdCustomized is
 
   function setBaseURI(string memory baseTokenURI) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _baseTokenURI = baseTokenURI;
-    emit BaseUriChanged(baseTokenURI);
+    // emit BaseUriChanged(baseTokenURI);
   }
 
   function _baseURI() internal view virtual override returns (string memory) {

@@ -6,9 +6,6 @@ import "./refs/ERC721Nonce.sol";
 import "./ERC721PresetMinterPauserAutoIdCustomized.sol";
 
 abstract contract ERC721Common is ERC721Nonce, ERC721PresetMinterPauserAutoIdCustomized, IERC721State {
-  // constructor(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress)
-  //   ERC721PresetMinterPauserAutoIdCustomized(name, symbol, baseTokenURI, ownerAddress)
-  // {}
 
   function __ERC721Common_init(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) internal onlyInitializing {
     __ERC721Common_init_unchained(name, symbol, baseTokenURI, ownerAddress);
