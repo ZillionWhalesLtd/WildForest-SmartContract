@@ -3,11 +3,9 @@ pragma solidity ^0.8.16;
 
 import "@openzeppelin/contracts-upgradeable/access/AccessControlEnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
-// import {ECDSA} from "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 import {INFTBase} from "./interfaces/INFTBase.sol";
 
 contract WildForestLockNft is AccessControlEnumerableUpgradeable {
-  // using ECDSA for bytes32;
 
   error NoLockedTokenForAddress();
   error LockActive(uint256 lockExpiration);
