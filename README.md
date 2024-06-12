@@ -55,6 +55,11 @@
 --------
 
 
+## SIGNAL FIRE (PROXY custom):
+- Saigon [tx: 0xe78f3e51d922e8743405fb9666efd257391ed9bf21ede9c1535325ac6f39f22a, deployed at 0x3B43F19D8F4f7513fd57db1cA6679Ad94F27b118](https://saigon-app.roninchain.com/address/0x3B43F19D8F4f7513fd57db1cA6679Ad94F27b118?t=contract&st=read-contract)
+- Ronin [tx: , deployed at ](https://app.roninchain.com/address/0x363C3b97152e161Cea85e0E5Dc52dfDCa01A2dB1?t=contract)
+
+
 # OUTDATED SMART-CONTRACTS (before we switched to Proxy):
 
 ## NFTs (Skins):
