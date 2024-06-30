@@ -4,7 +4,7 @@ const uniq = require('lodash.uniq')
 // const FileService = require('./services/FileService')
 const CsvService = require('./services/CsvService')
 
-const GENERATED_PACKS_FILE_NAME = 'minted_packs-1719741155638.json'
+const GENERATED_PACKS_FILE_NAME = 'minted_packs-1719744793069.json'
 // const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706387582481.json'
 
 const main = async() => {
