@@ -141,7 +141,7 @@ class RequirementsService {
     const repoPath = process.cwd()
     const unitsWeights = require(`${repoPath}/bin/mintRequirements/unitsWeights.json`)
 
-    const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_t1.csv`
+    const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_3.csv`
     const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
     const lordsConfigPath = `${repoPath}/bin/csvConfigs/${lordsFile}`
 
@@ -155,7 +155,7 @@ class RequirementsService {
     const lordsGroupedMap = groupBy(configLords, 'rank')
     const packsToMint = []
 
-    let packCounter = 19301
+    let packCounter = 37161
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
       const { pack_id, number, lords, units, skins: originalSkins } = typeDistribution
@@ -184,22 +184,34 @@ class RequirementsService {
         const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
 
         const skinsTreasury = []
-        let legendaryIsPicked
-        if ( (skins.Legendary > 0 && skins.Legendary < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
-          const randomLegendary = randomNumber(1, 100) / 100
-          legendaryIsPicked = randomLegendary < skins.Legendary
-          if (legendaryIsPicked) {
-            skins.Legendary = 1
-            skins.Epic = 0
-          } else {
-            skins.Legendary = 0
-            skins.Epic = 1
-          }
-        }
+        // let legendaryIsPicked
+        // if ( (skins.Legendary > 0 && skins.Legendary < 1) && (skins.Epic > 0 && skins.Epic < 1) ) {
+        //   const randomLegendary = randomNumber(1, 100) / 100
+        //   legendaryIsPicked = randomLegendary < skins.Legendary
+        //   if (legendaryIsPicked) {
+        //     skins.Legendary = 1
+        //     skins.Epic = 0
+        //   } else {
+        //     skins.Legendary = 0
+        //     skins.Epic = 1
+        //   }
+        // }
 
         for (const skinType in skins) {
-          const skinsTypeNumber = skins[skinType]
+          let skinsTypeNumber = skins[skinType]
           if (skinsTypeNumber > 0) {
+
+            if (skinsTypeNumber < 1) {
+              const randomSkinCoeficient = randomNumber(0, 100) / 100
+
+              const isSkinPicked = skinsTypeNumber > randomSkinCoeficient
+              if (isSkinPicked) {
+                skinsTypeNumber = 1
+              } else {
+                skinsTypeNumber = 0
+              }
+            }
+
             const skinsTypeArray = [...skinsGroupedMap[skinType]]
             for (let counter = 0; counter < skinsTypeNumber; counter++) {
               const randomSkinTypePosition = randomNumber(0, skinsTypeArray.length)

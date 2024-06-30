@@ -4,7 +4,7 @@ const uniq = require('lodash.uniq')
 // const FileService = require('./services/FileService')
 const CsvService = require('./services/CsvService')
 
-const GENERATED_PACKS_FILE_NAME = 'minted_packs-1715610318554.json'
+const GENERATED_PACKS_FILE_NAME = 'minted_packs-1719741155638.json'
 // const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706387582481.json'
 
 const main = async() => {
@@ -12,7 +12,7 @@ const main = async() => {
   // fileService.writeFile(filePath, contentToWrite)
   const csvService = new CsvService()
   const repoPath = process.cwd()
-  const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_t1.csv`
+  const skinsConfigPath = `${repoPath}/bin/csvConfigs/unitSkins_3.csv`
   const unitsConfigPath = `${repoPath}/bin/csvConfigs/ConfigsUnitsList.csv`
   const lordsConfigPath = `${repoPath}/bin/csvConfigs/NewConfigs - LordsMetadata.csv`
 
@@ -124,9 +124,9 @@ const main = async() => {
   }
 
   // console.log(JSON.stringify(resultsMap))
-  console.log(JSON.stringify(resultsIdsMap))
+  // console.log(JSON.stringify(resultsIdsMap))
   // console.log(JSON.stringify(skinsMap))
-  // console.log(JSON.stringify(unitsMap))
+  console.log(JSON.stringify(unitsMap))
 }
 
 main()
