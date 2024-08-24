@@ -155,10 +155,25 @@ class RequirementsService {
     const lordsGroupedMap = groupBy(configLords, 'rank')
     const packsToMint = []
 
-    let packCounter = 37161
+    let packCounter = 52161
     for (const packType in dataRequirements.types) {
       const typeDistribution = dataRequirements.types[packType]
-      const { pack_id, number, lords, units, skins: originalSkins } = typeDistribution
+      const { pack_id, number, lords, units, skins: originalSkins, wfToken } = typeDistribution
+
+      const tokensDistributionArray = []
+      for (const wfTokensGroup in wfToken) {
+        const tokenGroupsNumber = wfToken[wfTokensGroup]
+        for (let counter = 0; counter < tokenGroupsNumber; counter++) {
+          tokensDistributionArray.push(wfTokensGroup)
+        }
+      }
+
+      const wfTokensGroupLength = tokensDistributionArray.length
+      if (wfTokensGroupLength < number) {
+        for (let counter = 0; counter < number - wfTokensGroupLength ; counter++) {
+          tokensDistributionArray.push("0")
+        }
+      }
 
       const lordsDstributionArray = []
 
@@ -178,10 +193,14 @@ class RequirementsService {
         }
       }
 
+      // COUNTER FOR EACH PACK AT THE TYPE
       for (let counter = 0; counter < number; counter++) {
         const skins = { ...originalSkins }
         const randomLordPosition = randomNumber(0, lordsDstributionArray.length)
         const [randomLord] = lordsDstributionArray.splice(randomLordPosition, 1)
+
+        const randomWfTokenGroupPosition = randomNumber(0, tokensDistributionArray.length)
+        const [randomWfTokens] = tokensDistributionArray.splice(randomWfTokenGroupPosition, 1)
 
         const skinsTreasury = []
         // let legendaryIsPicked
@@ -247,7 +266,7 @@ class RequirementsService {
         const treasure = {
           units: unitsTreasury,
           skins: skinsTreasury,
-          // "tokens": 125,
+          wfTokens: Number(randomWfTokens),
         }
 
         if (!randomLord.isEmpty) {
@@ -271,7 +290,7 @@ class RequirementsService {
           lords: csvLords,
           units: csvUnits,
           skins: csvSkins,
-          wfTokens: '',
+          wfTokens: Number(randomWfTokens),
           bpSeasonId: ''
         }
 

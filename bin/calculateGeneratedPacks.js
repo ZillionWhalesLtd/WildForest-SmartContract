@@ -4,8 +4,8 @@ const uniq = require('lodash.uniq')
 // const FileService = require('./services/FileService')
 const CsvService = require('./services/CsvService')
 
-const GENERATED_PACKS_FILE_NAME = 'minted_packs-1719744793069.json'
-// const GENERATED_PACKS_FILE_NAME = 'minted_packs-1706387582481.json'
+const GENERATED_PACKS_FILE_NAME = 'minted_packs-1724531030724.json'
+// const GENERATED_PACKS_FILE_NAME = 'minted_packs-1719744793069.json'
 
 const main = async() => {
   // const fileService = new FileService()
@@ -25,7 +25,7 @@ const main = async() => {
   const lordsMap = keyBy(configLords, 'nft_id')
 
   const data = require(`./resultData/${GENERATED_PACKS_FILE_NAME}`)
-  const resultsMap = { All: { units: {}, skins: {}, lords: {} } }
+  const resultsMap = { All: { units: {}, skins: {}, lords: {}, wfTokens: {} } }
   const resultsIdsMap = { All: { units: {}, skins: {} } }
   const unitsMap = { All: {} }
   const skinsMap = { All: {} }
@@ -33,15 +33,27 @@ const main = async() => {
   const packsMap = groupBy(data, 'type')
 
   for (const packType in packsMap) {
-    resultsMap[packType] = { units: {}, skins: {}, lords: {} }
+    resultsMap[packType] = { units: {}, skins: {}, lords: {}, wfTokens: {} }
     resultsIdsMap[packType] = { units: {}, skins: {} }
     unitsMap[packType] = {}
     skinsMap[packType] = {}
 
     const packs = packsMap[packType]
     for (const pack of packs) {
-      const { units, skins } = pack.treasure
+      const { units, skins, wfTokens } = pack.treasure
       const lords = pack.treasure.lords || []
+
+      resultsMap[packType].wfTokens[wfTokens] = resultsMap[packType].wfTokens[wfTokens] || 0
+      resultsMap[packType].wfTokens[wfTokens] = resultsMap[packType].wfTokens[wfTokens] + 1
+
+      resultsMap[packType].wfTokens.totalAmount = resultsMap[packType].wfTokens.totalAmount || 0
+      resultsMap[packType].wfTokens.totalAmount = resultsMap[packType].wfTokens.totalAmount + Number(wfTokens)
+
+      resultsMap.All.wfTokens[wfTokens] = resultsMap.All.wfTokens[wfTokens] || 0
+      resultsMap.All.wfTokens[wfTokens] = resultsMap.All.wfTokens[wfTokens] + 1
+
+      resultsMap.All.wfTokens.totalAmount = resultsMap.All.wfTokens.totalAmount || 0
+      resultsMap.All.wfTokens.totalAmount = resultsMap.All.wfTokens.totalAmount + Number(wfTokens)
 
       for (const unit of units) {
         const unitConfig = configUnitsMap[unit.id]
@@ -124,9 +136,9 @@ const main = async() => {
   }
 
   // console.log(JSON.stringify(resultsMap))
-  // console.log(JSON.stringify(resultsIdsMap))
+  console.log(JSON.stringify(resultsIdsMap))
   // console.log(JSON.stringify(skinsMap))
-  console.log(JSON.stringify(unitsMap))
+  // console.log(JSON.stringify(unitsMap))
 }
 
 main()
