@@ -8,19 +8,22 @@ import {INFTBase} from "./interfaces/INFTBase.sol";
 contract WildForestLockNft is AccessControlEnumerableUpgradeable {
 
   error NoLockedTokenForAddress();
-  error LockActive(uint256 lockExpiration);
+  // error LockActive(uint256 lockExpiration);
 
-  event StakeLock(address indexed account, uint256[] tokenIds, uint256 lockPeriod);
+  event StakeLock(address indexed account, uint256[] tokenIds);
   event UnstakeLock(address indexed account, uint256[] tokenIds);
+  event UpgradeStakeV2(address indexed account, uint256[] tokenIds);
 
   event NftContractChanged(address indexed nftContractAddress);
-  event LockPeriodChanged(uint256 indexed lockPeriod);
+  // event LockPeriodChanged(uint256 indexed lockPeriod);
 
   address public _nftContractAddress;
   uint256 public _lockPeriod;
   string public _name;
 
   mapping(uint256 => mapping(address => uint256)) public _lockedTokens;
+  mapping(uint256 => uint256) public _tokensLockedTime;
+  mapping(uint256 => address) public _tokensLocker;
 
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
@@ -40,25 +43,42 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     require(nftContractAddress != address(0), "LockNFT: nftContractAddress is the zero address");
   }
 
-  function _lock(address account, uint256 tokenId) internal virtual returns (uint256) {
-    uint256 unlockTimestamp = block.timestamp + _lockPeriod;
-
-    _lockedTokens[tokenId][account] = unlockTimestamp;
-    return unlockTimestamp;
+  function _lock(address account, uint256 tokenId) internal virtual returns (bool) {
+    _lockedTokens[tokenId][account] = 1;
+    _tokensLockedTime[tokenId] = block.timestamp;
+    _tokensLocker[tokenId] = account;
+    return true;
   }
 
   function _unlock(address account, uint256 tokenId) internal virtual returns (bool) {
     _lockedTokens[tokenId][account] = 0;
+    _tokensLockedTime[tokenId] = 0;
+    _tokensLocker[tokenId] = address(0);
     return true;
   }
 
   function _validateOwnerAndLock(address account, uint256 tokenId) internal view {
-    uint256 lockExpiration = _lockedTokens[tokenId][account];
+    uint256 isLocked = _lockedTokens[tokenId][account];
 
-    if (lockExpiration == 0) revert NoLockedTokenForAddress();
-
-    if (lockExpiration > block.timestamp) revert LockActive(lockExpiration);
+    if (isLocked == 0) revert NoLockedTokenForAddress();
   }
+
+  // function obsoleteStake(uint256[] memory tokenIds) public virtual returns (bool) {
+  //   INFTBase nftContract = INFTBase(_nftContractAddress);
+
+  //   uint256 length = tokenIds.length;
+  //   for (uint256 i = 0; i < length; ++i) {
+  //     uint256 tokenId = tokenIds[i];
+
+  //     nftContract.transferFrom(msg.sender, address(this), tokenId);
+  //     uint256 unlockTimestamp = block.timestamp + _lockPeriod;
+
+  //     _lockedTokens[tokenId][msg.sender] = unlockTimestamp;
+  //   }
+
+  //   emit StakeLock(msg.sender, tokenIds);
+  //   return true;
+  // }
 
   function stake(uint256[] memory tokenIds) public virtual returns (bool) {
     INFTBase nftContract = INFTBase(_nftContractAddress);
@@ -74,7 +94,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       _lock(msg.sender, tokenId);
     }
 
-    emit StakeLock(msg.sender, tokenIds, _lockPeriod);
+    emit StakeLock(msg.sender, tokenIds);
     return true;
   }
 
@@ -96,6 +116,26 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     return true;
   }
 
+  function upgradeV2Stake(uint256[] memory tokenIds) public virtual returns (bool) {
+    INFTBase nftContract = INFTBase(_nftContractAddress);
+
+    uint256 length = tokenIds.length;
+    for (uint256 i = 0; i < length; ++i) {
+      uint256 tokenId = tokenIds[i];
+
+      uint256 lockExpiration = _lockedTokens[tokenId][msg.sender];
+
+      if (lockExpiration < 2) revert NoLockedTokenForAddress();
+
+      _lockedTokens[tokenId][msg.sender] = 1;
+      _tokensLockedTime[tokenId] = lockExpiration - _lockPeriod;
+      _tokensLocker[tokenId] = msg.sender;
+    }
+
+    emit UpgradeStakeV2(msg.sender, tokenIds);
+    return true;
+  }
+
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _validateNftContractAddress(nftContractAddress);
 
@@ -103,8 +143,11 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     emit NftContractChanged(nftContractAddress);
   }
 
-  function setNftLockPeriod(uint256 lockPeriod) external onlyRole(DEFAULT_ADMIN_ROLE) {
-    _lockPeriod = lockPeriod;
-    emit LockPeriodChanged(lockPeriod);
+  function lockTime(uint256 tokenId) public view returns (uint256) {
+    uint256 now = block.timestamp;
+
+    uint256 lockedTime = _tokensLockedTime[tokenId];
+
+    return now - lockedTime;
   }
 }

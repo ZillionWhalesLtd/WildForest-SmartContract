@@ -15,6 +15,7 @@ const cardsContractSymbol = `WFC`
 const baseTokenURI = 'https://localhost:3000/nfts/'
 
 const lockPeriod = 10
+const MILLISECONDS_IN_SECOND = 1000
 
 const all_events = transaction =>
   transaction
@@ -80,22 +81,6 @@ describe('WildForestLockNft', function () {
     )
   })
 
-  it('setNftLockPeriod should be available only for admin', async () => {
-    const { owner, bob } = await deploy()
-
-    const newLockPeriod = 1
-    await expect(bob.contract.setNftLockPeriod(newLockPeriod)).to.be.revertedWith(
-      `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
-    )
-
-    const set_transaction = await owner.contract.setNftLockPeriod(newLockPeriod)
-    const events = await all_events(set_transaction)
-
-    const setLockPeriodEvent = events.find(e => e.event === 'LockPeriodChanged')
-    const { args: { lockPeriod } } = setLockPeriodEvent
-    expect(lockPeriod).to.equal(newLockPeriod)
-  })
-
   it('setNftContractAddress should be available only for admin', async () => {
     const { owner, bob } = await deploy()
 
@@ -152,12 +137,37 @@ describe('WildForestLockNft', function () {
     const events = await all_events(stakeTransaction)
     const stakeLockEvent = events.find(e => e.event === 'StakeLock')
 
-    const { args: { account, tokenIds: lockedTokenIds, lockPeriod: currentLockPeriod } } = stakeLockEvent
+    const { args: { account, tokenIds: lockedTokenIds } } = stakeLockEvent
     expect(account).to.equal(owner.address)
     expect(lockedTokenIds.length).to.equal(tokenIds.length)
     expect(Number(lockedTokenIds[0])).to.equal(tokenIds[0])
     expect(Number(lockedTokenIds[1])).to.equal(tokenIds[1])
-    expect(currentLockPeriod).to.equal(lockPeriod)
+  })
+
+  it('everbody should be able to get lockTime for any token', async () => {
+    const { owner, bob } = await deploy()
+
+    const recipients = [owner.address, owner.address]
+    const mintTransaction = await owner.nftContract.bulkMint(recipients)
+    const transferEvents = await transfer_events(mintTransaction)
+    const tokenIds = []
+    for (const transferEvent of transferEvents) {
+      const { args } = transferEvent
+      tokenIds.push(Number(args.tokenId))
+    }
+
+    await owner.nftContract.bulkApprove(owner.contract.address, tokenIds)
+
+    await owner.contract.stake(tokenIds)
+
+    const blockTimeInSeconds = 10
+    await time.increase(2 * blockTimeInSeconds)
+
+    let lockTime = await bob.contract.lockTime(tokenIds[0])
+    lockTime = Number(lockTime)
+
+    expect(lockTime > blockTimeInSeconds).to.equal(true)
+    expect(lockTime < 3 * blockTimeInSeconds).to.equal(true)
   })
 
   it('unstake (not pass validation)', async () => {
@@ -172,10 +182,6 @@ describe('WildForestLockNft', function () {
     await expect(owner.contract.unstake([3])).to.be.revertedWithCustomError(
       owner.contract,
       'NoLockedTokenForAddress'
-    )
-    await expect(owner.contract.unstake([1])).to.be.revertedWithCustomError(
-      owner.contract,
-      'LockActive'
     )
   })
 
@@ -195,13 +201,7 @@ describe('WildForestLockNft', function () {
     const beforeunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
     expect(beforeunstakeOwner2).to.equal(owner.contract.address)
 
-    await time.increase(lockPeriodInSeconds / 2)
-    await expect(owner.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
-      owner.contract,
-      'LockActive'
-    )
-
-    await time.increase(lockPeriodInSeconds / 2)
+    // await time.increase(lockPeriodInSeconds)
 
     await expect(bob.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
       owner.contract,
@@ -222,6 +222,67 @@ describe('WildForestLockNft', function () {
     expect(account).to.equal(owner.address)
     expect(unlockedTokenIds.length).to.equal(tokenIds.length)
     expect(Number(unlockedTokenIds[0])).to.equal(tokenIds[0])
+  })
+
+  it('upgradeV2Stake ERROR', async () => {
+    const lockPeriodInSeconds = 3600
+    const { owner, bob } = await deploy(lockPeriodInSeconds)
+
+    const recipients = [owner.address, owner.address]
+    await owner.nftContract.bulkMint(recipients)
+    const tokenIds = [1,2]
+
+    await expect(bob.contract.upgradeV2Stake(tokenIds)).to.be.revertedWithCustomError(
+      owner.contract,
+      'NoLockedTokenForAddress'
+    )
+  })
+
+  it.skip('upgradeV2Stake', async () => {
+    const lockPeriodInSeconds = 3600
+    const { owner, bob } = await deploy(lockPeriodInSeconds)
+
+    const recipients = [owner.address, owner.address]
+    await owner.nftContract.bulkMint(recipients)
+    const tokenIds = [1,2]
+
+    await owner.nftContract.bulkApprove(owner.contract.address, tokenIds)
+    await owner.contract.obsoleteStake(tokenIds)
+
+    const beforeunstakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(beforeunstakeOwner1).to.equal(owner.contract.address)
+    const beforeunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(beforeunstakeOwner2).to.equal(owner.contract.address)
+
+    await time.increase(lockPeriodInSeconds)
+
+    // UPDAGRADE CONTRACT
+    const upgradeV2Transaction = await owner.contract.upgradeV2Stake(tokenIds)
+
+    const afterUpgradeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(afterUpgradeOwner1).to.equal(owner.contract.address)
+    const afterUpgradeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(afterUpgradeOwner2).to.equal(owner.contract.address)
+
+    const events = await all_events(upgradeV2Transaction)
+    const upgradeLockEvent = events.find(e => e.event === 'UpgradeStakeV2')
+
+    const { args: { account, tokenIds: upgradedTokenIds } } = upgradeLockEvent
+    expect(account).to.equal(owner.address)
+    expect(upgradedTokenIds.length).to.equal(tokenIds.length)
+    expect(Number(upgradedTokenIds[0])).to.equal(tokenIds[0])
+
+    let lockTime = await bob.contract.lockTime(tokenIds[0])
+    lockTime = Number(lockTime)
+
+    expect(lockTime >= lockPeriodInSeconds).to.equal(true)
+
+    await expect(bob.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
+      owner.contract,
+      'NoLockedTokenForAddress'
+    )
+
+    await owner.contract.unstake(tokenIds)
   })
 
 })
