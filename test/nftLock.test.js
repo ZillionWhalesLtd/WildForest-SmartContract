@@ -242,6 +242,10 @@ describe('WildForestLockNft', function () {
     const lockPeriodInSeconds = 3600
     const { owner, bob } = await deploy(lockPeriodInSeconds)
 
+    await expect(owner.contract.balanceOf(ZERO_ADDRESS)).to.be.revertedWith(
+      'ERC721: address zero is not a valid owner'
+    )
+
     const recipients = [owner.address, owner.address, bob.address]
     await owner.nftContract.bulkMint(recipients)
     const tokenIds = [1,2,3]
