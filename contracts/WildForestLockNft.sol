@@ -25,6 +25,13 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   mapping(uint256 => uint256) public _tokensLockedTime;
   mapping(uint256 => address) public _tokensLocker;
 
+  // Mapping owner address to token count
+  mapping(address => uint256) private _balances;
+  // Mapping from owner to list of owned token IDs
+  mapping(address => mapping(uint256 => uint256)) private _ownedTokens;
+  // Mapping from token ID to index of the owner tokens list
+  mapping(uint256 => uint256) private _ownedTokensIndex;
+
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
@@ -47,6 +54,8 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     _lockedTokens[tokenId][account] = 1;
     _tokensLockedTime[tokenId] = block.timestamp;
     _tokensLocker[tokenId] = account;
+
+    _addTokenToOwnerEnumeration(account, tokenId);
     return true;
   }
 
@@ -54,6 +63,8 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     _lockedTokens[tokenId][account] = 0;
     _tokensLockedTime[tokenId] = 0;
     _tokensLocker[tokenId] = address(0);
+
+    _removeTokenFromOwnerEnumeration(account, tokenId);
     return true;
   }
 
@@ -149,5 +160,51 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     uint256 lockedTime = _tokensLockedTime[tokenId];
 
     return now - lockedTime;
+  }
+
+  /**
+   * @dev See {IERC721-balanceOf}.
+   */
+  function balanceOf(address owner) public view virtual returns (uint256) {
+    require(owner != address(0), "ERC721: address zero is not a valid owner");
+    return _balances[owner];
+  }
+
+  function _addTokenToOwnerEnumeration(address to, uint256 tokenId) private {
+    uint256 length = balanceOf(to);
+    _ownedTokens[to][length] = tokenId;
+    _ownedTokensIndex[tokenId] = length;
+
+    _balances[to] += 1;
+  }
+
+  function _removeTokenFromOwnerEnumeration(address from, uint256 tokenId) private {
+    // To prevent a gap in from's tokens array, we store the last token in the index of the token to delete, and
+    // then delete the last slot (swap and pop).
+
+    uint256 lastTokenIndex = balanceOf(from) - 1;
+    uint256 tokenIndex = _ownedTokensIndex[tokenId];
+
+    // When the token to delete is the last token, the swap operation is unnecessary
+    if (tokenIndex != lastTokenIndex) {
+        uint256 lastTokenId = _ownedTokens[from][lastTokenIndex];
+
+        _ownedTokens[from][tokenIndex] = lastTokenId; // Move the last token to the slot of the to-delete token
+        _ownedTokensIndex[lastTokenId] = tokenIndex; // Update the moved token's index
+    }
+
+    // This also deletes the contents at the last position of the array
+    delete _ownedTokensIndex[tokenId];
+    delete _ownedTokens[from][lastTokenIndex];
+
+    _balances[from] -= 1;
+  }
+
+  /**
+   * @dev See {IERC721Enumerable-tokenOfOwnerByIndex}.
+   */
+  function tokenOfOwnerByIndex(address owner, uint256 index) public view virtual returns (uint256) {
+    require(index < balanceOf(owner), "ERC721Enumerable: owner index out of bounds");
+    return _ownedTokens[owner][index];
   }
 }
