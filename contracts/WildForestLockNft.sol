@@ -141,6 +141,8 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       _lockedTokens[tokenId][msg.sender] = 1;
       _tokensLockedTime[tokenId] = lockExpiration - _lockPeriod;
       _tokensLocker[tokenId] = msg.sender;
+
+      _addTokenToOwnerEnumeration(msg.sender, tokenId);
     }
 
     emit UpgradeStakeV2(msg.sender, tokenIds);
