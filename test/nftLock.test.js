@@ -238,6 +238,85 @@ describe('WildForestLockNft', function () {
     )
   })
 
+  it('balanceOf, tokenOfOwnerByIndex', async () => {
+    const lockPeriodInSeconds = 3600
+    const { owner, bob } = await deploy(lockPeriodInSeconds)
+
+    const recipients = [owner.address, owner.address, bob.address]
+    await owner.nftContract.bulkMint(recipients)
+    const tokenIds = [1,2,3]
+
+    await owner.nftContract.bulkApprove(owner.contract.address, [tokenIds[0], tokenIds[1]])
+    await owner.contract.stake([tokenIds[0], tokenIds[1]])
+
+    await bob.nftContract.bulkApprove(owner.contract.address, [tokenIds[2]])
+    await bob.contract.stake([tokenIds[2]])
+
+    const beforeunstakeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
+    expect(beforeunstakeOwner1).to.equal(owner.contract.address)
+    const beforeunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
+    expect(beforeunstakeOwner2).to.equal(owner.contract.address)
+    const beforeunstakeBob1 = await owner.nftContract.ownerOf(tokenIds[2])
+    expect(beforeunstakeBob1).to.equal(bob.contract.address)
+
+    const numberOfOwnerTokens = await bob.contract.balanceOf(owner.address)
+    expect(Number(numberOfOwnerTokens)).to.equal(2)
+
+    const numberOfBobTokens = await bob.contract.balanceOf(bob.address)
+    expect(Number(numberOfBobTokens)).to.equal(1)
+
+    const nftId1 = await bob.contract.tokenOfOwnerByIndex(owner.address, 0)
+    expect(Number(nftId1)).to.equal(tokenIds[0])
+    const nftId2 = await bob.contract.tokenOfOwnerByIndex(owner.address, 1)
+    expect(Number(nftId2)).to.equal(tokenIds[1])
+    await expect(bob.contract.tokenOfOwnerByIndex(owner.address, 2)).to.be.revertedWith(
+      'ERC721Enumerable: owner index out of bounds'
+    )
+
+    const nftId3 = await bob.contract.tokenOfOwnerByIndex(bob.address, 0)
+    expect(Number(nftId3)).to.equal(tokenIds[2])
+    await expect(bob.contract.tokenOfOwnerByIndex(bob.address, 1)).to.be.revertedWith(
+      'ERC721Enumerable: owner index out of bounds'
+    )
+
+    // Doing Unstake and check that tokens is properly in place in proper order
+    await owner.contract.unstake([tokenIds[0]])
+    await bob.contract.unstake([tokenIds[2]])
+
+    const numberOfOwnerTokensAfter = await bob.contract.balanceOf(owner.address)
+    expect(Number(numberOfOwnerTokensAfter)).to.equal(1)
+
+    const numberOfBobTokensAfter = await bob.contract.balanceOf(bob.address)
+    expect(Number(numberOfBobTokensAfter)).to.equal(0)
+
+    const nftId1After = await owner.contract.tokenOfOwnerByIndex(owner.address, 0)
+    expect(Number(nftId1After)).to.equal(2)
+    await expect(owner.contract.tokenOfOwnerByIndex(owner.address, 1)).to.be.revertedWith(
+      'ERC721Enumerable: owner index out of bounds'
+    )
+    await expect(owner.contract.tokenOfOwnerByIndex(bob.address, 0)).to.be.revertedWith(
+      'ERC721Enumerable: owner index out of bounds'
+    )
+
+    // Doing one more stake to check proper tokens enumiration
+    await owner.nftContract.bulkMint([owner.address])
+    const tokenIdsAfter = [4]
+
+    await owner.nftContract.bulkApprove(owner.contract.address, tokenIdsAfter)
+    await owner.contract.stake(tokenIdsAfter)
+
+    const numberOfOwnerTokensAfterNewStake = await bob.contract.balanceOf(owner.address)
+    expect(Number(numberOfOwnerTokensAfterNewStake)).to.equal(2)
+
+    const nftId2After = await owner.contract.tokenOfOwnerByIndex(owner.address, 0)
+    expect(Number(nftId2After)).to.equal(2)
+    const nftId4After = await owner.contract.tokenOfOwnerByIndex(owner.address, 1)
+    expect(Number(nftId4After)).to.equal(4)
+    await expect(owner.contract.tokenOfOwnerByIndex(owner.address, 2)).to.be.revertedWith(
+      'ERC721Enumerable: owner index out of bounds'
+    )
+  })
+
   it.skip('upgradeV2Stake', async () => {
     const lockPeriodInSeconds = 3600
     const { owner, bob } = await deploy(lockPeriodInSeconds)
