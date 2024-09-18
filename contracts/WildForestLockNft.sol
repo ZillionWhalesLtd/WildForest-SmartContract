@@ -160,8 +160,10 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     uint256 now = block.timestamp;
 
     uint256 lockedTime = _tokensLockedTime[tokenId];
+    require(lockedTime > 0, "Token not locked");
+    uint256 lockedSeconds = now - lockedTime;
 
-    return now - lockedTime;
+    return lockedSeconds / 86400;
   }
 
   /**

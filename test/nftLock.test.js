@@ -160,14 +160,24 @@ describe('WildForestLockNft', function () {
 
     await owner.contract.stake(tokenIds)
 
-    const blockTimeInSeconds = 10
-    await time.increase(2 * blockTimeInSeconds)
+    const secondInDay = 24 * 60 * 60
+    const days = 2
+    await time.increase(days * secondInDay - 20)
 
     let lockTime = await bob.contract.lockTime(tokenIds[0])
     lockTime = Number(lockTime)
 
-    expect(lockTime > blockTimeInSeconds).to.equal(true)
-    expect(lockTime < 3 * blockTimeInSeconds).to.equal(true)
+    expect(lockTime).to.equal(days - 1)
+
+    await time.increase(20)
+    let lockTimeAfter = await bob.contract.lockTime(tokenIds[0])
+    lockTimeAfter = Number(lockTimeAfter)
+
+    expect(lockTimeAfter).to.equal(days)
+
+    await expect(bob.contract.lockTime(7)).to.be.revertedWith(
+      'Token not locked'
+    )
   })
 
   it('unstake (not pass validation)', async () => {
