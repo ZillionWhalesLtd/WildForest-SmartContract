@@ -347,10 +347,21 @@ describe('WildForestLockNft', function () {
     const beforeunstakeOwner2 = await owner.nftContract.ownerOf(tokenIds[1])
     expect(beforeunstakeOwner2).to.equal(owner.contract.address)
 
-    await time.increase(lockPeriodInSeconds)
+    await expect(owner.contract.lockTime(tokenIds[0])).to.be.revertedWith(
+      'Token not locked'
+    )
+
+    const secondInDay = 24 * 60 * 60
+    const days = 2
+    await time.increase(days * secondInDay + 20)
 
     // UPDAGRADE CONTRACT
     const upgradeV2Transaction = await owner.contract.upgradeV2Stake(tokenIds)
+
+    let lockInitialTime = await bob.contract.lockTime(tokenIds[0])
+    lockInitialTime = Number(lockInitialTime)
+
+    expect(lockInitialTime).to.equal(days)
 
     const afterUpgradeOwner1 = await owner.nftContract.ownerOf(tokenIds[0])
     expect(afterUpgradeOwner1).to.equal(owner.contract.address)
@@ -368,7 +379,7 @@ describe('WildForestLockNft', function () {
     let lockTime = await bob.contract.lockTime(tokenIds[0])
     lockTime = Number(lockTime)
 
-    expect(lockTime >= lockPeriodInSeconds).to.equal(true)
+    expect(lockTime).to.equal(days)
 
     await expect(bob.contract.unstake(tokenIds)).to.be.revertedWithCustomError(
       owner.contract,
