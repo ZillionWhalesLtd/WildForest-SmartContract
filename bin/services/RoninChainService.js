@@ -183,7 +183,10 @@ class RoninChainService {
 
     for (const [i, tokenIds] of tokensChunks.entries()) {
       const owners = ownerChunks[i]
-      await contract.systemStakeV2Upgrade(tokenIds, owners)
+      const transaction = await contract.systemStakeV2Upgrade(tokenIds, owners)
+      const events = await contractService.getEventsFromTransaction(transaction)
+      const upgradeEvent = events.find(e => e.event === 'SystemUpgradeStakeV2')
+      console.log('upgradeEvent!!', upgradeEvent)
     }
   }
 
