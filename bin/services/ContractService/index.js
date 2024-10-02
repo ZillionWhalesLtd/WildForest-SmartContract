@@ -4,7 +4,8 @@ const {
   NFT_ABI,
   NFT_MEDAL_ABI,
   NFT_DEFINED_URI_ABI,
-  TOKEN_ABI
+  TOKEN_ABI,
+  STAKE_ABI,
 } = require('./abi')
 
 require('dotenv').config()
@@ -21,6 +22,7 @@ const {
   SAIGON_NFT_SKINS_CONTRACT_ADDRESS,
   SAIGON_NFT_PACKS_CONTRACT_ADDRESS,
   SAIGON_NFT_LORDS_CONTRACT_ADDRESS,
+  SAIGON_STAKE_LORDS_CONTRACT_ADDRESS,
   SAIGON_NFT_MEDALS_CONTRACT_ADDRESS,
   SAIGON_TOKENS_CONTRACT_ADDRESS,
   //
@@ -35,6 +37,7 @@ const {
   RONIN_NFT_SKINS_CONTRACT_ADDRESS,
   RONIN_NFT_PACKS_CONTRACT_ADDRESS,
   RONIN_NFT_LORDS_CONTRACT_ADDRESS,
+  RONIN_STAKE_LORDS_CONTRACT_ADDRESS,
   RONIN_NFT_MEDALS_CONTRACT_ADDRESS,
   RONIN_TOKENS_CONTRACT_ADDRESS,
   //
@@ -79,6 +82,7 @@ class ContractService {
     let skinsContractAddress = SAIGON_NFT_SKINS_CONTRACT_ADDRESS
     let packsContractAddress = SAIGON_NFT_PACKS_CONTRACT_ADDRESS
     let lordsContractAddress = SAIGON_NFT_LORDS_CONTRACT_ADDRESS
+    let lordsStakeContractAddress = SAIGON_STAKE_LORDS_CONTRACT_ADDRESS
     let medalsContractAddress = SAIGON_NFT_MEDALS_CONTRACT_ADDRESS
 
     let tokenOwnerPrivateKey = SAIGON_TOKENS_OWNER_PK
@@ -94,6 +98,7 @@ class ContractService {
       skinsContractAddress = RONIN_NFT_SKINS_CONTRACT_ADDRESS
       packsContractAddress = RONIN_NFT_PACKS_CONTRACT_ADDRESS
       lordsContractAddress = RONIN_NFT_LORDS_CONTRACT_ADDRESS
+      lordsStakeContractAddress = RONIN_STAKE_LORDS_CONTRACT_ADDRESS
       medalsContractAddress = RONIN_NFT_MEDALS_CONTRACT_ADDRESS
 
       tokenOwnerPrivateKey = RONIN_TOKENS_OWNER_PK
@@ -137,6 +142,11 @@ class ContractService {
         privateKey = lordsOwnerPrivateKey
         abi = NFT_ABI
         // abi = NFT_DEFINED_URI_ABI
+        break
+      case 'LORDS_STAKE':
+        contractAddress = lordsStakeContractAddress
+        privateKey = lordsOwnerPrivateKey
+        abi = STAKE_ABI
         break
       case 'NFT_MEDALS':
         contractAddress = medalsContractAddress

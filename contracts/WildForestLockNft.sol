@@ -13,6 +13,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
   event StakeLock(address indexed account, uint256[] tokenIds);
   event UnstakeLock(address indexed account, uint256[] tokenIds);
   event UpgradeStakeV2(address indexed account, uint256[] tokenIds);
+  event SystemUpgradeStakeV2(address[] accounts, uint256[] tokenIds);
 
   event NftContractChanged(address indexed nftContractAddress);
   // event LockPeriodChanged(uint256 indexed lockPeriod);
@@ -149,12 +150,14 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     return true;
   }
 
-  function systemStakeV2Upgrade(uint256[] memory tokenIds, address ownerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+  function systemStakeV2Upgrade(uint256[] memory tokenIds, address[] memory ownerAddresses) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    require(tokenIds.length == ownerAddresses.length, "OwnerAddresses should match tokenIds");
     INFTBase nftContract = INFTBase(_nftContractAddress);
 
     uint256 length = tokenIds.length;
     for (uint256 i = 0; i < length; ++i) {
       uint256 tokenId = tokenIds[i];
+      address ownerAddress = ownerAddresses[i];
 
       uint256 lockExpiration = _lockedTokens[tokenId][ownerAddress];
 
@@ -167,7 +170,7 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
       _addTokenToOwnerEnumeration(ownerAddress, tokenId);
     }
 
-    emit UpgradeStakeV2(ownerAddress, tokenIds);
+    emit SystemUpgradeStakeV2(ownerAddresses, tokenIds);
   }
 
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {

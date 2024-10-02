@@ -164,6 +164,29 @@ class RoninChainService {
     return { hash, chainId, smartContractAddress, tokenId, recieverAddress, tokenUri }
   }
 
+  async upgradeV2Stakes(tokensToRestake) {
+    const CHUNKS_THRESHOLD = 20
+
+    const allTokenIds = []
+    const allOwners = []
+    for (const tokenToRestake of tokensToRestake) {
+      const { tokenId, ownerAddress } = tokenToRestake
+      allTokenIds.push(tokenId)
+      allOwners.push(ownerAddress)
+    }
+
+    const tokensChunks = chunk(allTokenIds, CHUNKS_THRESHOLD)
+    const ownerChunks = chunk(allOwners, CHUNKS_THRESHOLD)
+
+    const contractService = new ContractService(this._logger, 'LORDS_STAKE', this._chainId)
+    const { contract } = contractService
+
+    for (const [i, tokenIds] of tokensChunks.entries()) {
+      const owners = ownerChunks[i]
+      await contract.systemStakeV2Upgrade(tokenIds, owners)
+    }
+  }
+
   async mintLordsNFT(addressTo, number) {
     const CHUNKS_THRESHOLD = 20
     const address = this._normilizeAddress(addressTo)

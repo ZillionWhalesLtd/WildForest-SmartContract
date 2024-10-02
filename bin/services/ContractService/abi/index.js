@@ -5,6 +5,7 @@ const NFT_DEFINED_URI_ABI = require('./nft_defined_uri_abi.json')
 const SALES_FACTORY_ABI = require('./sales_factory_abi.json')
 const SALE_ABI = require('./sale_abi.json')
 const TOKEN_ABI = require('./token_abi.json')
+const STAKE_ABI = require('./lords_stake_abi.json')
 
 module.exports = {
   NFT_ABI,
@@ -13,4 +14,5 @@ module.exports = {
   SALES_FACTORY_ABI,
   SALE_ABI,
   TOKEN_ABI,
+  STAKE_ABI,
 }

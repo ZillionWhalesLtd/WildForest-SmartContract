@@ -415,16 +415,20 @@ describe('WildForestLockNft', function () {
 
     // UPDAGRADE CONTRACT
 
-    await expect(bob.contract.systemStakeV2Upgrade(tokenIds, bob.address)).to.be.revertedWith(
+    await expect(bob.contract.systemStakeV2Upgrade(tokenIds, [bob.address])).to.be.revertedWith(
       `AccessControl: account ${bob.address.toLowerCase()} is missing role 0x0000000000000000000000000000000000000000000000000000000000000000`
     )
 
-    await expect(owner.contract.systemStakeV2Upgrade(tokenIds, owner.address)).to.be.revertedWithCustomError(
+    await expect(owner.contract.systemStakeV2Upgrade(tokenIds, [owner.address, owner.address])).to.be.revertedWithCustomError(
       owner.contract,
       'NoLockedTokenForAddress'
     )
 
-    const upgradeV2Transaction = await owner.contract.systemStakeV2Upgrade(tokenIds, bob.address)
+    await expect(owner.contract.systemStakeV2Upgrade(tokenIds, [bob.address])).to.be.revertedWith(
+      'OwnerAddresses should match tokenIds'
+    )
+
+    const upgradeV2Transaction = await owner.contract.systemStakeV2Upgrade(tokenIds, [bob.address, bob.address])
 
     let lockInitialTime = await bob.contract.lockTime(tokenIds[0])
     lockInitialTime = Number(lockInitialTime)
@@ -437,10 +441,11 @@ describe('WildForestLockNft', function () {
     expect(afterUpgradeOwner2).to.equal(owner.contract.address)
 
     const events = await all_events(upgradeV2Transaction)
-    const upgradeLockEvent = events.find(e => e.event === 'UpgradeStakeV2')
+    const upgradeLockEvent = events.find(e => e.event === 'SystemUpgradeStakeV2')
 
-    const { args: { account, tokenIds: upgradedTokenIds } } = upgradeLockEvent
-    expect(account).to.equal(bob.address)
+    const { args: { accounts, tokenIds: upgradedTokenIds } } = upgradeLockEvent
+    expect(accounts[0]).to.equal(bob.address)
+    expect(accounts[1]).to.equal(bob.address)
     expect(upgradedTokenIds.length).to.equal(tokenIds.length)
     expect(Number(upgradedTokenIds[0])).to.equal(tokenIds[0])
 
