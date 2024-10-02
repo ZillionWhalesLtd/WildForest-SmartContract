@@ -149,6 +149,27 @@ contract WildForestLockNft is AccessControlEnumerableUpgradeable {
     return true;
   }
 
+  function systemStakeV2Upgrade(uint256[] memory tokenIds, address ownerAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    INFTBase nftContract = INFTBase(_nftContractAddress);
+
+    uint256 length = tokenIds.length;
+    for (uint256 i = 0; i < length; ++i) {
+      uint256 tokenId = tokenIds[i];
+
+      uint256 lockExpiration = _lockedTokens[tokenId][ownerAddress];
+
+      if (lockExpiration < 2) revert NoLockedTokenForAddress();
+
+      _lockedTokens[tokenId][ownerAddress] = 1;
+      _tokensLockedTime[tokenId] = lockExpiration - _lockPeriod;
+      _tokensLocker[tokenId] = ownerAddress;
+
+      _addTokenToOwnerEnumeration(ownerAddress, tokenId);
+    }
+
+    emit UpgradeStakeV2(ownerAddress, tokenIds);
+  }
+
   function setNftContractAddress(address nftContractAddress) external onlyRole(DEFAULT_ADMIN_ROLE) {
     _validateNftContractAddress(nftContractAddress);
 
