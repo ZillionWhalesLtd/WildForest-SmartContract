@@ -11,6 +11,10 @@ const RONIN_DECIMALS = 18
 
 const isTest = process.env.NODE_ENV === 'test'
 
+const transactionOptions = {
+  gasPrice: ethers.utils.parseUnits('20', 'gwei')
+}
+
 class RoninChainService {
   constructor(logger, chainId) {
     this._logger  = logger
@@ -167,12 +171,15 @@ class RoninChainService {
   async filterNotMigratedStakes(tokensToRestake) {
     const filteredStakes = []
 
+    const contractService = new ContractService(this._logger, 'LORDS_STAKE', this._chainId)
+    const { contract } = contractService
+
     for (const tokenToRestake of tokensToRestake) {
       const { token_id: tokenId, user_wallet_address: ownerAddress } = tokenToRestake
 
       const lockExpiration = await contract._lockedTokens(tokenId, ownerAddress)
 
-      if (Number(lockExpiration) < 2) {
+      if (this._parseBigNumber(lockExpiration) < 2) {
         this._logger.log(`tokenId: ${tokenId} owner: ${ownerAddress}, not old stake, lockExpiration: ${lockExpiration}, skip...`)
         continue
       }
@@ -202,10 +209,17 @@ class RoninChainService {
 
     for (const [i, tokenIds] of tokensChunks.entries()) {
       const owners = ownerChunks[i]
-      const transaction = await contract.systemStakeV2Upgrade(tokenIds, owners)
+      const transaction = await contract.systemStakeV2Upgrade(tokenIds, owners, transactionOptions)
       const events = await contractService.getEventsFromTransaction(transaction)
       const upgradeEvent = events.find(e => e.event === 'SystemUpgradeStakeV2')
-      console.log('upgradeEvent!!', upgradeEvent)
+      console.log('upgradeEvent!!', upgradeEvent.args)
+
+      const migratedTokenIds = []
+      for (const migratedTokenId of upgradeEvent.args.tokenIds) {
+        migratedTokenIds.push(this._parseBigNumber(migratedTokenId))
+      }
+      console.log('migratedTokenIds!!', migratedTokenIds)
+      console.log('-------------------------!!\n\n')
     }
   }
 

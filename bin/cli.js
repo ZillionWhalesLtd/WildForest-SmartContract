@@ -51,6 +51,10 @@ const getPathCommandOptions = (description, hint) => {
 }
 
 const argv = yargs
+  .command('migrateStakes', 'Migrate V1 staked lords', {
+    environment: environmentCommandOptions,
+    path: pathCommandOptions,
+  })
   .command('mintLords', 'Mint Lords NFTs according to the distribution data', {
     environment: environmentCommandOptions,
     path: pathCommandOptions,
@@ -139,7 +143,7 @@ const main = async() => {
 
   switch (argv._[0]) {
     case 'migrateStakes': {
-      console.log('Migratin stakess...') // eslint-disable-line
+      console.log('Migrating stakes...') // eslint-disable-line
 
       const { path } = argv
 
