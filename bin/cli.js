@@ -143,7 +143,7 @@ const main = async() => {
 
   switch (argv._[0]) {
     case 'migrateStakes': {
-      console.log('Migrating stakes...') // eslint-disable-line
+      console.log(`Migrating stakes: ${roninChainId}...`) // eslint-disable-line
 
       const { path } = argv
 

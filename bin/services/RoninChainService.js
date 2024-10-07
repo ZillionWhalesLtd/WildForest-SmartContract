@@ -174,7 +174,10 @@ class RoninChainService {
     const contractService = new ContractService(this._logger, 'LORDS_STAKE', this._chainId)
     const { contract } = contractService
 
+    let i = 0
     for (const tokenToRestake of tokensToRestake) {
+      i = i +1
+
       const { token_id: tokenId, user_wallet_address: ownerAddress } = tokenToRestake
 
       const lockExpiration = await contract._lockedTokens(tokenId, ownerAddress)
@@ -184,6 +187,7 @@ class RoninChainService {
         continue
       }
 
+      this._logger.log(`tokenId: ${tokenId} added to be migrated, index: ${i}.`)
       filteredStakes.push({ token_id: tokenId, user_wallet_address: ownerAddress })
     }
 
