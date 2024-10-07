@@ -138,6 +138,23 @@ const main = async() => {
   const roninChainService = new RoninChainService(console, roninChainId)
 
   switch (argv._[0]) {
+    case 'migrateStakes': {
+      console.log('Migratin stakess...') // eslint-disable-line
+
+      const { path } = argv
+
+      const repoPath = process.cwd()
+      const lordsToMigratePath = `${repoPath}/bin/migrationConfigs/${path}`
+      const csvService = new CsvService()
+      const lordsToMigrate = await csvService.readFile(lordsToMigratePath)
+
+      const filteredLords = await roninChainService.filterNotMigratedStakes(lordsToMigrate)
+      await roninChainService.upgradeV2Stakes(filteredLords)
+
+      console.log(`Done, migrated ${filteredLords.length} NFTs`) // eslint-disable-line
+      // console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      break
+    }
     case 'mintLords': {
       console.log('Preparing metadata for Lord NFTs...') // eslint-disable-line
 

@@ -4,6 +4,8 @@
   "scripts": {
     "checkPacks": "node ./bin/calculateGeneratedPacks.js",
     "uploadImages": "node ./bin/cli.js uploadImages -p '../LordImages'",
+    "migrateStakes:test": "node ./bin/cli.js migrateStakes -e 'test' -p '../LordImages'",
+    "migrateStakes:prod": "node ./bin/cli.js migrateStakes -e 'prod' -p '../LordImages'",
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'WF_Community_Sale_Lords.csv'",
     "mintPacks:test": "node ./bin/cli.js mintPacks -e 'test' -p 'trophy-packs.json' -l 'NewConfigs - LordsMetadata.csv'",
     "mintLords:prod": "node ./bin/cli.js mintLords -e 'prod' -p 'WF_Community_Sale_Lords'",

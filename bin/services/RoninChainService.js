@@ -164,13 +164,32 @@ class RoninChainService {
     return { hash, chainId, smartContractAddress, tokenId, recieverAddress, tokenUri }
   }
 
+  async filterNotMigratedStakes(tokensToRestake) {
+    const filteredStakes = []
+
+    for (const tokenToRestake of tokensToRestake) {
+      const { token_id: tokenId, user_wallet_address: ownerAddress } = tokenToRestake
+
+      const lockExpiration = await contract._lockedTokens(tokenId, ownerAddress)
+
+      if (Number(lockExpiration) < 2) {
+        this._logger.log(`tokenId: ${tokenId} owner: ${ownerAddress}, not old stake, lockExpiration: ${lockExpiration}, skip...`)
+        continue
+      }
+
+      filteredStakes.push({ token_id: tokenId, user_wallet_address: ownerAddress })
+    }
+
+    return filteredStakes
+  }
+
   async upgradeV2Stakes(tokensToRestake) {
     const CHUNKS_THRESHOLD = 20
 
     const allTokenIds = []
     const allOwners = []
     for (const tokenToRestake of tokensToRestake) {
-      const { tokenId, ownerAddress } = tokenToRestake
+      const { token_id: tokenId, user_wallet_address: ownerAddress } = tokenToRestake
       allTokenIds.push(tokenId)
       allOwners.push(ownerAddress)
     }
