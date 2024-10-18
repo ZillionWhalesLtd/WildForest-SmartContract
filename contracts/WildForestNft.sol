@@ -18,6 +18,14 @@ contract WildForestNft is ERC721Common {
     __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
   }
 
+  function _beforeTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize)
+    internal
+    virtual
+    override(ERC721PresetMinterPauserAutoIdCustomized)
+  {
+    super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
+  }
+
   function _validateTokenIdsNumber(uint256[] calldata tokenIds) internal {
     // require(tokenIds.length > 0, "WildForestNft: invalid array lengths");
     if (tokenIds.length > 50) revert MaximumTokenIdsExceeded();

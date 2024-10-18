@@ -23,42 +23,42 @@ abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
   //   return abi.encodePacked(ownerOf(_tokenId), nonces[_tokenId], _tokenId);
   // }
 
-  /**
-   * @dev Override `ERC721-_baseURI`.
-   */
-  function _baseURI()
-    internal
-    view
-    virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
-    returns (string memory)
-  {
-    return super._baseURI();
-  }
+  // /**
+  //  * @dev Override `ERC721-_baseURI`.
+  //  */
+  // function _baseURI()
+  //   internal
+  //   view
+  //   virtual
+  //   override(ERC721PresetMinterPauserAutoIdCustomized)
+  //   returns (string memory)
+  // {
+  //   return super._baseURI();
+  // }
 
-  /**
-   * @dev Override `IERC165-supportsInterface`.
-   */
-  function supportsInterface(bytes4 interfaceId)
-    public
-    view
-    virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
-    returns (bool)
-  {
-    return super.supportsInterface(interfaceId);
-  }
+  // /**
+  //  * @dev Override `IERC165-supportsInterface`.
+  //  */
+  // function supportsInterface(bytes4 interfaceId)
+  //   public
+  //   view
+  //   virtual
+  //   override(ERC721PresetMinterPauserAutoIdCustomized)
+  //   returns (bool)
+  // {
+  //   return super.supportsInterface(interfaceId);
+  // }
 
-  /**
-   * @dev Override `ERC721PresetMinterPauserAutoIdCustomized-_beforeTokenTransfer`.
-   */
-  function _beforeTokenTransfer(address _from, address _to, uint256 _firstTokenId, uint256 _batchSize)
-    internal
-    virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
-  {
-    super._beforeTokenTransfer(_from, _to, _firstTokenId, _batchSize);
-  }
+  // /**
+  //  * @dev Override `ERC721PresetMinterPauserAutoIdCustomized-_beforeTokenTransfer`.
+  //  */
+  // function _beforeTokenTransfer(address _from, address _to, uint256 _firstTokenId, uint256 _batchSize)
+  //   internal
+  //   virtual
+  //   override(ERC721PresetMinterPauserAutoIdCustomized)
+  // {
+  //   super._beforeTokenTransfer(_from, _to, _firstTokenId, _batchSize);
+  // }
 
   /**
    * @dev Bulk create new tokens for `_recipients`. Tokens ID will be automatically
