@@ -176,7 +176,7 @@ describe('WildForestNft', function () {
     await expect(steve.contract.supportsInterface(0xda0d82f5)).not.to.be.reverted
   })
 
-  it('Only Admin can call admin', async () => {
+  it('Only Admin can call mint', async () => {
     const { owner, steve } = await deploy()
 
     await expect(steve.contract.mint(owner.address)).to.be.revertedWith(
@@ -333,6 +333,185 @@ describe('WildForestNft', function () {
     expect(Number(tokenIds[1])).to.equal(tokensToBurn[1])
     expect(metadata).to.equal(passedMetadata)
     expect(walletAddress).to.equal(bob.address)
+  })
+
+  it('Anyone can chek is token isUnlocked', async () => {
+    const { owner, bob } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    const isUnlocked1 = await bob.contract.isUnlocked(mintedTokens[0])
+    expect(isUnlocked1).to.equal(true)
+    const isUnlocked2 = await bob.contract.isUnlocked(mintedTokens[1])
+    expect(isUnlocked2).to.equal(true)
+
+    const lock_transaction = await owner.contract.lockIds(mintedTokens)
+    const events = await all_events(lock_transaction)
+
+    const lockEvents = events.filter(e => e.event === 'TokenLocked')
+    expect(lockEvents.length).to.equal(mintedTokens.length)
+
+    for (const [i, lockEvent] of lockEvents.entries()) {
+      const { args: { tokenId } } = lockEvent
+      expect(Number(tokenId)).to.equal(mintedTokens[i])
+    }
+
+    const isUnlocked1_ = await bob.contract.isUnlocked(mintedTokens[0])
+    expect(isUnlocked1_).to.equal(false)
+    const isUnlocked2_ = await bob.contract.isUnlocked(mintedTokens[1])
+    expect(isUnlocked2_).to.equal(false)
+  })
+
+  it('Only Minter can lockIds, unlockIds', async () => {
+    const { owner, bob } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    await expect(bob.contract.lockIds([1])).to.be.revertedWith(
+      `AccessControl: account ${bob.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+
+    await expect(owner.contract.lockIds([1,3])).to.be.revertedWith(
+      'ERC721: token does not exists'
+    )
+
+    const tokensLimitExceeded = []
+    for (let _i = 0; _i < MAXIMUM_THRESHOLD; _i++) {
+      tokensLimitExceeded.push(_i + 1)
+    }
+    await expect(owner.contract.lockIds(tokensLimitExceeded)).to.be.revertedWithCustomError(
+      owner.contract, 'MaximumTokenIdsExceeded'
+    )
+
+    const lock_transaction = await owner.contract.lockIds(mintedTokens)
+    const events = await all_events(lock_transaction)
+
+    const lockEvents = events.filter(e => e.event === 'TokenLocked')
+    expect(lockEvents.length).to.equal(mintedTokens.length)
+
+    for (const [i, lockEvent] of lockEvents.entries()) {
+      const { args: { tokenId } } = lockEvent
+      expect(Number(tokenId)).to.equal(mintedTokens[i])
+    }
+
+    const isUnlocked1 = await bob.contract.isUnlocked(mintedTokens[0])
+    expect(isUnlocked1).to.equal(false)
+    const isUnlocked2 = await bob.contract.isUnlocked(mintedTokens[1])
+    expect(isUnlocked2).to.equal(false)
+
+    await expect(owner.contract.lockIds(mintedTokens)).to.be.revertedWith(
+      'Token is already locked'
+    )
+
+    await expect(bob.contract.unlockIds([1])).to.be.revertedWith(
+      `AccessControl: account ${bob.address.toLowerCase()} is missing role ${keccak256MinterRole}`
+    )
+
+    await expect(owner.contract.unlockIds([1,3])).to.be.revertedWith(
+      'ERC721: token does not exists'
+    )
+
+    await expect(owner.contract.lockIds(tokensLimitExceeded)).to.be.revertedWithCustomError(
+      owner.contract, 'MaximumTokenIdsExceeded'
+    )
+
+    const unlock_transaction = await owner.contract.unlockIds(mintedTokens)
+    const events_ = await all_events(unlock_transaction)
+
+    const unlockEvents = events_.filter(e => e.event === 'TokenUnlocked')
+    expect(unlockEvents.length).to.equal(mintedTokens.length)
+
+    for (const [i, unlockEvent] of unlockEvents.entries()) {
+      const { args: { tokenId } } = unlockEvent
+      expect(Number(tokenId)).to.equal(mintedTokens[i])
+    }
+
+    const isUnlocked1_ = await bob.contract.isUnlocked(mintedTokens[0])
+    expect(isUnlocked1_).to.equal(true)
+    const isUnlocked2_ = await bob.contract.isUnlocked(mintedTokens[1])
+    expect(isUnlocked2_).to.equal(true)
+
+    await expect(owner.contract.unlockIds(mintedTokens)).to.be.revertedWith(
+      'Token is not locked'
+    )
+  })
+
+  it('locked tokens could not be transfered, but could be burned', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    await owner.contract.lockIds(mintedTokens)
+
+    await expect(owner.contract.bulkBurn(mintedTokens)).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+
+    await expect(owner.contract.transferFrom(bob.address, alice.address, mintedTokens[0])).to.be.revertedWith(
+      'ERC721: caller is not token owner or approved'
+    )
+
+    await expect(bob.contract.transferFrom(bob.address, alice.address, mintedTokens[0])).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    await expect(bob.contract['safeTransferFrom(address,address,uint256)'](bob.address, alice.address, mintedTokens[0])).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    await expect(bob.contract['safeTransferFrom(address,address,uint256,bytes)'](bob.address, alice.address, mintedTokens[0], Buffer.from(''))).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    const burn_transaction = await bob.contract.bulkBurn(mintedTokens)
+    const events = await all_events(burn_transaction)
+
+    const bulkBurnEvent = events.find(e => e.event === 'BulkBurn')
+    const { args: { walletAddress, tokenIds, metadata } } = bulkBurnEvent
+    expect(tokenIds.length).to.equal(mintedTokens.length)
+    expect(Number(tokenIds[0])).to.equal(mintedTokens[0])
+    expect(Number(tokenIds[1])).to.equal(mintedTokens[1])
+    expect(metadata).to.equal('N/A')
+    expect(walletAddress).to.equal(bob.address)
+  })
+
+  it('_lockId should be NOT available', async () => {
+    const { owner, bob } = await deploy()
+
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    let notExistsMethodError
+    try {
+      await owner.contract._lockId([mintedTokens])
+    } catch(error) {
+      notExistsMethodError = error
+    }
+
+    expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
+    expect(notExistsMethodError.message.includes('is not a function')).to.equal(true)
+  })
+
+  it('_unlockId should be NOT available', async () => {
+    const { owner, bob } = await deploy()
+
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    let notExistsMethodError
+    try {
+      await owner.contract._unlockId([mintedTokens])
+    } catch(error) {
+      notExistsMethodError = error
+    }
+
+    expect(notExistsMethodError).to.be.not.undefined // eslint-disable-line
+    expect(notExistsMethodError.message.includes('is not a function')).to.equal(true)
   })
 
   it('owner can mint several tokens to the same address', async () => {

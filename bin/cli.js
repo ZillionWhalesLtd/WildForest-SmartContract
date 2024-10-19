@@ -159,6 +159,23 @@ const main = async() => {
       // console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
       break
     }
+    case 'lockFragments': {
+      console.log(`Lock units collection fragments: ${roninChainId}...`) // eslint-disable-line
+
+      const { path } = argv
+
+      const repoPath = process.cwd()
+      const fragmentsToLockPath = `${repoPath}/bin/migrationConfigs/${path}`
+      const csvService = new CsvService()
+      const fragmentsToLock = await csvService.readFile(fragmentsToLockPath)
+
+      const filteredFragments = await roninChainService.filterNotLockedFragments(fragmentsToLock)
+      await roninChainService.lockFragments(filteredFragments)
+
+      console.log(`Done, locked/migrated ${filteredFragments.length} NFTs`) // eslint-disable-line
+      // console.log(`Result written into: \n ${filePath}`) // eslint-disable-line
+      break
+    }
     case 'mintLords': {
       console.log('Preparing metadata for Lord NFTs...') // eslint-disable-line
 

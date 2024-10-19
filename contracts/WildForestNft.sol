@@ -9,6 +9,11 @@ contract WildForestNft is ERC721Common {
   event IndividualBurn(address indexed walletAddress, uint256 tokenId, string metadata);
   event BulkBurn(address indexed walletAddress, uint256[] tokenIds, string metadata);
 
+  event TokenLocked(uint256 indexed tokenId, address indexed approvedContract);
+  event TokenUnlocked(uint256 indexed tokenId, address indexed approvedContract);
+
+  mapping(uint256 => uint256) public _locks;
+
   /// @custom:oz-upgrades-unsafe-allow constructor
   constructor() {
     _disableInitializers();
@@ -18,11 +23,52 @@ contract WildForestNft is ERC721Common {
     __ERC721Common_init(name, symbol, baseTokenURI, ownerAddress);
   }
 
+  function isUnlocked(uint256 _id) public view returns (bool) {
+    return _locks[_id] == 0;
+  }
+
+  function lockIds(uint256[] calldata tokenIds) external onlyRole(MINTER_ROLE) {
+    _validateTokenIdsNumber(tokenIds);
+
+    for (uint256 _i = 0; _i < tokenIds.length; _i++) {
+      _lockId(tokenIds[_i]);
+    }
+  }
+
+  function unlockIds(uint256[] calldata tokenIds) external onlyRole(MINTER_ROLE) {
+    _validateTokenIdsNumber(tokenIds);
+
+    for (uint256 _i = 0; _i < tokenIds.length; _i++) {
+      _unlockId(tokenIds[_i]);
+    }
+  }
+
+  function _lockId(uint256 _id) internal {
+    require(_exists(_id), "ERC721: token does not exists");
+    require(isUnlocked(_id), "Token is already locked");
+
+    _locks[_id] = 1;
+    emit TokenLocked(_id, msg.sender);
+  }
+
+  function _unlockId(uint256 _id) internal {
+    require(_exists(_id), "ERC721: token does not exists");
+    require(!isUnlocked(_id), "Token is not locked");
+
+    _locks[_id] = 0;
+    emit TokenUnlocked(_id, msg.sender);
+  }
+
   function _beforeTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize)
     internal
     virtual
     override(ERC721PresetMinterPauserAutoIdCustomized)
   {
+    // if (from != address(0)) {
+    if (to != address(0)) {
+      require(isUnlocked(firstTokenId), "Token is locked");
+    }
+
     super._beforeTokenTransfer(from, to, firstTokenId, batchSize);
   }
 

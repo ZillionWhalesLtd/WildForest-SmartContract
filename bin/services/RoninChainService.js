@@ -194,6 +194,57 @@ class RoninChainService {
     return filteredStakes
   }
 
+  async filterNotLockedFragments(tokensToLock) {
+    const filteredFragments = []
+
+    const contractService = new ContractService(this._logger, 'NFT_UNITS', this._chainId)
+    const { contract } = contractService
+
+    let i = 0
+    for (const tokenToLock of tokensToLock) {
+      i = i +1
+
+      const { token_id: tokenId } = tokenToLock
+
+      const isUnlocked = await contract.isUnlocked(tokenId)
+
+      if (!isUnlocked) {
+        this._logger.log(`tokenId: ${tokenId}, is already locked, skip...`)
+        continue
+      }
+
+      this._logger.log(`tokenId: ${tokenId} added to be locked, index: ${i}.`)
+      filteredFragments.push({ token_id: tokenId })
+    }
+
+    return filteredFragments
+  }
+
+  async lockFragments(tokensToLock) {
+    const CHUNKS_THRESHOLD = 20
+
+    const allTokenIds = []
+    for (const tokenToLock of tokensToLock) {
+      const { token_id: tokenId } = tokenToLock
+      allTokenIds.push(tokenId)
+    }
+
+    const contractService = new ContractService(this._logger, 'NFT_UNITS', this._chainId)
+    const { contract } = contractService
+
+    const tokensChunks = chunk(allTokenIds, CHUNKS_THRESHOLD)
+    for (const tokenIds of tokensChunks) {
+      const transaction = await contract.lockIds(tokenIds)
+      const events = await contractService.getEventsFromTransaction(transaction)
+      const lockedEvents = events.filter(e => e.event === 'TokenLocked')
+      console.log('lockedEvents!!', lockedEvents)
+
+      console.log('lockedTokens.length!!', lockedEvents.length)
+      console.log('lockedTokenIds!!', tokenIds)
+      console.log('-------------------------!!\n\n')
+    }
+  }
+
   async upgradeV2Stakes(tokensToRestake) {
     const CHUNKS_THRESHOLD = 20
 
