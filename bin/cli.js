@@ -55,6 +55,10 @@ const argv = yargs
     environment: environmentCommandOptions,
     path: pathCommandOptions,
   })
+  .command('lockFragments', 'Lock required fragments from Unit NFT collection', {
+    environment: environmentCommandOptions,
+    path: pathCommandOptions,
+  })
   .command('mintLords', 'Mint Lords NFTs according to the distribution data', {
     environment: environmentCommandOptions,
     path: pathCommandOptions,

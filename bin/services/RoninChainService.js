@@ -234,7 +234,7 @@ class RoninChainService {
 
     const tokensChunks = chunk(allTokenIds, CHUNKS_THRESHOLD)
     for (const tokenIds of tokensChunks) {
-      const transaction = await contract.lockIds(tokenIds)
+      const transaction = await contract.lockIds(tokenIds, transactionOptions)
       const events = await contractService.getEventsFromTransaction(transaction)
       const lockedEvents = events.filter(e => e.event === 'TokenLocked')
       console.log('lockedEvents!!', lockedEvents)

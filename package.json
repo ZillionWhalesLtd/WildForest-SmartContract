@@ -4,6 +4,8 @@
   "scripts": {
     "checkPacks": "node ./bin/calculateGeneratedPacks.js",
     "uploadImages": "node ./bin/cli.js uploadImages -p '../LordImages'",
+    "lockFragments:test": "node ./bin/cli.js lockFragments -e 'test' -p 'nft_stake_log_202410071299.csv'",
+    "lockFragments:prod": "node ./bin/cli.js lockFragments -e 'prod' -p 'nft_stake_log_202410071245.csv'",
     "migrateStakes:test": "node ./bin/cli.js migrateStakes -e 'test' -p 'nft_stake_log_202410071245.csv'",
     "migrateStakes:prod": "node ./bin/cli.js migrateStakes -e 'prod' -p 'nft_stake_log_202410071604.csv'",
     "mintLords:test": "node ./bin/cli.js mintLords -e 'test' -p 'WF_Community_Sale_Lords.csv'",
