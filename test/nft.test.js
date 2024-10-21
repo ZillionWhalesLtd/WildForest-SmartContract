@@ -478,6 +478,31 @@ describe('WildForestNft', function () {
     expect(walletAddress).to.equal(bob.address)
   })
 
+  it('unlocked tokens could be transfered back', async () => {
+    const { owner, bob, alice } = await deploy()
+    await owner.contract.bulkMint([bob.address, bob.address])
+
+    const mintedTokens = [1,2]
+
+    await owner.contract.lockIds(mintedTokens)
+
+    await expect(bob.contract.transferFrom(bob.address, owner.address, mintedTokens[0])).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    await expect(bob.contract['safeTransferFrom(address,address,uint256)'](bob.address, alice.address, mintedTokens[0])).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    await expect(bob.contract['safeTransferFrom(address,address,uint256,bytes)'](bob.address, alice.address, mintedTokens[0], Buffer.from(''))).to.be.revertedWith(
+      'Token is locked'
+    )
+
+    await owner.contract.unlockIds(mintedTokens)
+    await expect(bob.contract.transferFrom(bob.address, owner.address, mintedTokens[0])).to.not.be.reverted
+    await expect(bob.contract['safeTransferFrom(address,address,uint256)'](bob.address, owner.address, mintedTokens[1])).to.not.be.reverted
+  })
+
   it('_lockId should be NOT available', async () => {
     const { owner, bob } = await deploy()
 
