@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.0;
 
-// import "./refs/IERC721State.sol";
-// import "./refs/ERC721Nonce.sol";
+import "./refs/IERC721State.sol";
+import "./refs/ERC721Nonce.sol";
 import "./ERC721PresetMinterPauserAutoIdCustomized.sol";
 
-abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
+abstract contract ERC721Common is ERC721Nonce, ERC721PresetMinterPauserAutoIdCustomized, IERC721State {
 
   function __ERC721Common_init(string memory name, string memory symbol, string memory baseTokenURI, address ownerAddress) internal onlyInitializing {
     __ERC721Common_init_unchained(name, symbol, baseTokenURI, ownerAddress);
@@ -15,13 +15,13 @@ abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
     __ERC721PresetMinterPauserAutoIdCustomized_init(name, symbol, baseTokenURI, ownerAddress);
   }
 
-  // /**
-  //  * @inheritdoc IERC721State
-  //  */
-  // function stateOf(uint256 _tokenId) external view virtual override returns (bytes memory) {
-  //   require(_exists(_tokenId), "ERC721Common: query for non-existent token");
-  //   return abi.encodePacked(ownerOf(_tokenId), nonces[_tokenId], _tokenId);
-  // }
+  /**
+   * @inheritdoc IERC721State
+   */
+  function stateOf(uint256 _tokenId) external view virtual override returns (bytes memory) {
+    require(_exists(_tokenId), "ERC721Common: query for non-existent token");
+    return abi.encodePacked(ownerOf(_tokenId), nonces[_tokenId], _tokenId);
+  }
 
   /**
    * @dev Override `ERC721-_baseURI`.
@@ -30,7 +30,7 @@ abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
     internal
     view
     virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Upgradeable, ERC721PresetMinterPauserAutoIdCustomized)
     returns (string memory)
   {
     return super._baseURI();
@@ -43,7 +43,7 @@ abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
     public
     view
     virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Upgradeable, ERC721PresetMinterPauserAutoIdCustomized)
     returns (bool)
   {
     return super.supportsInterface(interfaceId);
@@ -55,7 +55,7 @@ abstract contract ERC721Common is ERC721PresetMinterPauserAutoIdCustomized {
   function _beforeTokenTransfer(address _from, address _to, uint256 _firstTokenId, uint256 _batchSize)
     internal
     virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Nonce, ERC721PresetMinterPauserAutoIdCustomized)
   {
     super._beforeTokenTransfer(_from, _to, _firstTokenId, _batchSize);
   }

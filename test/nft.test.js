@@ -128,8 +128,8 @@ describe('WildForestNft', function () {
     const { owner, bob, steve } = await deploy()
     const recipients = [bob.address, steve.address]
     const mint_transaction = await owner.contract.bulkMint(recipients)
-    const { tokenId } = await transfer_event(mint_transaction)
-    await expect(Number(tokenId)).to.equal(1)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
 
     const events = await transfer_events(mint_transaction)
     await expect(events.length).to.equal(recipients.length)
@@ -166,8 +166,8 @@ describe('WildForestNft', function () {
     const { owner, bob } = await deploy()
 
     const mint_transaction = await owner.contract.mint(bob.address)
-    const { tokenId } = await transfer_event(mint_transaction)
-    await expect(bob.contract['burn(uint256)'](Number(tokenId))).not.to.be.reverted
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(bob.contract['burn(uint256)'](Number(_tokenId))).not.to.be.reverted
   })
 
   it('The supportsInterface function should be a simple override', async () => {
@@ -184,18 +184,18 @@ describe('WildForestNft', function () {
     )
   })
 
-  // it('The stateOf function should be just called', async () => {
-  //   const { owner, steve } = await deploy()
+  it('The stateOf function should be just called', async () => {
+    const { owner, steve } = await deploy()
 
-  //   await owner.contract.mint(steve.address)
-  //   const response = await steve.contract.stateOf(1)
+    await owner.contract.mint(steve.address)
+    const response = await steve.contract.stateOf(1)
 
-  //   expect(response).not.to.be.undefined // eslint-disable-line
+    expect(response).not.to.be.undefined // eslint-disable-line
 
-  //   await expect(steve.contract.stateOf(2)).to.be.revertedWith(
-  //     'ERC721Common: query for non-existent token'
-  //   )
-  // })
+    await expect(steve.contract.stateOf(2)).to.be.revertedWith(
+      'ERC721Common: query for non-existent token'
+    )
+  })
 
   it('Admin can setBaseURI', async () => {
     const { owner, bob } = await deploy()
@@ -619,8 +619,8 @@ describe('WildForestNft', function () {
     const { owner, bob, alice } = await deployWithAliceOwner()
     const recipients = [bob.address, owner.address]
     const mint_transaction = await alice.contract.bulkMint(recipients)
-    const { tokenId } = await transfer_event(mint_transaction)
-    await expect(Number(tokenId)).to.equal(1)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
 
     const events = await transfer_events(mint_transaction)
     await expect(events.length).to.equal(recipients.length)
@@ -683,8 +683,8 @@ describe('WildForestNft', function () {
 
     const recipients = [bob.address, owner.address]
     const mint_transaction = await alice.contract.bulkMint(recipients)
-    const { tokenId } = await transfer_event(mint_transaction)
-    await expect(Number(tokenId)).to.equal(1)
+    const { _tokenId } = await transfer_event(mint_transaction)
+    await expect(Number(_tokenId)).to.equal(1)
 
     const events = await transfer_events(mint_transaction)
     await expect(events.length).to.equal(recipients.length)
