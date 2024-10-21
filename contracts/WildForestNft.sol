@@ -78,7 +78,7 @@ contract WildForestNft is ERC721Common {
   }
 
   function bulkApprove(address to, uint256[] calldata tokenIds) public virtual {
-    // _validateTokenIdsNumber(tokenIds);
+    _validateTokenIdsNumber(tokenIds);
 
     for (uint256 _i = 0; _i < tokenIds.length; _i++) {
       //solhint-disable-next-line max-line-length

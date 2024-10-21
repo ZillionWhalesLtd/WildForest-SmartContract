@@ -3,6 +3,7 @@ require('hardhat-deploy')
 require('@nomiclabs/hardhat-ethers')
 require('@openzeppelin/hardhat-upgrades')
 require('@nomiclabs/hardhat-etherscan')
+require('hardhat-contract-sizer')
 require('solidity-coverage')
 
 
@@ -33,7 +34,15 @@ const accounts = {
 }
 
 module.exports = {
-  solidity: '0.8.16',
+  solidity: {
+    version: '0.8.16',
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200,
+      },
+    },
+  },
   gasReporter: {
     enabled: true,
   },
