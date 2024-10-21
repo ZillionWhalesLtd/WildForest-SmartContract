@@ -62,7 +62,7 @@ contract WildForestNft is ERC721Common {
   function _beforeTokenTransfer(address from, address to, uint256 firstTokenId, uint256 batchSize)
     internal
     virtual
-    override(ERC721PresetMinterPauserAutoIdCustomized)
+    override(ERC721Common)
   {
     // if (from != address(0)) {
     if (to != address(0)) {
